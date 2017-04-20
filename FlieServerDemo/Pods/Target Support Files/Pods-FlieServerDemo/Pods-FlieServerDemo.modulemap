@@ -1,0 +1,6 @@
+framework module Pods_FlieServerDemo {
+  umbrella header "Pods-FlieServerDemo-umbrella.h"
+
+  export *
+  module * { export * }
+}

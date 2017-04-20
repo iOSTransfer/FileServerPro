@@ -1,0 +1,619 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A0E1EA87ABA00BD8FD7 /* main.m */; };
+		689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A111EA87ABA00BD8FD7 /* AppDelegate.m */; };
+		689A8A151EA87ABA00BD8FD7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A141EA87ABA00BD8FD7 /* ViewController.m */; };
+		689A8A1A1EA87ABA00BD8FD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A191EA87ABA00BD8FD7 /* Assets.xcassets */; };
+		689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A1B1EA87ABA00BD8FD7 /* LaunchScreen.storyboard */; };
+		689A8A281EA87ABB00BD8FD7 /* FlieServerDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A271EA87ABB00BD8FD7 /* FlieServerDemoTests.m */; };
+		689A8A331EA87ABB00BD8FD7 /* FlieServerDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */; };
+		689A8A601EA8A2B300BD8FD7 /* ClientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A5F1EA8A2B300BD8FD7 /* ClientViewController.m */; };
+		689A8A621EA8AD5B00BD8FD7 /* YYText-master.zip in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A611EA8AD5B00BD8FD7 /* YYText-master.zip */; };
+		899C5B0D9FEDD5DFEBBCC98C /* Pods_FlieServerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		689A8A241EA87ABB00BD8FD7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 689A8A021EA87ABA00BD8FD7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 689A8A091EA87ABA00BD8FD7;
+			remoteInfo = FlieServerDemo;
+		};
+		689A8A2F1EA87ABB00BD8FD7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 689A8A021EA87ABA00BD8FD7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 689A8A091EA87ABA00BD8FD7;
+			remoteInfo = FlieServerDemo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		421558AE5EE79F39E5A6163B /* Pods-FlieServerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.release.xcconfig"; sourceTree = "<group>"; };
+		689A8A0A1EA87ABA00BD8FD7 /* FlieServerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlieServerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		689A8A0E1EA87ABA00BD8FD7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		689A8A101EA87ABA00BD8FD7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		689A8A111EA87ABA00BD8FD7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		689A8A131EA87ABA00BD8FD7 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		689A8A141EA87ABA00BD8FD7 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		689A8A191EA87ABA00BD8FD7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		689A8A1C1EA87ABA00BD8FD7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		689A8A1E1EA87ABA00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		689A8A231EA87ABB00BD8FD7 /* FlieServerDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlieServerDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		689A8A271EA87ABB00BD8FD7 /* FlieServerDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlieServerDemoTests.m; sourceTree = "<group>"; };
+		689A8A291EA87ABB00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		689A8A2E1EA87ABB00BD8FD7 /* FlieServerDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlieServerDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlieServerDemoUITests.m; sourceTree = "<group>"; };
+		689A8A341EA87ABB00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		689A8A5E1EA8A2B300BD8FD7 /* ClientViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientViewController.h; sourceTree = "<group>"; };
+		689A8A5F1EA8A2B300BD8FD7 /* ClientViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientViewController.m; sourceTree = "<group>"; };
+		689A8A611EA8AD5B00BD8FD7 /* YYText-master.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "YYText-master.zip"; sourceTree = "<group>"; };
+		A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlieServerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		689A8A071EA87ABA00BD8FD7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				899C5B0D9FEDD5DFEBBCC98C /* Pods_FlieServerDemo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		689A8A201EA87ABB00BD8FD7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		689A8A2B1EA87ABB00BD8FD7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0A02C66268723189058692B1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */,
+				421558AE5EE79F39E5A6163B /* Pods-FlieServerDemo.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		0D1D99B30A67CC574CC33F5D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		689A8A011EA87ABA00BD8FD7 = {
+			isa = PBXGroup;
+			children = (
+				689A8A0C1EA87ABA00BD8FD7 /* FlieServerDemo */,
+				689A8A261EA87ABB00BD8FD7 /* FlieServerDemoTests */,
+				689A8A311EA87ABB00BD8FD7 /* FlieServerDemoUITests */,
+				689A8A0B1EA87ABA00BD8FD7 /* Products */,
+				0A02C66268723189058692B1 /* Pods */,
+				0D1D99B30A67CC574CC33F5D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		689A8A0B1EA87ABA00BD8FD7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				689A8A0A1EA87ABA00BD8FD7 /* FlieServerDemo.app */,
+				689A8A231EA87ABB00BD8FD7 /* FlieServerDemoTests.xctest */,
+				689A8A2E1EA87ABB00BD8FD7 /* FlieServerDemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		689A8A0C1EA87ABA00BD8FD7 /* FlieServerDemo */ = {
+			isa = PBXGroup;
+			children = (
+				689A8A101EA87ABA00BD8FD7 /* AppDelegate.h */,
+				689A8A111EA87ABA00BD8FD7 /* AppDelegate.m */,
+				689A8A131EA87ABA00BD8FD7 /* ViewController.h */,
+				689A8A141EA87ABA00BD8FD7 /* ViewController.m */,
+				689A8A611EA8AD5B00BD8FD7 /* YYText-master.zip */,
+				689A8A191EA87ABA00BD8FD7 /* Assets.xcassets */,
+				689A8A1B1EA87ABA00BD8FD7 /* LaunchScreen.storyboard */,
+				689A8A1E1EA87ABA00BD8FD7 /* Info.plist */,
+				689A8A0D1EA87ABA00BD8FD7 /* Supporting Files */,
+			);
+			path = FlieServerDemo;
+			sourceTree = "<group>";
+		};
+		689A8A0D1EA87ABA00BD8FD7 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				689A8A0E1EA87ABA00BD8FD7 /* main.m */,
+				689A8A5E1EA8A2B300BD8FD7 /* ClientViewController.h */,
+				689A8A5F1EA8A2B300BD8FD7 /* ClientViewController.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		689A8A261EA87ABB00BD8FD7 /* FlieServerDemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				689A8A271EA87ABB00BD8FD7 /* FlieServerDemoTests.m */,
+				689A8A291EA87ABB00BD8FD7 /* Info.plist */,
+			);
+			path = FlieServerDemoTests;
+			sourceTree = "<group>";
+		};
+		689A8A311EA87ABB00BD8FD7 /* FlieServerDemoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */,
+				689A8A341EA87ABB00BD8FD7 /* Info.plist */,
+			);
+			path = FlieServerDemoUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		689A8A091EA87ABA00BD8FD7 /* FlieServerDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 689A8A371EA87ABB00BD8FD7 /* Build configuration list for PBXNativeTarget "FlieServerDemo" */;
+			buildPhases = (
+				5B54B2ED6A85E4455B5DA31D /* [CP] Check Pods Manifest.lock */,
+				689A8A061EA87ABA00BD8FD7 /* Sources */,
+				689A8A071EA87ABA00BD8FD7 /* Frameworks */,
+				689A8A081EA87ABA00BD8FD7 /* Resources */,
+				67D4F099C73BEDAD50BEEAA4 /* [CP] Embed Pods Frameworks */,
+				F91CEC8D958345E752F68604 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FlieServerDemo;
+			productName = FlieServerDemo;
+			productReference = 689A8A0A1EA87ABA00BD8FD7 /* FlieServerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		689A8A221EA87ABB00BD8FD7 /* FlieServerDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 689A8A3A1EA87ABB00BD8FD7 /* Build configuration list for PBXNativeTarget "FlieServerDemoTests" */;
+			buildPhases = (
+				689A8A1F1EA87ABB00BD8FD7 /* Sources */,
+				689A8A201EA87ABB00BD8FD7 /* Frameworks */,
+				689A8A211EA87ABB00BD8FD7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				689A8A251EA87ABB00BD8FD7 /* PBXTargetDependency */,
+			);
+			name = FlieServerDemoTests;
+			productName = FlieServerDemoTests;
+			productReference = 689A8A231EA87ABB00BD8FD7 /* FlieServerDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		689A8A2D1EA87ABB00BD8FD7 /* FlieServerDemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 689A8A3D1EA87ABB00BD8FD7 /* Build configuration list for PBXNativeTarget "FlieServerDemoUITests" */;
+			buildPhases = (
+				689A8A2A1EA87ABB00BD8FD7 /* Sources */,
+				689A8A2B1EA87ABB00BD8FD7 /* Frameworks */,
+				689A8A2C1EA87ABB00BD8FD7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				689A8A301EA87ABB00BD8FD7 /* PBXTargetDependency */,
+			);
+			name = FlieServerDemoUITests;
+			productName = FlieServerDemoUITests;
+			productReference = 689A8A2E1EA87ABB00BD8FD7 /* FlieServerDemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		689A8A021EA87ABA00BD8FD7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = lyric;
+				TargetAttributes = {
+					689A8A091EA87ABA00BD8FD7 = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 2T4HE96GYT;
+						ProvisioningStyle = Automatic;
+					};
+					689A8A221EA87ABB00BD8FD7 = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 2T4HE96GYT;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 689A8A091EA87ABA00BD8FD7;
+					};
+					689A8A2D1EA87ABB00BD8FD7 = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = 2T4HE96GYT;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 689A8A091EA87ABA00BD8FD7;
+					};
+				};
+			};
+			buildConfigurationList = 689A8A051EA87ABA00BD8FD7 /* Build configuration list for PBXProject "FlieServerDemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 689A8A011EA87ABA00BD8FD7;
+			productRefGroup = 689A8A0B1EA87ABA00BD8FD7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				689A8A091EA87ABA00BD8FD7 /* FlieServerDemo */,
+				689A8A221EA87ABB00BD8FD7 /* FlieServerDemoTests */,
+				689A8A2D1EA87ABB00BD8FD7 /* FlieServerDemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		689A8A081EA87ABA00BD8FD7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */,
+				689A8A1A1EA87ABA00BD8FD7 /* Assets.xcassets in Resources */,
+				689A8A621EA8AD5B00BD8FD7 /* YYText-master.zip in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		689A8A211EA87ABB00BD8FD7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		689A8A2C1EA87ABB00BD8FD7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5B54B2ED6A85E4455B5DA31D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		67D4F099C73BEDAD50BEEAA4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F91CEC8D958345E752F68604 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		689A8A061EA87ABA00BD8FD7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				689A8A151EA87ABA00BD8FD7 /* ViewController.m in Sources */,
+				689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */,
+				689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */,
+				689A8A601EA8A2B300BD8FD7 /* ClientViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		689A8A1F1EA87ABB00BD8FD7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				689A8A281EA87ABB00BD8FD7 /* FlieServerDemoTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		689A8A2A1EA87ABB00BD8FD7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				689A8A331EA87ABB00BD8FD7 /* FlieServerDemoUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		689A8A251EA87ABB00BD8FD7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 689A8A091EA87ABA00BD8FD7 /* FlieServerDemo */;
+			targetProxy = 689A8A241EA87ABB00BD8FD7 /* PBXContainerItemProxy */;
+		};
+		689A8A301EA87ABB00BD8FD7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 689A8A091EA87ABA00BD8FD7 /* FlieServerDemo */;
+			targetProxy = 689A8A2F1EA87ABB00BD8FD7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		689A8A1B1EA87ABA00BD8FD7 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				689A8A1C1EA87ABA00BD8FD7 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		689A8A351EA87ABB00BD8FD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		689A8A361EA87ABB00BD8FD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		689A8A381EA87ABB00BD8FD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				INFOPLIST_FILE = FlieServerDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		689A8A391EA87ABB00BD8FD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 421558AE5EE79F39E5A6163B /* Pods-FlieServerDemo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				INFOPLIST_FILE = FlieServerDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		689A8A3B1EA87ABB00BD8FD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				INFOPLIST_FILE = FlieServerDemoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlieServerDemo.app/FlieServerDemo";
+			};
+			name = Debug;
+		};
+		689A8A3C1EA87ABB00BD8FD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				INFOPLIST_FILE = FlieServerDemoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlieServerDemo.app/FlieServerDemo";
+			};
+			name = Release;
+		};
+		689A8A3E1EA87ABB00BD8FD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				INFOPLIST_FILE = FlieServerDemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = FlieServerDemo;
+			};
+			name = Debug;
+		};
+		689A8A3F1EA87ABB00BD8FD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				INFOPLIST_FILE = FlieServerDemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = FlieServerDemo;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		689A8A051EA87ABA00BD8FD7 /* Build configuration list for PBXProject "FlieServerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				689A8A351EA87ABB00BD8FD7 /* Debug */,
+				689A8A361EA87ABB00BD8FD7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		689A8A371EA87ABB00BD8FD7 /* Build configuration list for PBXNativeTarget "FlieServerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				689A8A381EA87ABB00BD8FD7 /* Debug */,
+				689A8A391EA87ABB00BD8FD7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		689A8A3A1EA87ABB00BD8FD7 /* Build configuration list for PBXNativeTarget "FlieServerDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				689A8A3B1EA87ABB00BD8FD7 /* Debug */,
+				689A8A3C1EA87ABB00BD8FD7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		689A8A3D1EA87ABB00BD8FD7 /* Build configuration list for PBXNativeTarget "FlieServerDemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				689A8A3E1EA87ABB00BD8FD7 /* Debug */,
+				689A8A3F1EA87ABB00BD8FD7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 689A8A021EA87ABA00BD8FD7 /* Project object */;
+}

@@ -7,15 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		68032A2C1EA9FFD70019CD22 /* NZQ.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 68032A2B1EA9FFD70019CD22 /* NZQ.mp4 */; };
+		68032A2F1EAA00990019CD22 /* MainTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68032A2E1EAA00990019CD22 /* MainTabBarViewController.m */; };
+		68032A351EAA01010019CD22 /* ServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68032A341EAA01010019CD22 /* ServerViewController.m */; };
+		68032A381EAA011F0019CD22 /* ClientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68032A371EAA011F0019CD22 /* ClientViewController.m */; };
+		68032A3B1EAA027D0019CD22 /* tabar1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68032A391EAA027D0019CD22 /* tabar1@3x.png */; };
+		68032A3C1EAA027D0019CD22 /* tabar2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68032A3A1EAA027D0019CD22 /* tabar2@3x.png */; };
+		68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68032A3F1EAA0AA90019CD22 /* BaseNavViewController.m */; };
 		689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A0E1EA87ABA00BD8FD7 /* main.m */; };
 		689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A111EA87ABA00BD8FD7 /* AppDelegate.m */; };
-		689A8A151EA87ABA00BD8FD7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A141EA87ABA00BD8FD7 /* ViewController.m */; };
 		689A8A1A1EA87ABA00BD8FD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A191EA87ABA00BD8FD7 /* Assets.xcassets */; };
 		689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A1B1EA87ABA00BD8FD7 /* LaunchScreen.storyboard */; };
 		689A8A281EA87ABB00BD8FD7 /* FlieServerDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A271EA87ABB00BD8FD7 /* FlieServerDemoTests.m */; };
 		689A8A331EA87ABB00BD8FD7 /* FlieServerDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */; };
-		689A8A601EA8A2B300BD8FD7 /* ClientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A5F1EA8A2B300BD8FD7 /* ClientViewController.m */; };
-		689A8A621EA8AD5B00BD8FD7 /* YYText-master.zip in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A611EA8AD5B00BD8FD7 /* YYText-master.zip */; };
 		899C5B0D9FEDD5DFEBBCC98C /* Pods_FlieServerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -38,12 +42,21 @@
 
 /* Begin PBXFileReference section */
 		421558AE5EE79F39E5A6163B /* Pods-FlieServerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.release.xcconfig"; sourceTree = "<group>"; };
+		68032A2B1EA9FFD70019CD22 /* NZQ.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = NZQ.mp4; sourceTree = "<group>"; };
+		68032A2D1EAA00990019CD22 /* MainTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarViewController.h; sourceTree = "<group>"; };
+		68032A2E1EAA00990019CD22 /* MainTabBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarViewController.m; sourceTree = "<group>"; };
+		68032A331EAA01010019CD22 /* ServerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerViewController.h; sourceTree = "<group>"; };
+		68032A341EAA01010019CD22 /* ServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerViewController.m; sourceTree = "<group>"; };
+		68032A361EAA011F0019CD22 /* ClientViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientViewController.h; sourceTree = "<group>"; };
+		68032A371EAA011F0019CD22 /* ClientViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientViewController.m; sourceTree = "<group>"; };
+		68032A391EAA027D0019CD22 /* tabar1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabar1@3x.png"; sourceTree = "<group>"; };
+		68032A3A1EAA027D0019CD22 /* tabar2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabar2@3x.png"; sourceTree = "<group>"; };
+		68032A3E1EAA0AA90019CD22 /* BaseNavViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNavViewController.h; sourceTree = "<group>"; };
+		68032A3F1EAA0AA90019CD22 /* BaseNavViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseNavViewController.m; sourceTree = "<group>"; };
 		689A8A0A1EA87ABA00BD8FD7 /* FlieServerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlieServerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		689A8A0E1EA87ABA00BD8FD7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		689A8A101EA87ABA00BD8FD7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		689A8A111EA87ABA00BD8FD7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		689A8A131EA87ABA00BD8FD7 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		689A8A141EA87ABA00BD8FD7 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		689A8A191EA87ABA00BD8FD7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		689A8A1C1EA87ABA00BD8FD7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		689A8A1E1EA87ABA00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -53,9 +66,6 @@
 		689A8A2E1EA87ABB00BD8FD7 /* FlieServerDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlieServerDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlieServerDemoUITests.m; sourceTree = "<group>"; };
 		689A8A341EA87ABB00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		689A8A5E1EA8A2B300BD8FD7 /* ClientViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientViewController.h; sourceTree = "<group>"; };
-		689A8A5F1EA8A2B300BD8FD7 /* ClientViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientViewController.m; sourceTree = "<group>"; };
-		689A8A611EA8AD5B00BD8FD7 /* YYText-master.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "YYText-master.zip"; sourceTree = "<group>"; };
 		A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlieServerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -103,6 +113,52 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		68032A261EA9FE2F0019CD22 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				68032A2D1EAA00990019CD22 /* MainTabBarViewController.h */,
+				68032A2E1EAA00990019CD22 /* MainTabBarViewController.m */,
+				68032A3E1EAA0AA90019CD22 /* BaseNavViewController.h */,
+				68032A3F1EAA0AA90019CD22 /* BaseNavViewController.m */,
+				68032A331EAA01010019CD22 /* ServerViewController.h */,
+				68032A341EAA01010019CD22 /* ServerViewController.m */,
+				68032A361EAA011F0019CD22 /* ClientViewController.h */,
+				68032A371EAA011F0019CD22 /* ClientViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		68032A271EA9FE490019CD22 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		68032A281EA9FE4C0019CD22 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		68032A291EA9FF8E0019CD22 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				68032A2B1EA9FFD70019CD22 /* NZQ.mp4 */,
+				68032A391EAA027D0019CD22 /* tabar1@3x.png */,
+				68032A3A1EAA027D0019CD22 /* tabar2@3x.png */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		68032A2A1EA9FFB10019CD22 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		689A8A011EA87ABA00BD8FD7 = {
 			isa = PBXGroup;
 			children = (
@@ -130,9 +186,11 @@
 			children = (
 				689A8A101EA87ABA00BD8FD7 /* AppDelegate.h */,
 				689A8A111EA87ABA00BD8FD7 /* AppDelegate.m */,
-				689A8A131EA87ABA00BD8FD7 /* ViewController.h */,
-				689A8A141EA87ABA00BD8FD7 /* ViewController.m */,
-				689A8A611EA8AD5B00BD8FD7 /* YYText-master.zip */,
+				68032A2A1EA9FFB10019CD22 /* Common */,
+				68032A291EA9FF8E0019CD22 /* Source */,
+				68032A281EA9FE4C0019CD22 /* Model */,
+				68032A271EA9FE490019CD22 /* View */,
+				68032A261EA9FE2F0019CD22 /* Controller */,
 				689A8A191EA87ABA00BD8FD7 /* Assets.xcassets */,
 				689A8A1B1EA87ABA00BD8FD7 /* LaunchScreen.storyboard */,
 				689A8A1E1EA87ABA00BD8FD7 /* Info.plist */,
@@ -145,8 +203,6 @@
 			isa = PBXGroup;
 			children = (
 				689A8A0E1EA87ABA00BD8FD7 /* main.m */,
-				689A8A5E1EA8A2B300BD8FD7 /* ClientViewController.h */,
-				689A8A5F1EA8A2B300BD8FD7 /* ClientViewController.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -281,9 +337,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68032A3C1EAA027D0019CD22 /* tabar2@3x.png in Resources */,
+				68032A2C1EA9FFD70019CD22 /* NZQ.mp4 in Resources */,
 				689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */,
+				68032A3B1EAA027D0019CD22 /* tabar1@3x.png in Resources */,
 				689A8A1A1EA87ABA00BD8FD7 /* Assets.xcassets in Resources */,
-				689A8A621EA8AD5B00BD8FD7 /* YYText-master.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,10 +414,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				689A8A151EA87ABA00BD8FD7 /* ViewController.m in Sources */,
 				689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */,
+				68032A2F1EAA00990019CD22 /* MainTabBarViewController.m in Sources */,
+				68032A351EAA01010019CD22 /* ServerViewController.m in Sources */,
 				689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */,
-				689A8A601EA8A2B300BD8FD7 /* ClientViewController.m in Sources */,
+				68032A381EAA011F0019CD22 /* ClientViewController.m in Sources */,
+				68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

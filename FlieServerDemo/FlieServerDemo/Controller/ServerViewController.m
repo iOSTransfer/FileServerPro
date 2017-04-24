@@ -10,7 +10,7 @@
 #import "GCDAsyncSocket.h"
 #import "StartView.h"
 #import "AppDataSource.h"
-#import "YYModel.h"
+#import "NSObject+YYModel.h"
 #import "UserInfo.h"
 
 

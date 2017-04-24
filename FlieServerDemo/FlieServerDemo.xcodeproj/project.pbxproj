@@ -25,6 +25,8 @@
 		689A8A331EA87ABB00BD8FD7 /* FlieServerDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */; };
 		68A83D1C1EAD8CDD0061AC6D /* NetWorkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D1B1EAD8CDD0061AC6D /* NetWorkManager.m */; };
 		68A83D281EADBE590061AC6D /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D271EADBE590061AC6D /* UserInfo.m */; };
+		68A83D2F1EADED730061AC6D /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D2B1EADED730061AC6D /* NSObject+YYModel.m */; };
+		68A83D301EADED730061AC6D /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D2D1EADED730061AC6D /* YYClassInfo.m */; };
 		899C5B0D9FEDD5DFEBBCC98C /* Pods_FlieServerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +82,11 @@
 		68A83D1B1EAD8CDD0061AC6D /* NetWorkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetWorkManager.m; sourceTree = "<group>"; };
 		68A83D261EADBE590061AC6D /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
 		68A83D271EADBE590061AC6D /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
+		68A83D2A1EADED730061AC6D /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
+		68A83D2B1EADED730061AC6D /* NSObject+YYModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YYModel.m"; sourceTree = "<group>"; };
+		68A83D2C1EADED730061AC6D /* YYClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYClassInfo.h; sourceTree = "<group>"; };
+		68A83D2D1EADED730061AC6D /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYClassInfo.m; sourceTree = "<group>"; };
+		68A83D2E1EADED730061AC6D /* YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYModel.h; sourceTree = "<group>"; };
 		A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlieServerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -252,8 +259,21 @@
 		68A83D1D1EADAA8C0061AC6D /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				68A83D291EADED730061AC6D /* YYModel */,
 			);
 			path = Vendor;
+			sourceTree = "<group>";
+		};
+		68A83D291EADED730061AC6D /* YYModel */ = {
+			isa = PBXGroup;
+			children = (
+				68A83D2A1EADED730061AC6D /* NSObject+YYModel.h */,
+				68A83D2B1EADED730061AC6D /* NSObject+YYModel.m */,
+				68A83D2C1EADED730061AC6D /* YYClassInfo.h */,
+				68A83D2D1EADED730061AC6D /* YYClassInfo.m */,
+				68A83D2E1EADED730061AC6D /* YYModel.h */,
+			);
+			path = YYModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -450,10 +470,12 @@
 				68032A2F1EAA00990019CD22 /* MainTabBarViewController.m in Sources */,
 				68A83D281EADBE590061AC6D /* UserInfo.m in Sources */,
 				68032A351EAA01010019CD22 /* ServerViewController.m in Sources */,
+				68A83D301EADED730061AC6D /* YYClassInfo.m in Sources */,
 				689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */,
 				68032A381EAA011F0019CD22 /* ClientViewController.m in Sources */,
 				681B46201EAD873B00BEA215 /* AppDataSource.m in Sources */,
 				68A83D1C1EAD8CDD0061AC6D /* NetWorkManager.m in Sources */,
+				68A83D2F1EADED730061AC6D /* NSObject+YYModel.m in Sources */,
 				68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */,
 				681B46251EAD876200BEA215 /* StartView.m in Sources */,
 			);

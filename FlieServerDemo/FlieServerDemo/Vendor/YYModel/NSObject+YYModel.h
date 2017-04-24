@@ -26,14 +26,14 @@ NS_ASSUME_NONNULL_BEGIN
  Sample Code:
     
      ********************** json convertor *********************
-     @interface YYAuthor : NSObject
+
      @property (nonatomic, strong) NSString *name;
      @property (nonatomic, assign) NSDate *birthday;
      @end
      @implementation YYAuthor
      @end
  
-     @interface YYBook : NSObject
+
      @property (nonatomic, copy) NSString *name;
      @property (nonatomic, assign) NSUInteger pages;
      @property (nonatomic, strong) YYAuthor *author;
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
      }
  
      ********************** Coding/Copying/hash/equal *********************
-     @interface YYShadow :NSObject <NSCoding, NSCopying>
+
      @property (nonatomic, copy) NSString *name;
      @property (nonatomic, assign) CGSize size;
      @end

@@ -9,7 +9,7 @@
 #import "ClientViewController.h"
 #import "GCDAsyncSocket.h"
 #import "AppDataSource.h"
-#import "YYModel.h"
+#import "NSObject+YYModel.h"
 #import "UserInfo.h"
 
 @interface ClientViewController ()<GCDAsyncSocketDelegate>

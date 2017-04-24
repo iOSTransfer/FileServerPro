@@ -8,89 +8,134 @@
 
 #import "ClientViewController.h"
 #import "GCDAsyncSocket.h"
-
-#define HOST @"10.134.19.1"
-
+#import "AppDataSource.h"
+#import "YYModel.h"
+#import "UserInfo.h"
 
 @interface ClientViewController ()<GCDAsyncSocketDelegate>
 
-@property (nonatomic , strong)GCDAsyncSocket *socketServer;
+@property (nonatomic , strong)GCDAsyncSocket *socketClient;
+
 
 @end
 
 @implementation ClientViewController
 
-- (void)viewDidLoad {
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
-    uint16_t prot = 6666;
-    // 创建服务器
-    
-    self.socketServer = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
-    
-    NSError *error;
-    // 连接服务器
-    [self.socketServer connectToHost:HOST onPort:prot error:&error];
-    
-    if (error) {
-        NSLog(@"连接失败 ： %@",error);
-    }else{
-    
-        NSLog(@"连接成功");
-    }
     self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.title = @"客户端";
     
-    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 200, 40)];
-    btn.center = self.view.center;
-    [btn setTitle:@"发送大文件数据" forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(tapBtn) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn];
+    NSArray *titileArray = @[@"请求连接" ,@"发送登录信息",@"发送大文件",@"并发发送大文件"];
+    self.view.backgroundColor = [UIColor whiteColor];
+    for (int i = 0; i < titileArray.count; i ++) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.bounds = CGRectMake(0, 0, 300, 30);
+        button.center = CGPointMake(CGRectGetWidth(self.view.bounds)/2, 150 + i *60);
+        [button setTitle:titileArray[i] forState:UIControlStateNormal];
+        button.tag =  10+i;
+        [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:button];
+    }
     
 }
 
+#pragma mark - 事件监听
 
-- (void)tapBtn
-{
+- (void)buttonPressed:(UIButton *)sender {
+    switch (sender.tag - 10) {
+        case 0: {
+            uint16_t prot = 6666;
+            // 创建服务器
+            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+            
+            
+            NSError *error;
+            // 连接服务器
+            [self.socketClient connectToHost:[[AppDataSource shareAppDataSource] deviceIPAdress] onPort:prot error:&error];
+        
+            if (error) {
+                NSLog(@"连接失败 ： %@",error);
+            }else{
+                
+                NSLog(@"连接成功");
+            }
 
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
-     NSError *error;
-    NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
-    if (error) {
-        NSLog(@"错误 ： %@",error);
-    }else{
-    
-        NSString *str = @"FFF=1.0";
-        NSData *strdata = [str dataUsingEncoding:NSUTF8StringEncoding];
+        
+        }
+            
+            break;
+            
+        case 1:{
+            
+            
+            UserInfo *user = [[UserInfo alloc]init];
+            user.userName = @"我啊";
+            user.userPwd = @"222222";
+            NSLog(@"%@",user.yy_modelToJSONString );
+            NSData  *data = user.yy_modelToJSONData;
+            
+            
+            
+//            NSDictionary *dic = @{@"fileName":@"sbs",@"fileID":@"55555" };
+//            NSDictionary *dic2 = @{@"fileName":@"aaaaa",@"fileID":@"22222" };
+//            NSDictionary *dic3 = @{@"fileName":@"vvvvvv",@"fileID":@"000000" };
+//            
+//            
+//            NSArray *arr = @[dic,dic2,dic3];
+//            NSLog(@"%@",arr);
 
-        
-        int type = 1;
-    
-        
-        NSUInteger length = data.length;
-        NSLog(@"%ld",length);
-        
-        NSData *data11 = [NSData dataWithBytes:&type length:sizeof(type)];
-        NSData *data22 = [NSData dataWithBytes:&length length:sizeof(length)];
-        NSLog(@"%ld",data11.length);
-        NSLog(@"%ld",data22.length);
-        
-    
-        NSMutableData *muData = [NSMutableData data];
-        
-        [muData appendData:strdata];
-        [muData appendBytes:&type length:sizeof(type)];
-        [muData appendBytes:&length length:sizeof(length)];
-        [muData appendData:data];
+            
+            NSString *str = @"FFF";
+            NSData *strdata = [str dataUsingEncoding:NSUTF8StringEncoding];
 
-        [self.socketServer writeData:muData withTimeout:-1 tag:0];
+            int type = 1;
+            
+            
+            NSUInteger length = data.length;
+            NSLog(@"%ld",length);
+            
+            NSData *data11 = [NSData dataWithBytes:&type length:sizeof(type)];
+            NSData *data22 = [NSData dataWithBytes:&length length:sizeof(length)];
+            NSLog(@"%ld",data11.length);
+            NSLog(@"%ld",data22.length);
+            
+            
+            NSMutableData *muData = [NSMutableData data];
+            
+            [muData appendData:strdata];
+            [muData appendBytes:&type length:sizeof(type)];
+            [muData appendBytes:&length length:sizeof(length)];
+            [muData appendData:data];
+            
+            [self.socketClient writeData:muData withTimeout:-1 tag:0];
+        
+        }
+            break;
+        case 2:{
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
+            NSError *error;
+            NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
+            
+        }
+            break;
+        case 3:{
+            
+            
+        }
+            break;
+            
+        default:
+            break;
     }
     
     
-    
-    
-
 }
+
 
 #pragma mark -socket的代理
 

@@ -23,20 +23,19 @@
     [super viewDidLoad];
     
     
-//    self.navigationBar.tintColor = [UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1];
-    
     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:18.0f]}];
-    self.navigationBar.barTintColor = [UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1];
-    self.navigationBar.translucent = NO;
+    CGSize imageSize = CGSizeMake(SCREEN_WIDTH, 64);
+    UIGraphicsImageRenderer *render = [[UIGraphicsImageRenderer alloc]initWithSize:imageSize];
+    UIImage *image = [render imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull rendererContext) {
+        UIColor *imageColor = [UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1];
+        [imageColor setFill];
+        [rendererContext fillRect:rendererContext.format.bounds];
+    }];
     
-    
-//    CGSize imageSize = CGSizeMake(SCREEN_WIDTH, 64);
-//    UIGraphicsImageRenderer *render = [[UIGraphicsImageRenderer alloc]initWithSize:imageSize];
-//    UIImage *image = [render imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull rendererContext) {
-//        UIColor *imageColor = [UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1];
-//        [imageColor setFill];
-//        [rendererContext fillRect:rendererContext.format.bounds];
-//    }];
+    [self.navigationBar setBackgroundImage:image
+                            forBarPosition:UIBarPositionAny
+                                barMetrics:UIBarMetricsDefault];
+    [self.navigationBar setShadowImage:[UIImage new]];
     
     
 }

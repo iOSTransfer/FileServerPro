@@ -8,14 +8,18 @@
 
 #import "ServerViewController.h"
 #import "GCDAsyncSocket.h"
+#import "StartView.h"
+#import "AppDataSource.h"
+#import "YYModel.h"
+#import "UserInfo.h"
 
 
 @interface ServerViewController ()<GCDAsyncSocketDelegate>
 
 @property (strong, nonatomic) GCDAsyncSocket *socket;
 @property (strong, nonatomic) NSMutableSet *clientSockets;//保存客户端scoket
-@property (strong,nonatomic) NSMutableData *receiveData;
-
+@property (strong,  nonatomic) NSMutableData *receiveData;
+@property (strong, nonatomic) StartView *startServer;
 
 @end
 
@@ -32,14 +36,26 @@
 
 - (void)setUI
 {
-    UIButton *startServer = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 100, 100)];
-    startServer.center = CGPointMake(self.view.center.x, self.view.center.y - 30);
-    startServer.backgroundColor = [UIColor whiteColor];
-    startServer.layer.cornerRadius = 50;
-    startServer.layer.masksToBounds = YES;
-    [startServer addTarget:self action:@selector(buttonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:startServer];
-
+    
+    UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 24)];
+    
+    infoLabel.textColor = [UIColor whiteColor];
+    infoLabel.font = [UIFont systemFontOfSize:14];
+    infoLabel.textAlignment = NSTextAlignmentCenter;
+    NSString *infoString = [NSString stringWithFormat:@"IP地址:%@ 端口号:6666",[[AppDataSource shareAppDataSource] deviceIPAdress]];
+    infoLabel.text = infoString;
+    [self.view addSubview:infoLabel];
+    
+    
+    self.startServer = [[StartView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    self.startServer.center = CGPointMake(self.view.center.x, self.view.center.y - 30);
+    [self.startServer setTitle:@"Start"];
+    __weak typeof (ServerViewController *)weakSelf = self;
+    [self.startServer addAction:^{
+        [weakSelf openServer];
+    }];
+    [self.view addSubview:self.startServer];
+    
     
 }
 
@@ -66,28 +82,36 @@
 
 #pragma mark - 事件监听
 
-- (void)buttonPressed
+- (void)openServer
 {
     
-        //1.创建scoket对象
-        GCDAsyncSocket *serviceScoket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(0, 0)];
-        
-        //2.绑定端口(6666)
-        NSError *error = nil;
-        [serviceScoket acceptOnPort:6666 error:&error];
-        
-        //3.开启服务(实质第二步绑定端口的同时默认开启服务)
-        if (error == nil)
-        {
-            NSLog(@"开启成功");
-        }
-        else
-        {
-            NSLog(@"开启失败");
-        }
-        self.socket = serviceScoket;
+    if (self.socket != nil) {
+        [self.startServer stop];
+        [self.startServer setTitle:@"Start"];
+        self.socket = nil;
+        return;
+    }
     
+    //1.创建scoket对象
+    GCDAsyncSocket *serviceScoket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(0, 0)];
     
+    //2.绑定端口(6666)
+    NSError *error = nil;
+    [serviceScoket acceptOnPort:6666 error:&error];
+    
+    //3.开启服务(实质第二步绑定端口的同时默认开启服务)
+    if (error == nil) {
+        [self.startServer start];
+        [self.startServer setTitle:@"Success"];
+        
+        NSLog(@"开启成功");
+    } else {
+        
+        NSLog(@"开启失败");
+    }
+    self.socket = serviceScoket;
+    
+
     
 }
 
@@ -124,19 +148,17 @@
     
     //1.接受到用户数据
     
-    
-    static BOOL isFile = NO;
     static NSUInteger fileLength = 0;
     
-    NSData *fffData = [data subdataWithRange:NSMakeRange(0, 7)];
+    NSData *fffData = [data subdataWithRange:NSMakeRange(0, 3)];
     NSString *fff = [[NSString alloc]initWithData:fffData encoding:NSUTF8StringEncoding];
     
     
     
     
-    if ([fff isEqualToString:@"FFF=1.0"]) {
+    if ([fff isEqualToString:@"FFF"]) {
         
-        NSData *typeData = [data subdataWithRange:NSMakeRange(7, 4)];
+        NSData *typeData = [data subdataWithRange:NSMakeRange(3, 4)];
         int type;
         [typeData getBytes: &type length: sizeof(type)];
         
@@ -145,16 +167,22 @@
         switch (type) {
             case 1:{
                 
-                NSData *lenData = [data subdataWithRange:NSMakeRange(11, 8)];
+                NSData *lenData = [data subdataWithRange:NSMakeRange(7, 8)];
                 NSUInteger len;
                 [lenData getBytes: &len length: sizeof(len)];
                 
                 fileLength = len;
                 NSLog(@"%@" ,lenData);
                 NSLog(@"%ld" ,len);
-                if (fileLength) {
-                    isFile = YES;
-                }
+                
+                NSData *jsonData = [data subdataWithRange:NSMakeRange(15, len)];
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+                UserInfo *user = [[UserInfo alloc]init];
+//                user.mode
+                
+                
+                NSLog(@"%@",dic);
+                
             }
                 break;
                 
@@ -164,26 +192,29 @@
         
     }
     
-    if (self.receiveData.length < fileLength) {
-        
-        [self.receiveData appendData:data];
-        NSLog(@"----------------%ld" ,self.receiveData.length);
-        if (fileLength == self.receiveData.length - 19) {
-            
-            NSString * destPath= NSHomeDirectory();
-            NSString * strDir=[destPath stringByAppendingPathComponent:@"Documents"];
-            NSString * de=[strDir stringByAppendingPathComponent:@"nzq00.mp4"];
-            NSLog(@"'%@",de);
-            
-            NSData *subData = [self.receiveData subdataWithRange:NSMakeRange(19, fileLength)];
-            BOOL isSuccess = [subData writeToFile:de atomically:YES];
-            NSLog(@"%d",isSuccess)              ;
-            
-            
-            NSLog(@"%lu",(unsigned long)self.receiveData.length);
-        }
-        
-    }
+    
+    
+    
+//    if (self.receiveData.length < fileLength) {
+//        
+//        [self.receiveData appendData:data];
+//        NSLog(@"----------------%ld" ,self.receiveData.length);
+//        if (fileLength == self.receiveData.length - 19) {
+//            
+//            NSString * destPath= NSHomeDirectory();
+//            NSString * strDir=[destPath stringByAppendingPathComponent:@"Documents"];
+//            NSString * de=[strDir stringByAppendingPathComponent:@"nzq00.mp4"];
+//            NSLog(@"'%@",de);
+//            
+//            NSData *subData = [self.receiveData subdataWithRange:NSMakeRange(19, fileLength)];
+//            BOOL isSuccess = [subData writeToFile:de atomically:YES];
+//            NSLog(@"%d",isSuccess)              ;
+//            
+//            self.receiveData = nil;
+//            NSLog(@"%lu",(unsigned long)self.receiveData.length);
+//        }
+//        
+//    }
     
     
     
@@ -198,6 +229,7 @@
     //CocoaAsyncSocket每次读取完成后必须调用一次监听数据方法
     [sock readDataWithTimeout:-1 tag:0];
 }
+
 
 
 

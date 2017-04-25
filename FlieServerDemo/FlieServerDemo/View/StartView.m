@@ -92,7 +92,9 @@
     rotateAnimation.repeatCount = INFINITY;
     rotateAnimation.byValue = @(M_PI*2);
     rotateAnimation.duration = 1.5;
+    rotateAnimation.removedOnCompletion = NO;
     [imageLoad.layer addAnimation:rotateAnimation forKey:@"rotateAnimation"];
+
 }
 
 - (void)stop

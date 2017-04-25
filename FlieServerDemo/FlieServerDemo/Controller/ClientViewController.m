@@ -11,6 +11,8 @@
 #import "AppDataSource.h"
 #import "NSObject+YYModel.h"
 #import "UserInfo.h"
+#import "DataBaseManager.h"
+#import "ProtocolDataManager.h"
 
 @interface ClientViewController ()<GCDAsyncSocketDelegate>
 
@@ -29,7 +31,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"客户端";
     
-    NSArray *titileArray = @[@"请求连接" ,@"发送登录信息",@"发送大文件",@"并发发送大文件"];
+    NSArray *titileArray = @[@"请求连接" ,@"注册",@"发送登录信息",@"发送大文件",@"并发发送大文件"];
     self.view.backgroundColor = [UIColor whiteColor];
     for (int i = 0; i < titileArray.count; i ++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -52,8 +54,7 @@
             uint16_t prot = 6666;
             // 创建服务器
             self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
-            
-            
+
             NSError *error;
             // 连接服务器
             [self.socketClient connectToHost:[[AppDataSource shareAppDataSource] deviceIPAdress] onPort:prot error:&error];
@@ -73,46 +74,8 @@
         case 1:{
             
             
-            UserInfo *user = [[UserInfo alloc]init];
-            user.userName = @"我啊";
-            user.userPwd = @"222222";
-            NSLog(@"%@",user.yy_modelToJSONString );
-            NSData  *data = user.yy_modelToJSONData;
-            
-            
-            
-//            NSDictionary *dic = @{@"fileName":@"sbs",@"fileID":@"55555" };
-//            NSDictionary *dic2 = @{@"fileName":@"aaaaa",@"fileID":@"22222" };
-//            NSDictionary *dic3 = @{@"fileName":@"vvvvvv",@"fileID":@"000000" };
-//            
-//            
-//            NSArray *arr = @[dic,dic2,dic3];
-//            NSLog(@"%@",arr);
-
-            
-            NSString *str = @"FFF";
-            NSData *strdata = [str dataUsingEncoding:NSUTF8StringEncoding];
-
-            int type = 1;
-            
-            
-            NSUInteger length = data.length;
-            NSLog(@"%ld",length);
-            
-            NSData *data11 = [NSData dataWithBytes:&type length:sizeof(type)];
-            NSData *data22 = [NSData dataWithBytes:&length length:sizeof(length)];
-            NSLog(@"%ld",data11.length);
-            NSLog(@"%ld",data22.length);
-            
-            
-            NSMutableData *muData = [NSMutableData data];
-            
-            [muData appendData:strdata];
-            [muData appendBytes:&type length:sizeof(type)];
-            [muData appendBytes:&length length:sizeof(length)];
-            [muData appendData:data];
-            
-            [self.socketClient writeData:muData withTimeout:-1 tag:0];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"aaaa" andPassword:@"11111"];
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
         
         }
             break;

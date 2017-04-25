@@ -12,6 +12,8 @@
 #import "AppDataSource.h"
 #import "NSObject+YYModel.h"
 #import "UserInfo.h"
+#import "ProtocolDataManager.h"
+#import "DataBaseManager.h"
 
 
 @interface ServerViewController ()<GCDAsyncSocketDelegate>
@@ -141,91 +143,77 @@
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     
-    NSLog(@"%@----",sock);
-    
-    NSLog(@"二进制流数据: -- %@" , data);
+    NSLog(@"当前sock  ----- %@",sock);
+    NSLog(@"二进制流数据: -- %ld" , data.length);
     
     
     //1.接受到用户数据
     
-    static NSUInteger fileLength = 0;
+    HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
     
-    NSData *fffData = [data subdataWithRange:NSMakeRange(0, 3)];
-    NSString *fff = [[NSString alloc]initWithData:fffData encoding:NSUTF8StringEncoding];
-    
-    
-    
-    
-    if ([fff isEqualToString:@"FFF"]) {
-        
-        NSData *typeData = [data subdataWithRange:NSMakeRange(3, 4)];
-        int type;
-        [typeData getBytes: &type length: sizeof(type)];
-        
-        
-        NSLog(@"%lu",(unsigned long)type);
-        switch (type) {
-            case 1:{
+    switch (header.cmd) {
+        case 1:{
+           UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+            NSLog(@"%@",user.userName);
+          BOOL isSuccess = [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd];
+            
+            if (isSuccess) {
                 
-                NSData *lenData = [data subdataWithRange:NSMakeRange(7, 8)];
-                NSUInteger len;
-                [lenData getBytes: &len length: sizeof(len)];
-                
-                fileLength = len;
-                NSLog(@"%@" ,lenData);
-                NSLog(@"%ld" ,len);
-                
-                NSData *jsonData = [data subdataWithRange:NSMakeRange(15, len)];
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-                UserInfo *user = [[UserInfo alloc]init];
-//                user.mode
-                
-                
-                NSLog(@"%@",dic);
-                
+                NSLog(@"注册成功");
+            }else{
+                NSLog(@"注册失败");
+            
             }
-                break;
-                
-            default:
-                break;
+            
         }
-        
+            break;
+        case 2:{
+            
+            
+        }
+            break;
+        case 3:{
+            
+            
+        }
+            break;
+        case 4:{
+            
+            
+        }
+            break;
+        case 5:{
+            
+            
+        }
+            break;
+        case 6:{
+            
+            
+        }
+            break;
+        case 7:{
+            
+            
+        }
+            break;
+        case 8:{
+            
+            
+        }
+            break;
+        case 9:{
+            
+            
+        }
+            break;
+
+        default:
+            break;
     }
     
     
-    
-    
-//    if (self.receiveData.length < fileLength) {
-//        
-//        [self.receiveData appendData:data];
-//        NSLog(@"----------------%ld" ,self.receiveData.length);
-//        if (fileLength == self.receiveData.length - 19) {
-//            
-//            NSString * destPath= NSHomeDirectory();
-//            NSString * strDir=[destPath stringByAppendingPathComponent:@"Documents"];
-//            NSString * de=[strDir stringByAppendingPathComponent:@"nzq00.mp4"];
-//            NSLog(@"'%@",de);
-//            
-//            NSData *subData = [self.receiveData subdataWithRange:NSMakeRange(19, fileLength)];
-//            BOOL isSuccess = [subData writeToFile:de atomically:YES];
-//            NSLog(@"%d",isSuccess)              ;
-//            
-//            self.receiveData = nil;
-//            NSLog(@"%lu",(unsigned long)self.receiveData.length);
-//        }
-//        
-//    }
-    
-    
-    
-    
-    
-    //处理请求 返回数据
-    //    [sock writeData:[str dataUsingEncoding:NSUTF8StringEncoding] withTimeout:60 tag:0];
-    
-    //    if (str.length == 0) {
-    //        [self.clientSockets removeObject:sock];
-    //    }
+
     //CocoaAsyncSocket每次读取完成后必须调用一次监听数据方法
     [sock readDataWithTimeout:-1 tag:0];
 }

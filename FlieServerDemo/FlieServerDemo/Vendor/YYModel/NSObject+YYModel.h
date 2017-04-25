@@ -25,21 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  Sample Code:
     
-     ********************** json convertor *********************
 
-     @property (nonatomic, strong) NSString *name;
-     @property (nonatomic, assign) NSDate *birthday;
-     @end
-     @implementation YYAuthor
-     @end
- 
-
-     @property (nonatomic, copy) NSString *name;
-     @property (nonatomic, assign) NSUInteger pages;
-     @property (nonatomic, strong) YYAuthor *author;
-     @end
-     @implementation YYBook
-     @end
     
      int main() {
          // create model from json
@@ -48,9 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
          // convert model to json
          NSString *json = [book yy_modelToJSONString];
          // {"author":{"name":"J.K.Rowling","birthday":"1965-07-31T00:00:00+0000"},"name":"Harry Potter","pages":256}
-     }
- 
-     ********************** Coding/Copying/hash/equal *********************
 
      @property (nonatomic, copy) NSString *name;
      @property (nonatomic, assign) CGSize size;
@@ -68,10 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NSObject (YYModel)
 
 /**
- Creates and returns a new instance of the receiver from a json.
- This method is thread-safe.
- 
- @param json  A json object in `NSDictionary`, `NSString` or `NSData`.
+`NSDictionary`, `NSString` or `NSData`.
  
  @return A new instance created from the json, or nil if an error occurs.
  */
@@ -279,12 +259,7 @@ NS_ASSUME_NONNULL_BEGIN
                 "desc" : "A book written by J.K.Rowling."
             },
             "ID" : 100010
-        }
- 
-    model:
-        @interface YYBook : NSObject
-        @property NSString *name;
-        @property NSInteger page;
+    
         @property NSString *desc;
         @property NSString *bookID;
         @end
@@ -303,31 +278,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSDictionary<NSString *, id> *)modelCustomPropertyMapper;
 
 /**
- The generic class mapper for container properties.
- 
- @discussion If the property is a container object, such as NSArray/NSSet/NSDictionary,
- implements this method and returns a property->class mapper, tells which kind of 
- object will be add to the array/set/dictionary.
- 
-  Example:
-        @class YYShadow, YYBorder, YYAttachment;
- 
-        @interface YYAttributes
-        @property NSString *name;
-        @property NSArray *shadows;
-        @property NSSet *borders;
-        @property NSDictionary *attachments;
-        @end
- 
-        @implementation YYAttributes
-        + (NSDictionary *)modelContainerPropertyGenericClass {
-            return @{@"shadows" : [YYShadow class],
-                     @"borders" : YYBorder.class,
-                     @"attachments" : @"YYAttachment" };
-        }
-        @end
- 
- @return A class mapper.
+
+
  */
 + (nullable NSDictionary<NSString *, id> *)modelContainerPropertyGenericClass;
 
@@ -340,9 +292,7 @@ NS_ASSUME_NONNULL_BEGIN
  (both singular and containers via `+modelContainerPropertyGenericClass`).
  
  Example:
-        @class YYCircle, YYRectangle, YYLine;
- 
-        @implementation YYShape
+        
 
         + (Class)modelCustomClassForDictionary:(NSDictionary*)dictionary {
             if (dictionary[@"radius"] != nil) {

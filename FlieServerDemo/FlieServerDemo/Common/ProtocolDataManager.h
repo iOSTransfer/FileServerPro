@@ -9,12 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "UserInfo.h"
 #import "HeaderInfo.h"
+#import "EnumList.h"
 
-typedef NS_ENUM(Byte, ResponsType) {
-    ResponsTypeRegisterSuccess = 10, //注册成功
-    ResponsTypeRegisterNull = 11,    //用户名密码不能为空
-    ResponsTypeRegisterExist = 12,   //注册用户名存在
-};
 
 
 @interface ProtocolDataManager : NSObject
@@ -42,6 +38,8 @@ typedef NS_ENUM(Byte, ResponsType) {
 //注册响应信息组装
 - (NSData *)resRegisterDataWithRet:(ResponsType)type;
 
+//登录响应信息组装
+- (NSData *)resLoginDataWithRet:(ResponsType)type andUserToken:(u_short)token;
 
 
 #pragma mark  响应部分解析

@@ -26,6 +26,16 @@ static AppDataSource *_dataStone;
     return _dataStone;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    
+    if (self) {
+        self.currentUsers = [NSMutableArray array];
+    }
+    return self;
+}
+
 
 
 - (NSString *)deviceIPAdress {

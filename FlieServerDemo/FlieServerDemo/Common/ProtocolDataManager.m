@@ -110,21 +110,53 @@ static ProtocolDataManager *_dataManager;
 
 #pragma mark  响应数据拼装
 
-////给真实数据添加响应头信息
-//- (NSData *)resHeaderDataWithCmd:(Byte)cmd andResult:(Byte)result andData:(NSData *)data
-//{
-//
-//
-//}
-//
-////注册响应信息组装
-//- (NSData *)resRegisterDataWithRet:(ResponsType)type
-//{
-//
-//
-//}
+//给真实数据添加响应头信息
+- (NSData *)resHeaderDataWithCmd:(Byte)cmd andResult:(Byte)result andData:(NSData *)data
+{
+    Byte ver = 1;
+    Byte pad = 0;
+    uint r_length = (uint)data.length;
+    
+    
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&cmd length:sizeof(Byte)];
+    [muData appendBytes:&result length:sizeof(Byte)];
+    [muData appendBytes:&ver length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&r_length length:sizeof(uint)];
+    [muData appendData:data];
+
+    return [muData copy];
+
+}
+
+//注册响应信息组装
+- (NSData *)resRegisterDataWithRet:(ResponsType)type
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    return [muData copy];
+}
+
+//登录响应信息组装
+- (NSData *)resLoginDataWithRet:(ResponsType)type andUserToken:(u_short)token
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&token length:sizeof(u_short)];
+    
+    return [muData copy];
 
 
+
+}
 
 
 
@@ -165,7 +197,7 @@ static ProtocolDataManager *_dataManager;
     Byte pwdLength;
     [[data subdataWithRange:NSMakeRange(4 + userNameLength, 1)] getBytes:&pwdLength length:sizeof(Byte)];
     
-    user.userPwd = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange( userNameLength + 5, pwdLength)]  encoding:NSUTF8StringEncoding];
+    user.userPwd = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange( userNameLength + 4 + 4, pwdLength)]  encoding:NSUTF8StringEncoding];
     
 
     return user;

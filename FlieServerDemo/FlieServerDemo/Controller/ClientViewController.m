@@ -74,15 +74,19 @@
         case 1:{
             
             
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"aaaa" andPassword:@"11111"];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"聂自强" andPassword:@"222222"];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
         
         }
             break;
         case 2:{
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
-            NSError *error;
-            NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
+            
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:@"聂自强" andPassword:@"222222"];
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
+
+//            NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
+//            NSError *error;
+//            NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
             
         }
             break;
@@ -131,17 +135,13 @@
 #pragma mark 读取数据
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    //代理是在主/子线程调用
-    NSLog(@"%@",[NSThread currentThread]);
+    NSLog(@"当前sock  ----- %@",sock);
+    NSLog(@"二进制流数据: -- %ld" , data.length);
     
-    NSString *receiverStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    Byte ret;
+    [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&ret length:sizeof(Byte)];
     
-    if (tag == 200) {
-        //登录指令
-    }else if(tag == 201){
-        //聊天数据
-    }
-    NSLog(@"%s %@",__func__,receiverStr);
+    NSLog(@"%d",ret);
 }
 
 @end

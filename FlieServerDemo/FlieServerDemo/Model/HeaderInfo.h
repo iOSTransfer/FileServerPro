@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EnumList.h"
 
 @interface HeaderInfo : NSObject
 
-@property(nonatomic , assign)Byte cmd;
+@property(nonatomic , assign)CmdType cmd;
 @property(nonatomic , assign)Byte ver;
 @property(nonatomic , assign)uint c_length;
 

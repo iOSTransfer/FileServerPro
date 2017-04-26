@@ -96,6 +96,7 @@
 		689A8A2E1EA87ABB00BD8FD7 /* FlieServerDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlieServerDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlieServerDemoUITests.m; sourceTree = "<group>"; };
 		689A8A341EA87ABB00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		68A0E0CC1EB02400000961EA /* EnumList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnumList.h; sourceTree = "<group>"; };
 		68A83D1A1EAD8CDD0061AC6D /* NetWorkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetWorkManager.h; sourceTree = "<group>"; };
 		68A83D1B1EAD8CDD0061AC6D /* NetWorkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetWorkManager.m; sourceTree = "<group>"; };
 		68A83D261EADBE590061AC6D /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
@@ -222,6 +223,7 @@
 				68A83D471EADEF8C0061AC6D /* DataBaseManager.m */,
 				687B63D31EAF357B007914A4 /* ProtocolDataManager.h */,
 				687B63D41EAF357B007914A4 /* ProtocolDataManager.m */,
+				68A0E0CC1EB02400000961EA /* EnumList.h */,
 			);
 			path = Common;
 			sourceTree = "<group>";

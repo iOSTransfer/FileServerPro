@@ -14,7 +14,7 @@
 #import "UserInfo.h"
 #import "ProtocolDataManager.h"
 #import "DataBaseManager.h"
-
+#import "EnumList.h"
 
 @interface ServerViewController ()<GCDAsyncSocketDelegate>
 
@@ -58,7 +58,7 @@
     }];
     [self.view addSubview:self.startServer];
     
-    
+
 }
 
 
@@ -130,11 +130,6 @@
     [self.clientSockets addObject:newSocket];
     NSLog(@"%@",self.clientSockets);
     
-    //连接成功服务端立即向客户端提供服务
-    NSMutableString *serviceContent = [NSMutableString string];
-    [serviceContent appendString:@"success"];
-    [newSocket writeData:[serviceContent dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
-    
     //2.监听客户端有没有数据上传
     [newSocket readDataWithTimeout:-1 tag:0];
 }
@@ -147,74 +142,96 @@
     NSLog(@"二进制流数据: -- %ld" , data.length);
     
     
-    //1.接受到用户数据
-    
-    HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
-    
-    switch (header.cmd) {
-        case 1:{
-           UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-            NSLog(@"%@",user.userName);
-          BOOL isSuccess = [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd];
-            
-            if (isSuccess) {
-                
-                NSLog(@"注册成功");
-            }else{
-                NSLog(@"注册失败");
-            
-            }
-            
-        }
-            break;
-        case 2:{
-            
-            
-        }
-            break;
-        case 3:{
-            
-            
-        }
-            break;
-        case 4:{
-            
-            
-        }
-            break;
-        case 5:{
-            
-            
-        }
-            break;
-        case 6:{
-            
-            
-        }
-            break;
-        case 7:{
-            
-            
-        }
-            break;
-        case 8:{
-            
-            
-        }
-            break;
-        case 9:{
-            
-            
-        }
-            break;
-
-        default:
-            break;
+    //接受到用户数据，开始解析
+    HeaderInfo *header;
+    @try {
+        header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
+    } @catch (NSException *exception) {
+        
     }
     
     
+    switch (header.cmd) {
+        case CmdTypeReigter:{
+            @try {
+                NSLog(@"%d",header.c_length);
+            
+                UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                NSLog(@"%@",user.userPwd);
+                NSLog(@"%@",user.userName);
+                NSData *resData = [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd];
+                
+                //返回响应数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReigter andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
+            } @catch (NSException *exception) {
+                //返回响应异常数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReigter andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
 
-    //CocoaAsyncSocket每次读取完成后必须调用一次监听数据方法
+            
+        }
+            break;
+        case CmdTypeLogin:{
+            
+            @try {
+                UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                
+                NSData *resData = [[DataBaseManager sharedDataBase] userLoginWithName:user.userName andPwd:user.userPwd];
+                
+                //返回响应数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+            } @catch (NSException *exception) {
+                //返回响应异常数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
+            
+            
+        }
+            break;
+        case CmdTypeReqUp:{
+            
+            
+        }
+            break;
+        case CmdTypeUp:{
+            
+            
+        }
+            break;
+        case CmdTypeReqDown:{
+            
+            
+        }
+            break;
+        case CmdTypeDown:{
+            
+            
+        }
+            break;
+        case CmdTypeAddFolder:{
+            
+            
+        }
+            break;
+        case CmdTypeRemoveFolder:{
+            
+            
+        }
+            break;
+        case CmdTypeGetList:{
+            
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+   
+    
+    
+    //不需要断开，要回复
     [sock readDataWithTimeout:-1 tag:0];
 }
 

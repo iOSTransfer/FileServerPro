@@ -7,12 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EnumList.h"
+
 
 @interface DataBaseManager : NSObject
 
 + (instancetype)sharedDataBase;
 
 //添加用户注册信息
-- (BOOL)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password;
+- (NSData * )addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password;
+
+//客户端发送登录验证
+- (NSData *)userLoginWithName:(NSString*)userName andPwd:(NSString*)password;
+
 
 @end

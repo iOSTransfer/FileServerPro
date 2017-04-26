@@ -27,6 +27,7 @@
 		689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 689A8A1B1EA87ABA00BD8FD7 /* LaunchScreen.storyboard */; };
 		689A8A281EA87ABB00BD8FD7 /* FlieServerDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A271EA87ABB00BD8FD7 /* FlieServerDemoTests.m */; };
 		689A8A331EA87ABB00BD8FD7 /* FlieServerDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */; };
+		68A0E0CF1EB07A8B000961EA /* ReqUpFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A0E0CE1EB07A8B000961EA /* ReqUpFileInfo.m */; };
 		68A83D1C1EAD8CDD0061AC6D /* NetWorkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D1B1EAD8CDD0061AC6D /* NetWorkManager.m */; };
 		68A83D281EADBE590061AC6D /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D271EADBE590061AC6D /* UserInfo.m */; };
 		68A83D3D1EADEF140061AC6D /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D331EADEF140061AC6D /* FMDatabase.m */; };
@@ -97,6 +98,8 @@
 		689A8A321EA87ABB00BD8FD7 /* FlieServerDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlieServerDemoUITests.m; sourceTree = "<group>"; };
 		689A8A341EA87ABB00BD8FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		68A0E0CC1EB02400000961EA /* EnumList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EnumList.h; sourceTree = "<group>"; };
+		68A0E0CD1EB07A8B000961EA /* ReqUpFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReqUpFileInfo.h; sourceTree = "<group>"; };
+		68A0E0CE1EB07A8B000961EA /* ReqUpFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReqUpFileInfo.m; sourceTree = "<group>"; };
 		68A83D1A1EAD8CDD0061AC6D /* NetWorkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetWorkManager.h; sourceTree = "<group>"; };
 		68A83D1B1EAD8CDD0061AC6D /* NetWorkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetWorkManager.m; sourceTree = "<group>"; };
 		68A83D261EADBE590061AC6D /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
@@ -197,6 +200,8 @@
 				68A83D271EADBE590061AC6D /* UserInfo.m */,
 				687B63DE1EAF49DF007914A4 /* HeaderInfo.h */,
 				687B63DF1EAF49DF007914A4 /* HeaderInfo.m */,
+				68A0E0CD1EB07A8B000961EA /* ReqUpFileInfo.h */,
+				68A0E0CE1EB07A8B000961EA /* ReqUpFileInfo.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -542,6 +547,7 @@
 				681B46201EAD873B00BEA215 /* AppDataSource.m in Sources */,
 				68A83D1C1EAD8CDD0061AC6D /* NetWorkManager.m in Sources */,
 				68A83D411EADEF140061AC6D /* FMResultSet.m in Sources */,
+				68A0E0CF1EB07A8B000961EA /* ReqUpFileInfo.m in Sources */,
 				68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */,
 				681B46251EAD876200BEA215 /* StartView.m in Sources */,
 			);

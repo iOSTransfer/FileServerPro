@@ -9,7 +9,8 @@
 #import "AppDataSource.h"
 #import <ifaddrs.h>
 #import <arpa/inet.h>
-
+#include <sys/param.h>
+#include <sys/mount.h>
 
 static AppDataSource *_dataStone;
 
@@ -65,5 +66,18 @@ static AppDataSource *_dataStone;
     freeifaddrs(interfaces);
     return address;
 }
+
+//手机剩余空间
+- (long long) freeDiskSpaceInBytes
+{
+    struct statfs buf;
+    long long freespace = -1;
+    if(statfs("/var", &buf) >= 0){
+        freespace = (long long)(buf.f_bsize * buf.f_bfree);
+    }
+    return freespace;
+    
+}
+
 
 @end

@@ -107,6 +107,35 @@ static ProtocolDataManager *_dataManager;
 
 }
 
+//请求上传文件信息组装
+- (NSData *)upFileDataWithFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
+{
+    u_short token = 3;
+    
+    NSData *fileNameData = [fileName dataUsingEncoding:NSUTF8StringEncoding];
+    Byte fileNameLength = (Byte)fileNameData.length;
+    Byte pad = 0;
+    
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&token length:sizeof(u_short)];
+    [muData appendBytes:&fileNameLength length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendData:fileNameData];
+    
+    [muData appendBytes:&directoryID length:sizeof(u_short)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    [muData appendBytes:&size length:sizeof(uint)];
+    
+    return [self protocolDataWithCmd:2 andData:muData];
+
+
+
+}
+
+
+
 
 #pragma mark  响应数据拼装
 
@@ -158,11 +187,22 @@ static ProtocolDataManager *_dataManager;
 
 }
 
+//请求上传文件响应信息组装
+- (NSData *)resReqUpFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&fileID length:sizeof(u_short)];
+    
+    return [muData copy];
 
+}
 
 #pragma mark  响应部分解析
 
-//解析用户名&密码信息
+//解析Header信息
 - (HeaderInfo *)getHeaderInfoWithData:(NSData *)data
 {
     Byte cmdByte;
@@ -178,6 +218,7 @@ static ProtocolDataManager *_dataManager;
     header.cmd = cmdByte;
     header.ver = ver;
     header.c_length = c_length;
+    
     
     return header;
 }
@@ -203,7 +244,32 @@ static ProtocolDataManager *_dataManager;
     return user;
 }
 
+//解析请求上传文件信息
+- (ReqUpFileInfo *)getReqFileInfoWithData:(NSData *)data
+{
+    ReqUpFileInfo *reqInfo = [ReqUpFileInfo new];
+    u_short userToken;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    reqInfo.userToken = userToken;
+    
+    Byte fileNameLength;
+    [[data subdataWithRange:NSMakeRange(2, 1)] getBytes:&fileNameLength length:sizeof(Byte)];
+    reqInfo.fileNameLength = fileNameLength;
+    
+    reqInfo.fileName  =[[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(4, fileNameLength)]  encoding:NSUTF8StringEncoding];
+    
+    u_short directoryID;
+    [[data subdataWithRange:NSMakeRange(fileNameLength + 4, 2)] getBytes:&directoryID length:sizeof(u_short)];
+    reqInfo.directoryID = directoryID;
 
+    
+    uint size;
+    [[data subdataWithRange:NSMakeRange(fileNameLength + 4 + 4 , 4)] getBytes:&size length:sizeof(uint)];
+    reqInfo.size = size;
+    
+    
+    return reqInfo;
+}
 
 
 

@@ -10,8 +10,8 @@
 
 @interface UserInfo : NSObject
 
-@property (nonatomic , strong)NSString *userName;//用户名
+@property (nonatomic , copy)NSString *userName;//用户名
 
-@property (nonatomic , strong)NSString *userPwd;//密码
+@property (nonatomic , copy)NSString *userPwd;//密码
 
 @end

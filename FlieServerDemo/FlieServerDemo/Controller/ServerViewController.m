@@ -114,7 +114,6 @@
     self.socket = serviceScoket;
     
 
-    
 }
 
 
@@ -149,7 +148,6 @@
     } @catch (NSException *exception) {
         
     }
-    
     
     switch (header.cmd) {
         case CmdTypeReigter:{
@@ -191,6 +189,15 @@
             break;
         case CmdTypeReqUp:{
             
+            @try {
+                ReqUpFileInfo *reqInfo = [[ProtocolDataManager sharedProtocolDataManager] getReqFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                
+//                NSData *resData = [[DataBaseManager sharedDataBase]];
+                
+                
+            } @catch (NSException *exception) {
+                
+            }
             
         }
             break;

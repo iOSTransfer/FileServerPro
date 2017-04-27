@@ -8,6 +8,7 @@
 
 #import "ProtocolDataManager.h"
 
+
 static ProtocolDataManager *_dataManager;
 
 
@@ -29,7 +30,7 @@ static ProtocolDataManager *_dataManager;
 #pragma mark  请求部分拼装
 
 //给真实数据添加协议头信息
-- (NSData *)protocolDataWithCmd:(Byte)cmd andData:(NSData *)data
+- (NSData *)protocolDataWithCmd:(CmdType)cmd andData:(NSData *)data
 {
     Byte cmdByte = cmd;
     Byte ver = 1;
@@ -74,7 +75,7 @@ static ProtocolDataManager *_dataManager;
     
     [muData appendData:pwdData];
     
-     return [self protocolDataWithCmd:1 andData:muData];
+     return [self protocolDataWithCmd:CmdTypeReigter andData:muData];
     
 }
 
@@ -103,14 +104,14 @@ static ProtocolDataManager *_dataManager;
     
     [muData appendData:pwdData];
     
-    return [self protocolDataWithCmd:2 andData:muData];
+    return [self protocolDataWithCmd:CmdTypeLogin andData:muData];
 
 }
 
 //请求上传文件信息组装
-- (NSData *)upFileDataWithFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
+- (NSData *)reqUpFileDataWithFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
 {
-    u_short token = 3;
+    u_short token = 1;
     
     NSData *fileNameData = [fileName dataUsingEncoding:NSUTF8StringEncoding];
     Byte fileNameLength = (Byte)fileNameData.length;
@@ -128,13 +129,34 @@ static ProtocolDataManager *_dataManager;
     
     [muData appendBytes:&size length:sizeof(uint)];
     
-    return [self protocolDataWithCmd:2 andData:muData];
+    return [self protocolDataWithCmd:CmdTypeReqUp andData:muData];
 
 
 
 }
 
+//上传文件包数据组装
+- (NSData *)upFileDataWithUserToken:(u_short)userToken andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData
+{
+    Byte pad = 0;
+    
+    NSMutableData *muData = [NSMutableData data];
+    
+    [muData appendBytes:&userToken length:sizeof(u_short)];
+    [muData appendBytes:&fileID length:sizeof(u_short)];
+    
+    [muData appendBytes:&chunks length:sizeof(u_short)];
+    [muData appendBytes:&chunk length:sizeof(u_short)];
+    
+    
+    [muData appendBytes:&size length:sizeof(u_short)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    [muData appendData:subData];
 
+    return [self protocolDataWithCmd:CmdTypeUp andData:muData];
+}
 
 
 #pragma mark  响应数据拼装
@@ -198,6 +220,19 @@ static ProtocolDataManager *_dataManager;
     
     return [muData copy];
 
+}
+
+//文件上传信息组装
+- (NSData *)resUpFileDataWithRet:(ResponsType)type
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    return [muData copy];
 }
 
 #pragma mark  响应部分解析
@@ -271,7 +306,35 @@ static ProtocolDataManager *_dataManager;
     return reqInfo;
 }
 
-
+//解析文件包信息
+- (FileChunkInfo *)getFileChunkInfoWithData:(NSData *)data
+{
+    FileChunkInfo *chunkInfo = [FileChunkInfo new];
+    
+    u_short userToken;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    chunkInfo.userToken = userToken;
+    
+    u_short fileID;
+    [[data subdataWithRange:NSMakeRange(2, 2)] getBytes:&fileID length:sizeof(u_short)];
+    chunkInfo.fileID = fileID;
+    
+    u_short chunks;
+    [[data subdataWithRange:NSMakeRange(4, 2)] getBytes:&chunks length:sizeof(u_short)];
+    chunkInfo.chunks = chunks;
+    
+    u_short chunk;
+    [[data subdataWithRange:NSMakeRange(6, 2)] getBytes:&chunk length:sizeof(u_short)];
+    chunkInfo.chunk = chunk;
+    
+    u_short size;
+    [[data subdataWithRange:NSMakeRange(8, 2)] getBytes:&size length:sizeof(u_short)];
+    chunkInfo.size = size;
+    
+    chunkInfo.subData = [data subdataWithRange:NSMakeRange(12, size)];
+    
+    return chunkInfo;
+}
 
 
 

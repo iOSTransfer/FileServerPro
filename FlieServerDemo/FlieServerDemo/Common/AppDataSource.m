@@ -32,7 +32,7 @@ static AppDataSource *_dataStone;
     self = [super init];
     
     if (self) {
-        self.currentUsers = [NSMutableArray array];
+        self.currentUsers = [NSMutableSet set];
     }
     return self;
 }

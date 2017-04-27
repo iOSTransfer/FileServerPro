@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ReqUpFileInfo.h"
+#import "FileChunkInfo.h"
 #import "EnumList.h"
 
 
@@ -16,16 +17,19 @@
 + (instancetype)sharedDataBase;
 
 #pragma mark 用户信息表
-//添加用户注册信息
-- (NSData * )addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password;
+//添加用户注册信息 & 返回响应二进制数据
+- (NSData *)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password;
 
-//客户端发送登录验证
+//客户端发送登录验证 & 返回响应二进制数据
 - (NSData *)userLoginWithName:(NSString*)userName andPwd:(NSString*)password;
 
 
 #pragma mark 文件信息表
-//添加文件信息
-- (NSData * )addFileInfoWithName:(ReqUpFileInfo *)upFileInfo;
+//添加文件信息 & 返回响应二进制数据
+- (NSData *)addFileInfoWithName:(ReqUpFileInfo *)upFileInfo;
+
+//分发文件数据包 & 返回响应二进制数据
+- (NSData *)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo;
 
 
 @end

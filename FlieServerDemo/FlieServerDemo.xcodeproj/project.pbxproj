@@ -14,6 +14,7 @@
 		68032A3B1EAA027D0019CD22 /* tabar1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68032A391EAA027D0019CD22 /* tabar1@3x.png */; };
 		68032A3C1EAA027D0019CD22 /* tabar2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68032A3A1EAA027D0019CD22 /* tabar2@3x.png */; };
 		68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68032A3F1EAA0AA90019CD22 /* BaseNavViewController.m */; };
+		6814221B1EB188C80024EA7F /* FileChunkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6814221A1EB188C80024EA7F /* FileChunkInfo.m */; };
 		681B46201EAD873B00BEA215 /* AppDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 681B461F1EAD873B00BEA215 /* AppDataSource.m */; };
 		681B46221EAD874C00BEA215 /* start@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 681B46211EAD874C00BEA215 /* start@2x.png */; };
 		681B46251EAD876200BEA215 /* StartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 681B46241EAD876200BEA215 /* StartView.m */; };
@@ -37,6 +38,7 @@
 		68A83D411EADEF140061AC6D /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D3C1EADEF140061AC6D /* FMResultSet.m */; };
 		68A83D451EADEF330061AC6D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A83D441EADEF330061AC6D /* libsqlite3.tbd */; };
 		68A83D481EADEF8C0061AC6D /* DataBaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D471EADEF8C0061AC6D /* DataBaseManager.m */; };
+		68CB0B181EB1F11300D38C17 /* BBB.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 68CB0B171EB1F11300D38C17 /* BBB.jpg */; };
 		899C5B0D9FEDD5DFEBBCC98C /* Pods_FlieServerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +72,8 @@
 		68032A3A1EAA027D0019CD22 /* tabar2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabar2@3x.png"; sourceTree = "<group>"; };
 		68032A3E1EAA0AA90019CD22 /* BaseNavViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNavViewController.h; sourceTree = "<group>"; };
 		68032A3F1EAA0AA90019CD22 /* BaseNavViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseNavViewController.m; sourceTree = "<group>"; };
+		681422191EB188C80024EA7F /* FileChunkInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileChunkInfo.h; sourceTree = "<group>"; };
+		6814221A1EB188C80024EA7F /* FileChunkInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileChunkInfo.m; sourceTree = "<group>"; };
 		681B461E1EAD873B00BEA215 /* AppDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDataSource.h; sourceTree = "<group>"; };
 		681B461F1EAD873B00BEA215 /* AppDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDataSource.m; sourceTree = "<group>"; };
 		681B46211EAD874C00BEA215 /* start@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "start@2x.png"; sourceTree = "<group>"; };
@@ -119,6 +123,7 @@
 		68A83D441EADEF330061AC6D /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		68A83D461EADEF8C0061AC6D /* DataBaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBaseManager.h; sourceTree = "<group>"; };
 		68A83D471EADEF8C0061AC6D /* DataBaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBaseManager.m; sourceTree = "<group>"; };
+		68CB0B171EB1F11300D38C17 /* BBB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BBB.jpg; sourceTree = "<group>"; };
 		A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlieServerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -202,6 +207,8 @@
 				687B63DF1EAF49DF007914A4 /* HeaderInfo.m */,
 				68A0E0CD1EB07A8B000961EA /* ReqUpFileInfo.h */,
 				68A0E0CE1EB07A8B000961EA /* ReqUpFileInfo.m */,
+				681422191EB188C80024EA7F /* FileChunkInfo.h */,
+				6814221A1EB188C80024EA7F /* FileChunkInfo.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -209,6 +216,7 @@
 		68032A291EA9FF8E0019CD22 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				68CB0B171EB1F11300D38C17 /* BBB.jpg */,
 				681B46211EAD874C00BEA215 /* start@2x.png */,
 				68032A2B1EA9FFD70019CD22 /* NZQ.mp4 */,
 				68032A391EAA027D0019CD22 /* tabar1@3x.png */,
@@ -409,7 +417,7 @@
 				TargetAttributes = {
 					689A8A091EA87ABA00BD8FD7 = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = 2T4HE96GYT;
+						DevelopmentTeam = VJDNQ6JAS5;
 						ProvisioningStyle = Automatic;
 					};
 					689A8A221EA87ABB00BD8FD7 = {
@@ -454,6 +462,7 @@
 				68032A3C1EAA027D0019CD22 /* tabar2@3x.png in Resources */,
 				68032A2C1EA9FFD70019CD22 /* NZQ.mp4 in Resources */,
 				689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */,
+				68CB0B181EB1F11300D38C17 /* BBB.jpg in Resources */,
 				681B46221EAD874C00BEA215 /* start@2x.png in Resources */,
 				68032A3B1EAA027D0019CD22 /* tabar1@3x.png in Resources */,
 				689A8A1A1EA87ABA00BD8FD7 /* Assets.xcassets in Resources */,
@@ -532,6 +541,7 @@
 				689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */,
 				68032A2F1EAA00990019CD22 /* MainTabBarViewController.m in Sources */,
 				68A83D3D1EADEF140061AC6D /* FMDatabase.m in Sources */,
+				6814221B1EB188C80024EA7F /* FileChunkInfo.m in Sources */,
 				68A83D281EADBE590061AC6D /* UserInfo.m in Sources */,
 				68032A351EAA01010019CD22 /* ServerViewController.m in Sources */,
 				68A83D3E1EADEF140061AC6D /* FMDatabaseAdditions.m in Sources */,
@@ -693,10 +703,10 @@
 			baseConfigurationReference = A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				DEVELOPMENT_TEAM = VJDNQ6JAS5;
 				INFOPLIST_FILE = FlieServerDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemoTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -706,10 +716,10 @@
 			baseConfigurationReference = 421558AE5EE79F39E5A6163B /* Pods-FlieServerDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 2T4HE96GYT;
+				DEVELOPMENT_TEAM = VJDNQ6JAS5;
 				INFOPLIST_FILE = FlieServerDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lyric.FlieServerDemoTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

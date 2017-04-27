@@ -11,7 +11,7 @@
 @interface AppDataSource : NSObject
 
 
-@property (nonatomic , strong)NSMutableArray *currentUsers;  //当前在线用户
+@property (nonatomic , strong)NSMutableSet *currentUsers;  //当前在线用户
 
 
 + (instancetype)shareAppDataSource;

@@ -31,12 +31,12 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"客户端";
     
-    NSArray *titileArray = @[@"请求连接" ,@"注册",@"发送登录信息",@"发送大文件",@"并发发送大文件"];
+    NSArray *titileArray = @[@"请求连接" ,@"注册",@"登录",@"请求上传文件",@"上传大文件"];
     self.view.backgroundColor = [UIColor whiteColor];
     for (int i = 0; i < titileArray.count; i ++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.bounds = CGRectMake(0, 0, 300, 30);
-        button.center = CGPointMake(CGRectGetWidth(self.view.bounds)/2, 150 + i *60);
+        button.center = CGPointMake(CGRectGetWidth(self.view.bounds)/2, 60 + i *45);
         [button setTitle:titileArray[i] forState:UIControlStateNormal];
         button.tag =  10+i;
         [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
@@ -53,11 +53,11 @@
         case 0: {
             uint16_t prot = 6666;
             // 创建服务器
-            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_queue_create("clientQueue", DISPATCH_QUEUE_SERIAL)];
 
             NSError *error;
             // 连接服务器
-            [self.socketClient connectToHost:[[AppDataSource shareAppDataSource] deviceIPAdress] onPort:prot error:&error];
+            [self.socketClient connectToHost:@"10.134.19.1" onPort:prot error:&error];
         
             if (error) {
                 NSLog(@"连接失败 ： %@",error);
@@ -84,15 +84,88 @@
             NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:@"聂自强" andPassword:@"222222"];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
 
-//            NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
-//            NSError *error;
-//            NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
             
         }
             break;
         case 3:{
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
+            NSError *error;
+            NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"NZQ.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
             
+            sleep(1);
             
+            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"aaaa.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
+            [self.socketClient writeData:data2 withTimeout:-1 tag:0];
+            
+        }
+            break;
+        case 4:{
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"BBB" ofType:@"jpg"];
+//            NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
+            NSData *filedata = [NSData dataWithContentsOfFile:path];
+            
+            u_short chunks = filedata.length / 1024 + 1;
+//            u_short size = filedata.length % 1024;
+            NSLog(@"%lu",(unsigned long)filedata.length);
+            NSLog(@"%hu",chunks);
+//            NSLog(@"%hu",size);
+            
+            dispatch_async(dispatch_queue_create("sendFile", DISPATCH_QUEUE_SERIAL), ^{
+                for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+                    
+                    if (currentChunk == chunks) {
+                        u_short size = filedata.length % 1024;
+                        NSLog(@"%hu",size);
+                        NSLog(@"%hu",currentChunk);
+                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+                        
+                        
+                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+                        sleep(1);
+                        
+                    }else{
+                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                        
+                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+                        
+                        sleep(1);
+                        
+                    }
+                    
+                }
+            });
+            
+//            dispatch_async(dispatch_queue_create("sendFisdsdle", DISPATCH_QUEUE_SERIAL), ^{
+//                for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+//                    
+//                    if (currentChunk == chunks) {
+//                        u_short size = filedata.length % 1024;
+//                        NSLog(@"%hu",size);
+//                        NSLog(@"%hu",currentChunk);
+//                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+//                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+//                        
+//                        
+//                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+//                        sleep(1);
+//                        
+//                    }else{
+//                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
+//                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+//                        
+//                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+//                        
+//                        sleep(1);
+//                        
+//                    }
+//                    
+//                }
+//            });
+ 
         }
             break;
             
@@ -127,8 +200,8 @@
 #pragma mark 数据发送成功
 -(void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    NSLog(@"%s",__func__);
-    
+//    NSLog(@"%s",__func__);
+//    
     [sock readDataWithTimeout:-1 tag:tag];
 }
 

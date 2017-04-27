@@ -18,15 +18,16 @@ static DataBaseManager *_dbManager;
 
 @interface DataBaseManager(){
     FMDatabase  *_db;
+    NSFileHandle *_writeHandle;
 }
 
+@property (nonatomic ,strong)NSMutableArray *receiveDataChunks;
+@property (nonatomic , strong)NSMutableSet *waitingUpFileIDs;  //等待上传文件的文件ID
 
 @end
 
 
 @implementation DataBaseManager
-
-
 
 + (instancetype)sharedDataBase
 {
@@ -40,6 +41,22 @@ static DataBaseManager *_dbManager;
     });
     return _dbManager;
     
+}
+
+- (NSMutableArray *)receiveDataChunks
+{
+    if (!_receiveDataChunks) {
+        _receiveDataChunks = [[NSMutableArray alloc]init];
+    }
+    return _receiveDataChunks;
+}
+
+- (NSMutableSet *)waitingUpFileIDs
+{
+    if (!_waitingUpFileIDs) {
+        _waitingUpFileIDs = [[NSMutableSet alloc]init];
+    }
+    return _waitingUpFileIDs;
 }
 
 //初始化数据库&建表
@@ -58,7 +75,7 @@ static DataBaseManager *_dbManager;
     NSString *userSql = @"CREATE TABLE IF NOT EXISTS 'user' ('user_id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,'user_name' VARCHAR(255) NOT NULL UNIQUE,'user_password' VARCHAR(255) NOT NULL )";
     
     //2.文件表
-    NSString *fileSql = @"CREATE TABLE IF NOT EXISTS 'file' ('file_id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,'file_name' VARCHAR(255) NOT NULL,'file_size' VARCHAR(255) ,'directory_id' INTEGER )";
+    NSString *fileSql = @"CREATE TABLE IF NOT EXISTS 'file' ('file_id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,'file_name' VARCHAR(255) NOT NULL,'file_size' INTEGER ,'directory_id' INTEGER )";
     
     //3.文件夹表
     NSString *directorySql = @"CREATE TABLE IF NOT EXISTS 'directory' ('directory_id' INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,'directory_name' VARCHAR(255) NOT NULL ,'parent_id' INTEGER )";
@@ -153,10 +170,10 @@ static DataBaseManager *_dbManager;
         return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileNameNull andFileID:0];
     }
     
-    //未登录,无权限下载
+    //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:upFileInfo.userToken];
-    if ([[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpNo andFileID:0];
+    if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
+        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeNoLogin andFileID:0];
     }
     
     //服务器空间不足
@@ -190,7 +207,7 @@ static DataBaseManager *_dbManager;
     }
     
     //开始插入数据
-    BOOL isSucceed = [_db executeUpdate:@"INSERT INTO file(file_name,file_size,directory_id)VALUES(?,?,?)",upFileInfo.fileName,upFileInfo.size,@(upFileInfo.directoryID)];
+    BOOL isSucceed = [_db executeUpdate:@"INSERT INTO file(file_name,file_size,directory_id)VALUES(?,?,?)",upFileInfo.fileName,@(upFileInfo.size),@(upFileInfo.directoryID)];
     
     if (isSucceed) {
         FMResultSet *res3 = [_db executeQuery:@"SELECT * FROM file WHERE file_name = ? AND directory_id = ? ",upFileInfo.fileName,@(upFileInfo.directoryID)];
@@ -198,14 +215,72 @@ static DataBaseManager *_dbManager;
         while ([res3 next]) {
             fileID = (u_short)[res3 intForColumn:@"file_id"];
         }
-        
+        //缓存可以上传文件的文件ID
+        NSNumber *fileNumber = [NSNumber numberWithUnsignedShort:fileID];
+        [self.waitingUpFileIDs addObject:fileNumber];
+    
         return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpSuccess andFileID:fileID];
     }else{
        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileExist andFileID:0];
     }
 }
 
+//分发文件数据包 & 返回响应二进制数据
+- (NSData *)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo
+{
+    //未登录
+    NSNumber *token = [NSNumber numberWithUnsignedShort:fileChunkInfo.userToken];
+    if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
+        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeNoLogin];
+    }
+    
+    //验证文件的ID
+//    NSNumber *fileID = [NSNumber numberWithUnsignedShort:fileChunkInfo.fileID];
+//    if (![self.waitingUpFileIDs containsObject:fileID]) {
+//        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeReqUpError];
+//    }
 
+    // 文件路径
+    NSString *cachesPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%hu.jpg",fileChunkInfo.fileID]];
+    NSLog(@"%@",cachesPath);
+    // 创建一个空的文件到沙盒中
+    NSFileManager* mgr = [NSFileManager defaultManager];
+    [mgr createFileAtPath:cachesPath contents:nil attributes:nil];
+    
+    // 创建一个用来写数据的文件句柄对象
+    _writeHandle = [NSFileHandle fileHandleForWritingAtPath:cachesPath];
+
+    
+    if (_writeHandle == nil) {
+        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpFull];
+    }
+        
+    // 移动到文件的最后面
+    [_writeHandle seekToEndOfFile];
+    // 将数据写入沙盒
+    [_writeHandle writeData:fileChunkInfo.subData];
+        
+        
+    if (fileChunkInfo.chunks == fileChunkInfo.chunk) {
+            
+//            NSString *cachesPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%hu",fileChunkInfo.fileID]];
+//            
+//            NSFileManager * mgr = [NSFileManager defaultManager];
+//            
+//            [mgr moveItemAtURL:location toURL:[NSURL fileURLWithPath:cachesPath] error:NULL];
+            
+            
+        [_writeHandle closeFile];
+        _writeHandle = nil;
+        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpSuccess];
+    }else{
+        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUping];
+    }
+    
+    
+    
+
+}
 
 
 

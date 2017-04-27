@@ -20,8 +20,9 @@
 
 @property (strong, nonatomic) GCDAsyncSocket *socket;
 @property (strong, nonatomic) NSMutableSet *clientSockets;//保存客户端scoket
-@property (strong,  nonatomic) NSMutableData *receiveData;
+@property (strong, nonatomic) NSMutableData *receiveData;
 @property (strong, nonatomic) StartView *startServer;
+@property (strong ,nonatomic) NSMutableArray *dataArray;
 
 @end
 
@@ -77,8 +78,14 @@
         _receiveData = [[NSMutableData alloc]init];
     }
     return _receiveData;
-    
-    
+  
+}
+- (NSMutableArray *)dataArray
+{
+    if (!_dataArray) {
+        _dataArray = [[NSMutableArray alloc]init];
+    }
+    return _dataArray;
 }
 
 
@@ -113,6 +120,21 @@
     }
     self.socket = serviceScoket;
     
+    //创建一个主目录
+    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/main"];
+    NSError *error2 = nil;
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:nil]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:path
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:&error];
+        if (error2) {
+            NSLog(@"主目录创建Error: -- %@",error2);
+            return;
+        }
+    }
+    
 
 }
 
@@ -137,8 +159,9 @@
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     
-    NSLog(@"当前sock  ----- %@",sock);
-    NSLog(@"二进制流数据: -- %ld" , data.length);
+//    NSLog(@"当前sock  ----- %@",sock);
+//    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
+//    NSLog(@"二进制流数据: -- %ld" , data.length);
     
     
     //接受到用户数据，开始解析
@@ -146,17 +169,17 @@
     @try {
         header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
     } @catch (NSException *exception) {
+        [sock disconnect];
+        [self.clientSockets removeObject:sock];
         
     }
     
     switch (header.cmd) {
         case CmdTypeReigter:{
             @try {
-                NSLog(@"%d",header.c_length);
-            
+
                 UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                NSLog(@"%@",user.userPwd);
-                NSLog(@"%@",user.userName);
+                
                 NSData *resData = [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd];
                 
                 //返回响应数据流
@@ -192,17 +215,36 @@
             @try {
                 ReqUpFileInfo *reqInfo = [[ProtocolDataManager sharedProtocolDataManager] getReqFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
                 
-//                NSData *resData = [[DataBaseManager sharedDataBase]];
+                NSData *resData = [[DataBaseManager sharedDataBase] addFileInfoWithName:reqInfo];
                 
+                //返回响应数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqUp andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
                 
             } @catch (NSException *exception) {
-                
+                //返回响应异常数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqUp andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
             }
             
         }
             break;
         case CmdTypeUp:{
             
+            @try {
+                FileChunkInfo *chunkInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileChunkInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                
+                
+                NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
+                
+                
+                NSData *resData = [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo];
+                
+                //返回响应数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
+            } @catch (NSException *exception) {
+                //返回响应异常数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
             
         }
             break;
@@ -238,7 +280,7 @@
    
     
     
-    //不需要断开，要回复
+    //不需要断开.
     [sock readDataWithTimeout:-1 tag:0];
 }
 

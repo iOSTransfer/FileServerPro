@@ -18,6 +18,12 @@
 		681B46201EAD873B00BEA215 /* AppDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 681B461F1EAD873B00BEA215 /* AppDataSource.m */; };
 		681B46221EAD874C00BEA215 /* start@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 681B46211EAD874C00BEA215 /* start@2x.png */; };
 		681B46251EAD876200BEA215 /* StartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 681B46241EAD876200BEA215 /* StartView.m */; };
+		683B02821EB2C71F001E3416 /* FileHandleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B02811EB2C71F001E3416 /* FileHandleModel.m */; };
+		683B02851EB2F262001E3416 /* CreatFolderInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B02841EB2F262001E3416 /* CreatFolderInfo.m */; };
+		683B02881EB31F30001E3416 /* MoveFolderInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B02871EB31F30001E3416 /* MoveFolderInfo.m */; };
+		683B028B1EB32A0B001E3416 /* FileListInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B028A1EB32A0B001E3416 /* FileListInfo.m */; };
+		683B028E1EB32DF1001E3416 /* SourceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B028D1EB32DF1001E3416 /* SourceModel.m */; };
+		683B02911EB33F8D001E3416 /* ReqDownFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B02901EB33F8D001E3416 /* ReqDownFileInfo.m */; };
 		687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D41EAF357B007914A4 /* ProtocolDataManager.m */; };
 		687B63DC1EAF3933007914A4 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D81EAF3933007914A4 /* NSObject+YYModel.m */; };
 		687B63DD1EAF3933007914A4 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63DA1EAF3933007914A4 /* YYClassInfo.m */; };
@@ -79,6 +85,18 @@
 		681B46211EAD874C00BEA215 /* start@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "start@2x.png"; sourceTree = "<group>"; };
 		681B46231EAD876200BEA215 /* StartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartView.h; sourceTree = "<group>"; };
 		681B46241EAD876200BEA215 /* StartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartView.m; sourceTree = "<group>"; };
+		683B02801EB2C71F001E3416 /* FileHandleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandleModel.h; sourceTree = "<group>"; };
+		683B02811EB2C71F001E3416 /* FileHandleModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileHandleModel.m; sourceTree = "<group>"; };
+		683B02831EB2F262001E3416 /* CreatFolderInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatFolderInfo.h; sourceTree = "<group>"; };
+		683B02841EB2F262001E3416 /* CreatFolderInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreatFolderInfo.m; sourceTree = "<group>"; };
+		683B02861EB31F30001E3416 /* MoveFolderInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveFolderInfo.h; sourceTree = "<group>"; };
+		683B02871EB31F30001E3416 /* MoveFolderInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveFolderInfo.m; sourceTree = "<group>"; };
+		683B02891EB32A0B001E3416 /* FileListInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileListInfo.h; sourceTree = "<group>"; };
+		683B028A1EB32A0B001E3416 /* FileListInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileListInfo.m; sourceTree = "<group>"; };
+		683B028C1EB32DF1001E3416 /* SourceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceModel.h; sourceTree = "<group>"; };
+		683B028D1EB32DF1001E3416 /* SourceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceModel.m; sourceTree = "<group>"; };
+		683B028F1EB33F8D001E3416 /* ReqDownFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReqDownFileInfo.h; sourceTree = "<group>"; };
+		683B02901EB33F8D001E3416 /* ReqDownFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReqDownFileInfo.m; sourceTree = "<group>"; };
 		687B63D31EAF357B007914A4 /* ProtocolDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProtocolDataManager.h; sourceTree = "<group>"; };
 		687B63D41EAF357B007914A4 /* ProtocolDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProtocolDataManager.m; sourceTree = "<group>"; };
 		687B63D71EAF3933007914A4 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
@@ -209,6 +227,18 @@
 				68A0E0CE1EB07A8B000961EA /* ReqUpFileInfo.m */,
 				681422191EB188C80024EA7F /* FileChunkInfo.h */,
 				6814221A1EB188C80024EA7F /* FileChunkInfo.m */,
+				683B02801EB2C71F001E3416 /* FileHandleModel.h */,
+				683B02811EB2C71F001E3416 /* FileHandleModel.m */,
+				683B02831EB2F262001E3416 /* CreatFolderInfo.h */,
+				683B02841EB2F262001E3416 /* CreatFolderInfo.m */,
+				683B02861EB31F30001E3416 /* MoveFolderInfo.h */,
+				683B02871EB31F30001E3416 /* MoveFolderInfo.m */,
+				683B02891EB32A0B001E3416 /* FileListInfo.h */,
+				683B028A1EB32A0B001E3416 /* FileListInfo.m */,
+				683B028C1EB32DF1001E3416 /* SourceModel.h */,
+				683B028D1EB32DF1001E3416 /* SourceModel.m */,
+				683B028F1EB33F8D001E3416 /* ReqDownFileInfo.h */,
+				683B02901EB33F8D001E3416 /* ReqDownFileInfo.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -539,15 +569,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */,
+				683B028B1EB32A0B001E3416 /* FileListInfo.m in Sources */,
 				68032A2F1EAA00990019CD22 /* MainTabBarViewController.m in Sources */,
 				68A83D3D1EADEF140061AC6D /* FMDatabase.m in Sources */,
 				6814221B1EB188C80024EA7F /* FileChunkInfo.m in Sources */,
 				68A83D281EADBE590061AC6D /* UserInfo.m in Sources */,
 				68032A351EAA01010019CD22 /* ServerViewController.m in Sources */,
+				683B02821EB2C71F001E3416 /* FileHandleModel.m in Sources */,
 				68A83D3E1EADEF140061AC6D /* FMDatabaseAdditions.m in Sources */,
 				68A83D3F1EADEF140061AC6D /* FMDatabasePool.m in Sources */,
 				68A83D481EADEF8C0061AC6D /* DataBaseManager.m in Sources */,
 				687B63E01EAF49DF007914A4 /* HeaderInfo.m in Sources */,
+				683B02851EB2F262001E3416 /* CreatFolderInfo.m in Sources */,
 				689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */,
 				687B63DC1EAF3933007914A4 /* NSObject+YYModel.m in Sources */,
 				68A83D401EADEF140061AC6D /* FMDatabaseQueue.m in Sources */,
@@ -555,7 +588,10 @@
 				687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */,
 				687B63DD1EAF3933007914A4 /* YYClassInfo.m in Sources */,
 				681B46201EAD873B00BEA215 /* AppDataSource.m in Sources */,
+				683B02911EB33F8D001E3416 /* ReqDownFileInfo.m in Sources */,
 				68A83D1C1EAD8CDD0061AC6D /* NetWorkManager.m in Sources */,
+				683B028E1EB32DF1001E3416 /* SourceModel.m in Sources */,
+				683B02881EB31F30001E3416 /* MoveFolderInfo.m in Sources */,
 				68A83D411EADEF140061AC6D /* FMResultSet.m in Sources */,
 				68A0E0CF1EB07A8B000961EA /* ReqUpFileInfo.m in Sources */,
 				68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */,

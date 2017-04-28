@@ -158,6 +158,80 @@ static ProtocolDataManager *_dataManager;
     return [self protocolDataWithCmd:CmdTypeUp andData:muData];
 }
 
+//请求下载文件
+- (NSData *)reqDownFileDataWithUserToken:(u_short)userToken andFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID
+{
+    NSData *fileNameData = [fileName dataUsingEncoding:NSUTF8StringEncoding];
+    Byte fileNameLength = (Byte)fileNameData.length;
+    Byte pad = 0;
+    
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&userToken length:sizeof(u_short)];
+    [muData appendBytes:&fileNameLength length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendData:fileNameData];
+    
+    [muData appendBytes:&directoryID length:sizeof(u_short)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    return [self protocolDataWithCmd:CmdTypeReqDown andData:muData];
+}
+
+
+//请求创建文件夹
+- (NSData *)creatFolderWithToken:(u_short)userToken andDiretoryID:(u_short)diretoryID andDiretoryName:(NSString *)diretoryName
+{
+    NSData *diretoryNameData = [diretoryName dataUsingEncoding:NSUTF8StringEncoding];
+    
+    Byte diretoryNameLength = (Byte)diretoryNameData.length;
+    Byte pad = 0;
+    
+    NSMutableData *muData = [NSMutableData data];
+    
+    [muData appendBytes:&userToken length:sizeof(u_short)];
+    [muData appendBytes:&diretoryID length:sizeof(u_short)];
+    
+    [muData appendBytes:&diretoryNameLength length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    [muData appendData:diretoryNameData];
+    
+    return [self protocolDataWithCmd:CmdTypeAddFolder andData:muData];
+
+}
+
+//删除文件夹 cmd8
+- (NSData *)moveFolderWithToken:(u_short)userToken andParentDiretoryID:(u_short)parentID andDiretoryID:(u_short)diretoryID
+{
+
+    Byte pad = 0;
+    
+    NSMutableData *muData = [NSMutableData data];
+    
+    [muData appendBytes:&userToken length:sizeof(u_short)];
+    [muData appendBytes:&parentID length:sizeof(u_short)];
+    
+    [muData appendBytes:&diretoryID length:sizeof(u_short)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+
+    
+    return [self protocolDataWithCmd:CmdTypeRemoveFolder andData:muData];
+}
+
+//请求文件列表 cmd9
+- (NSData *)fileListWithToken:(u_short)userToken andDirectoryID:(u_short)diretoryID
+{
+    NSMutableData *muData = [NSMutableData data];
+    
+    [muData appendBytes:&userToken length:sizeof(u_short)];
+    [muData appendBytes:&diretoryID length:sizeof(u_short)];
+
+    return [self protocolDataWithCmd:CmdTypeGetList andData:muData];
+}
 
 #pragma mark  响应数据拼装
 
@@ -223,7 +297,32 @@ static ProtocolDataManager *_dataManager;
 }
 
 //文件上传信息组装
-- (NSData *)resUpFileDataWithRet:(ResponsType)type
+- (NSData *)resUpFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&fileID length:sizeof(u_short)];
+ 
+    return [muData copy];
+}
+
+//请求下载文件响应信息组装
+- (NSData *)resReqDownFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&fileID length:sizeof(u_short)];
+    
+    return [muData copy];
+
+}
+
+//创建文件夹响应
+- (NSData *)resCreatDiretoryWithRet:(ResponsType)type
 {
     Byte pad = 0;
     NSMutableData *muData = [NSMutableData data];
@@ -235,7 +334,46 @@ static ProtocolDataManager *_dataManager;
     return [muData copy];
 }
 
-#pragma mark  响应部分解析
+//删除文件夹响应
+- (NSData *)resMoveDiretoryWithRet:(ResponsType)type
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    return [muData copy];
+}
+
+//文件列表响应
+- (NSData *)resFileListWithRet:(ResponsType)type andParentID:(u_short)parentId andSourceModels:(NSArray *)models
+{
+    Byte pad = 0;
+    NSMutableData *muData = [NSMutableData data];
+    
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&parentId length:sizeof(u_short)];
+    
+    for (SourceModel *model in models) {
+        Byte type = model.type;
+        u_short sourceID = model.sourceID;
+        [muData appendBytes:&type length:sizeof(Byte)];
+        [muData appendBytes:&sourceID length:sizeof(u_short)];
+        
+        NSData *nameData = [model.sourceName dataUsingEncoding:NSUTF8StringEncoding];
+        Byte nameLength = (Byte)nameData.length;
+        [muData appendBytes:&nameLength length:sizeof(Byte)];
+        [muData appendData:nameData];
+    }
+    
+    return [muData copy];
+}
+
+
+#pragma mark  请求体解析
 
 //解析Header信息
 - (HeaderInfo *)getHeaderInfoWithData:(NSData *)data
@@ -268,7 +406,6 @@ static ProtocolDataManager *_dataManager;
     [[data subdataWithRange:NSMakeRange(0, 1)] getBytes:&userNameLength length:sizeof(Byte)];
     
     user.userName  =[[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(4, userNameLength)]  encoding:NSUTF8StringEncoding];
-    
     
     Byte pwdLength;
     [[data subdataWithRange:NSMakeRange(4 + userNameLength, 1)] getBytes:&pwdLength length:sizeof(Byte)];
@@ -336,11 +473,88 @@ static ProtocolDataManager *_dataManager;
     return chunkInfo;
 }
 
+//解析请求下载文件信息
+- (ReqDownFileInfo *)getReqDownFileInfoWithData:(NSData *)data
+{
+    ReqDownFileInfo *reqInfo = [ReqDownFileInfo new];
+    u_short userToken;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    reqInfo.userToken = userToken;
+    
+    Byte fileNameLength;
+    [[data subdataWithRange:NSMakeRange(2, 1)] getBytes:&fileNameLength length:sizeof(Byte)];
+    reqInfo.fileNameLength = fileNameLength;
+    
+    reqInfo.fileName  =[[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(4, fileNameLength)]  encoding:NSUTF8StringEncoding];
+    
+    u_short directoryID;
+    [[data subdataWithRange:NSMakeRange(fileNameLength + 4, 2)] getBytes:&directoryID length:sizeof(u_short)];
+    reqInfo.directoryID = directoryID;
+    
+ 
+    return reqInfo;
+}
+
+//解析创建文件夹包信息
+- (CreatFolderInfo *)getCreatFolderInfoWithData:(NSData *)data
+{
+    CreatFolderInfo *creatInfo = [CreatFolderInfo new];
+    
+    u_short userToken;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    creatInfo.userToken = userToken;
+    
+    u_short diretoryID;
+    [[data subdataWithRange:NSMakeRange(2, 2)] getBytes:&diretoryID length:sizeof(u_short)];
+    creatInfo.diretoryID = diretoryID;
+    
+    Byte nameLength;
+    [[data subdataWithRange:NSMakeRange(4, 1)] getBytes:&nameLength length:sizeof(Byte)];
+    creatInfo.nameLength = nameLength;
+    
+    creatInfo.diretoryName = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(8, nameLength)]  encoding:NSUTF8StringEncoding];
+    
+    return creatInfo;
+}
+
+//解析删除文件夹包信息
+- (MoveFolderInfo *)getMoveFolderInfoWithData:(NSData *)data
+{
+    MoveFolderInfo *moveInfo = [MoveFolderInfo new];
+    
+    u_short userToken;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    moveInfo.userToken = userToken;
+    
+    u_short parentID;
+    [[data subdataWithRange:NSMakeRange(2, 2)] getBytes:&parentID length:sizeof(u_short)];
+    moveInfo.parentID = parentID;
+    
+    u_short diretoryID;
+    [[data subdataWithRange:NSMakeRange(4, 2)] getBytes:&diretoryID length:sizeof(u_short)];
+    moveInfo.diretoryID = diretoryID;
+    
+
+    return moveInfo;
 
 
+}
 
-
-
+//解析文件列表请求信息
+- (FileListInfo *)getFileListInfoWithData:(NSData *)data
+{
+    FileListInfo *listInfo = [FileListInfo new];
+    
+    u_short userToken;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    listInfo.userToken = userToken;
+    
+    u_short diretoryID;
+    [[data subdataWithRange:NSMakeRange(2, 2)] getBytes:&diretoryID length:sizeof(u_short)];
+    listInfo.directoryID = diretoryID;
+    
+    return listInfo;
+}
 
 
 

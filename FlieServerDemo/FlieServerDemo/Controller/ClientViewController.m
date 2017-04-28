@@ -31,7 +31,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"客户端";
     
-    NSArray *titileArray = @[@"请求连接" ,@"注册",@"登录",@"请求上传文件",@"上传大文件"];
+    NSArray *titileArray = @[@"请求连接" ,@"注册",@"登录",@"请求上传文件",@"上传大文件",@"创建文件夹",@"删除文件夹",@"请求下载",@"下载文件",@"获取文件列表"];
     self.view.backgroundColor = [UIColor whiteColor];
     for (int i = 0; i < titileArray.count; i ++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -91,12 +91,12 @@
             NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
             NSError *error;
             NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"NZQ.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"aaa.jpg" andDirectoryID:1 andSize:(u_int)filedata.length];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
             
             sleep(1);
             
-            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"aaaa.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
+            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"bbb.jpg" andDirectoryID:1 andSize:(u_int)filedata.length];
             [self.socketClient writeData:data2 withTimeout:-1 tag:0];
             
         }
@@ -124,7 +124,7 @@
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
-                        sleep(1);
+                        sleep(2);
                         
                     }else{
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
@@ -132,43 +132,70 @@
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
                         
-                        sleep(1);
+                        sleep(2);
                         
                     }
                     
                 }
             });
             
-//            dispatch_async(dispatch_queue_create("sendFisdsdle", DISPATCH_QUEUE_SERIAL), ^{
-//                for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
-//                    
-//                    if (currentChunk == chunks) {
-//                        u_short size = filedata.length % 1024;
-//                        NSLog(@"%hu",size);
-//                        NSLog(@"%hu",currentChunk);
-//                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-//                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
-//                        
-//                        
-//                        [self.socketClient writeData:data withTimeout:-1 tag:0];
-//                        sleep(1);
-//                        
-//                    }else{
-//                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-//                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
-//                        
-//                        [self.socketClient writeData:data withTimeout:-1 tag:0];
-//                        
-//                        sleep(1);
-//                        
-//                    }
-//                    
-//                }
-//            });
+            dispatch_async(dispatch_queue_create("sendFisdsdle", DISPATCH_QUEUE_SERIAL), ^{
+                for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+                    
+                    if (currentChunk == chunks) {
+                        u_short size = filedata.length % 1024;
+                        NSLog(@"%hu",size);
+                        NSLog(@"%hu",currentChunk);
+                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+                        
+                        
+                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+                        sleep(3);
+                        
+                    }else{
+                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                        
+                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+                        
+                        sleep(3);
+                        
+                    }
+                    
+                }
+            });
  
         }
             break;
             
+        case 5:{
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] creatFolderWithToken:1 andDiretoryID:1 andDiretoryName:@"bbbb"];
+            
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] creatFolderWithToken:1 andDiretoryID:2 andDiretoryName:@"bbbb"];
+                
+                [self.socketClient writeData:data2 withTimeout:-1 tag:0];
+            });
+            
+        }
+          break;
+        case 6:{
+            
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] moveFolderWithToken:1 andParentDiretoryID:2 andDiretoryID:3];
+            
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
+        }
+            break;
+        case 9:{
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] fileListWithToken:1 andDirectoryID:1];
+            
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
+            
+        }
+            break;
         default:
             break;
     }

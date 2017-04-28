@@ -16,6 +16,11 @@
 #import "DataBaseManager.h"
 #import "EnumList.h"
 
+
+
+#define MainLib [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Main"]
+#define TmpLib [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Tmp"]
+
 @interface ServerViewController ()<GCDAsyncSocketDelegate>
 
 @property (strong, nonatomic) GCDAsyncSocket *socket;
@@ -121,18 +126,19 @@
     self.socket = serviceScoket;
     
     //创建一个主目录
-    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/main"];
-    NSError *error2 = nil;
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:nil]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:path
+    if (![[NSFileManager defaultManager] fileExistsAtPath:MainLib isDirectory:nil]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:MainLib
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:&error];
-        if (error2) {
-            NSLog(@"主目录创建Error: -- %@",error2);
-            return;
-        }
+    }
+
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:TmpLib isDirectory:nil]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:TmpLib
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:&error];
     }
     
 
@@ -260,16 +266,40 @@
             break;
         case CmdTypeAddFolder:{
             
+            @try {
+                CreatFolderInfo *creatInfo = [[ProtocolDataManager sharedProtocolDataManager] getCreatFolderInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                NSData *resData = [[DataBaseManager sharedDataBase] addFolderWith:creatInfo];
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
+            } @catch (NSException *exception) {
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
+            
             
         }
             break;
         case CmdTypeRemoveFolder:{
             
-            
+            @try {
+                MoveFolderInfo *moveInfo = [[ProtocolDataManager sharedProtocolDataManager] getMoveFolderInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                NSData *resData = [[DataBaseManager sharedDataBase] moveFolderWith:moveInfo];
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeRemoveFolder andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
+            } @catch (NSException *exception) {
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
         }
             break;
         case CmdTypeGetList:{
             
+            @try {
+                FileListInfo *listInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileListInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                NSData *resData = [[DataBaseManager sharedDataBase] getFileListWith:listInfo];
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
+            } @catch (NSException *exception) {
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
             
         }
             break;
@@ -284,7 +314,12 @@
     [sock readDataWithTimeout:-1 tag:0];
 }
 
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err
+{
+    NSLog(@"%@断开 ，错误：%@",sock,err);
 
+    [self.clientSockets removeObject:sock];
+}
 
 
 

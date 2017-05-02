@@ -75,7 +75,7 @@
         case 1:{
             
             
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"聂自强" andPassword:@"222222"];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"aaaa" andPassword:@"111111"];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
         
         }
@@ -125,15 +125,15 @@
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
-                        sleep(2);
+                        
                         
                     }else{
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
                         NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
                         
+                        
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
                         
-                        sleep(2);
                         
                     }
                     
@@ -152,15 +152,14 @@
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
-                        sleep(3);
+
                         
                     }else{
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
                         NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
-                        
-                        sleep(3);
+
                         
                     }
                     
@@ -186,6 +185,20 @@
         case 6:{
             
             NSData *data = [[ProtocolDataManager sharedProtocolDataManager] moveFolderWithToken:1 andParentDiretoryID:2 andDiretoryID:3];
+            
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
+        }
+            break;
+        case 7:{
+            
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqDownFileDataWithUserToken:1 andFileName:@"aaa.jpg" andDirectoryID:1];
+            
+            [self.socketClient writeData:data withTimeout:-1 tag:0];
+        }
+            break;
+        case 8:{
+            
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] downFileDataWithUserToken:1 andFileID:1];
             
             [self.socketClient writeData:data withTimeout:-1 tag:0];
         }

@@ -101,6 +101,9 @@ static DataBaseManager *_dbManager;
     BOOL fileType  =  [_db executeUpdate:fileSql];
     BOOL directoryType  =  [_db executeUpdate:directorySql];
     
+    //初始化数据
+    BOOL addFolder  =  [_db executeUpdate:@"INSERT INTO directory(directory_id,directory_name,parent_id)VALUES(?,?,?)",@(1),@"main",@(0)];
+    
     if (exeType) {
         NSLog(@"user表创建成功");
     }
@@ -109,7 +112,7 @@ static DataBaseManager *_dbManager;
         NSLog(@"file表创建成功");
     }
     
-    if (directoryType) {
+    if (directoryType && addFolder) {
         NSLog(@"directory表创建成功");
     }
     
@@ -118,29 +121,31 @@ static DataBaseManager *_dbManager;
 #pragma mark 用户信息表
 
 //添加用户注册信息
-- (NSData *)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password
+- (void)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
     if (userName.length < 1 || password.length < 1 ) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterNull];
+        block([[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterNull],ResponsTypeRegisterNull);
+        return;
     }
 
     
     BOOL isSucceed = [_db executeUpdate:@"INSERT INTO user(user_name,user_password)VALUES(?,?)",userName,password];
     
     if (isSucceed) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterSuccess];
+        block([[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterSuccess],ResponsTypeRegisterSuccess);
     }else{
-        return [[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterExist];
+        block([[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterExist],ResponsTypeRegisterExist);
     }
  
 }
 
 //客户端发送登录验证
-- (NSData *)userLoginWithName:(NSString*)userName andPwd:(NSString*)password
+- (void)userLoginWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
     if (userName.length < 1 || password.length < 1 ) {
         
-        return [[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginError andUserToken:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginError andUserToken:0],ResponsTypeLoginError);
+        return;
     }
     
     FMResultSet *res = [_db executeQuery:@"SELECT user_id FROM user WHERE user_name = ? and user_password = ?",userName,password];
@@ -150,21 +155,20 @@ static DataBaseManager *_dbManager;
         userToken  = (u_short)[res intForColumn:@"user_id"];
     }
     
-    
     if (userToken) {
         NSNumber *token = [NSNumber numberWithUnsignedShort:userToken];
         if ([[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
             
-            return [[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginExist andUserToken:0];
+            block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginExist andUserToken:0],ResponsTypeLoginExist);
             
         }else{
             [[AppDataSource shareAppDataSource].currentUsers addObject:token];
-            return [[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginSuccess andUserToken:userToken];
+            block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginSuccess andUserToken:userToken],ResponsTypeLoginSuccess);
         }
         
         
     }else{
-        return [[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginError andUserToken:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginError andUserToken:0],ResponsTypeLoginError);
     
     }
 
@@ -173,22 +177,25 @@ static DataBaseManager *_dbManager;
 
 #pragma mark 文件信息表 & 文件夹信息表
 //添加文件信息
-- (NSData * )addFileInfoWithName:(ReqUpFileInfo *)upFileInfo
+- (void)addFileInfoWithName:(ReqUpFileInfo *)upFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
     //文件名称不能为空
     if (upFileInfo.fileNameLength < 1) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileNameNull andFileID:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileNameNull andFileID:0],ResponsTypeReqUpFileNameNull);
+        return;
     }
     
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:upFileInfo.userToken];
     if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeNoLogin andFileID:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeNoLogin andFileID:0],ResponsTypeNoLogin);
+        return;
     }
     
     //服务器空间不足
     if (upFileInfo.size > [[AppDataSource shareAppDataSource] freeDiskSpaceInBytes]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFull andFileID:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFull andFileID:0],ResponsTypeReqUpFull);
+        return ;
     }
 
     //文件夹不存在
@@ -199,7 +206,8 @@ static DataBaseManager *_dbManager;
         isExist = YES;
     }
     if (!isExist) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpNoFolder andFileID:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpNoFolder andFileID:0],ResponsTypeReqUpNoFolder);
+        return;
     }
     
     //文件名称不相同,每个文件，对应一个用户
@@ -221,10 +229,12 @@ static DataBaseManager *_dbManager;
             //缓存可以上传文件的文件ID
             NSNumber *fileNumber = [NSNumber numberWithUnsignedShort:file_id];
             [self.waitingUpFileIDs addObject:fileNumber];
-            return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpSuccess andFileID:file_id];
+            block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpSuccess andFileID:file_id],ResponsTypeReqUpSuccess);
+            return;
            
         }else{
-            return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileExist andFileID:0];
+            block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileExist andFileID:0],ResponsTypeReqUpFileExist);
+            return;
         
         }
         
@@ -242,20 +252,20 @@ static DataBaseManager *_dbManager;
         //缓存可以上传文件的文件ID
         NSNumber *fileNumber = [NSNumber numberWithUnsignedShort:fileID];
         [self.waitingUpFileIDs addObject:fileNumber];
-
-        return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpSuccess andFileID:fileID];
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpSuccess andFileID:fileID],ResponsTypeReqUpSuccess);
     }else{
-       return [[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeServerError andFileID:0];
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeServerError andFileID:0],ResponsTypeServerError);
     }
 }
 
 //分发文件数据包 & 返回响应二进制数据
-- (NSData *)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo
+- (void)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:fileChunkInfo.userToken];
     if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeNoLogin andFileID:fileChunkInfo.fileID];
+        block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeNoLogin andFileID:fileChunkInfo.fileID],ResponsTypeNoLogin);
+        return;
     }
     
     //验证文件的ID
@@ -273,7 +283,8 @@ static DataBaseManager *_dbManager;
         }
         
         if (fileName == nil) {
-            return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:fileChunkInfo.fileID];
+            block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:fileChunkInfo.fileID],ResponsTypeServerError);
+            return;
         }
 
         // 文件路径
@@ -282,9 +293,8 @@ static DataBaseManager *_dbManager;
         
         // 创建一个空的文件到沙盒中
         NSFileManager* mgr = [NSFileManager defaultManager];
-        if (![mgr fileExistsAtPath:cachesPath]) {
-            [mgr createFileAtPath:cachesPath contents:nil attributes:nil];
-        }
+        [mgr removeItemAtPath:cachesPath error:nil];
+        [mgr createFileAtPath:cachesPath contents:nil attributes:nil];
         
         FileHandleModel *handelModel = [FileHandleModel new];
         handelModel.fileID = fileChunkInfo.fileID;
@@ -301,7 +311,8 @@ static DataBaseManager *_dbManager;
     
     
     if (self.keyHandles.count  < 1 ) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeReqUpError andFileID:fileChunkInfo.fileID];
+        block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeReqUpError andFileID:fileChunkInfo.fileID],ResponsTypeReqUpError);
+        return;
     }
     
     FileHandleModel *currentHandle;
@@ -332,41 +343,85 @@ static DataBaseManager *_dbManager;
         BOOL success = [_db executeUpdate:@"UPDATE 'file' SET file_state = ?  WHERE file_id = ? ",@(1),@(fileChunkInfo.fileID)];
         
         if (isSuccess && success) {
-            return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpSuccess andFileID:fileChunkInfo.fileID];
+            block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpSuccess andFileID:fileChunkInfo.fileID],ResponsTypeUpSuccess);
         }else{
-            return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:fileChunkInfo.fileID];
+            block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:fileChunkInfo.fileID],ResponsTypeServerError);
         }
 
     }else{
-        return [[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUping andFileID:fileChunkInfo.fileID];
+        block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUping andFileID:fileChunkInfo.fileID],ResponsTypeUping);
     }
 
 }
 
 //查询文件是否存在
-//- (NSData *)queryFileWith:(ReqDownFileInfo *)reqDownInfo;
-//{
-//    //未登录
-//    NSNumber *token = [NSNumber numberWithUnsignedShort:reqDownInfo.userToken];
-//    if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-//        return [[ProtocolDataManager sharedProtocolDataManager] resReqDownFileDataWithRet:ResponsTypeNoLogin andFileID:0];
-//    }
-//
-//
-//
-//}
+- (void)queryFileWith:(ReqDownFileInfo *)reqDownInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+{
+    //未登录
+    NSNumber *token = [NSNumber numberWithUnsignedShort:reqDownInfo.userToken];
+    if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqDownFileDataWithRet:ResponsTypeNoLogin andFileID:0],ResponsTypeNoLogin);
+        return;
+    }
+
+    FMResultSet *res = [_db executeQuery:@"SELECT file_id FROM file WHERE file_name = ? AND directory_id = ? AND file_state = ?",reqDownInfo.fileName,@(reqDownInfo.directoryID),@(1)];
+    
+    BOOL isExistFile = NO;
+    u_short fileID = 0;
+    while ([res next]) {
+        fileID = (u_short)[res intForColumn:@"file_id"];
+        isExistFile = YES;
+    }
+    if (!isExistFile) {
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqDownFileDataWithRet:ResponsTypeReqDownNull andFileID:0],ResponsTypeReqDownNull);
+    }else{
+        block([[ProtocolDataManager sharedProtocolDataManager] resReqDownFileDataWithRet:ResponsTypeReqDownSuccess andFileID:fileID],ResponsTypeReqDownSuccess);
+    }
+    
+}
+
+//文件下载
+- (void)getFileDataWith:(DownFileInfo *)downFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+{
+    //未登录
+    NSNumber *token = [NSNumber numberWithUnsignedShort:downFileInfo.userToken];
+    if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
+        block([[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeNoLogin andFileID:0 andChunks:0 andCurrentChunk:0 andDataSize:0 andSubFileData:0],ResponsTypeNoLogin);
+        return;
+    }
+    
+    FMResultSet *res = [_db executeQuery:@"SELECT file_name FROM file WHERE file_id = ? AND file_state = ?",@(downFileInfo.fileID),@(1)];
+    
+    BOOL isExistFile = NO;
+    NSString *fileName;
+    while ([res next]) {
+        fileName = [res stringForColumn:@"file_name"];
+        isExistFile = YES;
+    }
+    
+    if (!isExistFile) {
+       block([[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownNUll andFileID:0 andChunks:0 andCurrentChunk:0 andDataSize:0 andSubFileData:0],ResponsTypeNoLogin);
+    }else{
+        NSString *path = [MainLib stringByAppendingPathComponent:fileName];
+        NSData *fileData = [NSData dataWithContentsOfFile:path];
+        block(fileData,ResponsTypeDownIng);
+    
+    }
+}
 
 //创建一个文件夹
-- (NSData *)addFolderWith:(CreatFolderInfo *)folderInfo
+- (void)addFolderWith:(CreatFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
     
     if (folderInfo.diretoryName.length < 1) {
-       return [[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeFolderNameNull];
+        block([[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeFolderNameNull],ResponsTypeFolderNameNull);
+       return;
     }
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:folderInfo.userToken];
     if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeNoLogin];
+        block([[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeNoLogin],ResponsTypeNoLogin);
+        return;
     }
 
     FMResultSet *res = [_db executeQuery:@"SELECT * FROM directory WHERE directory_id = ?",@(folderInfo.diretoryID)];
@@ -388,34 +443,35 @@ static DataBaseManager *_dbManager;
     
     //未找到父ID
     if (!isExist) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeFolderParentNoExist];
+        block([[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeFolderParentNoExist],ResponsTypeFolderParentNoExist);
+        return;
     }
     
     //父ID下存在该文件夹
     if (haveFolder) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeFolderExist];
+        block([[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeFolderExist],ResponsTypeFolderExist);
+        return;
     }
-    
-    
-    
+
     BOOL isSucceed = [_db executeUpdate:@"INSERT INTO directory(directory_name,parent_id)VALUES(?,?)",folderInfo.diretoryName,@(folderInfo.diretoryID)];
     
     if (isSucceed) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeAddFolderSuccess];
+        block([[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeAddFolderSuccess],ResponsTypeAddFolderSuccess);
     }else{
-        return [[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeServerError];
+        block([[ProtocolDataManager sharedProtocolDataManager] resCreatDiretoryWithRet:ResponsTypeServerError],ResponsTypeServerError);
     }
 
 }
 
 //删除一个文件夹
-- (NSData *)moveFolderWith:(MoveFolderInfo *)folderInfo
+- (void)moveFolderWith:(MoveFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
 
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:folderInfo.userToken];
     if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeNoLogin];
+        block([[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeNoLogin],ResponsTypeNoLogin);
+        return;
     }
     
     FMResultSet *res = [_db executeQuery:@"SELECT * FROM directory WHERE directory_id = ? AND parent_id = ?",@(folderInfo.diretoryID),@(folderInfo.parentID)];
@@ -429,26 +485,28 @@ static DataBaseManager *_dbManager;
 
     //未找到父ID或者文件夹不存在
     if (!isExist) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeNoFolderOrNoParent];
+        block([[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeNoFolderOrNoParent],ResponsTypeNoFolderOrNoParent);
+        return;
     }
     
     BOOL isSucceed = [_db executeUpdate:@"DELETE FROM directory WHERE directory_id = ?",@(folderInfo.diretoryID)];
     
     if (isSucceed) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeMoveFolderSuccess];
+        block([[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeMoveFolderSuccess],ResponsTypeMoveFolderSuccess);
     }else{
-        return [[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeServerError];
+        block([[ProtocolDataManager sharedProtocolDataManager] resMoveDiretoryWithRet:ResponsTypeServerError],ResponsTypeServerError);
     }
 
 }
 
 //获取文件列表
-- (NSData *)getFileListWith:(FileListInfo *)fileListInfo
+- (void)getFileListWith:(FileListInfo *)fileListInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
 {
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:fileListInfo.userToken];
     if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resFileListWithRet:ResponsTypeNoLogin andParentID:fileListInfo.directoryID andSourceModels:[NSArray array]];
+        block([[ProtocolDataManager sharedProtocolDataManager] resFileListWithRet:ResponsTypeNoLogin andParentID:fileListInfo.directoryID andSourceModels:[NSArray array]],ResponsTypeNoLogin);
+        return;
     }
     
     FMResultSet *res = [_db executeQuery:@"SELECT * FROM directory WHERE parent_id = ?",@(fileListInfo.directoryID)];
@@ -473,9 +531,9 @@ static DataBaseManager *_dbManager;
 
     
     if (listModels.count > 0) {
-        return [[ProtocolDataManager sharedProtocolDataManager] resFileListWithRet:ResponsTypeFileListSuccess andParentID:fileListInfo.directoryID andSourceModels:listModels];
+        block([[ProtocolDataManager sharedProtocolDataManager] resFileListWithRet:ResponsTypeFileListSuccess andParentID:fileListInfo.directoryID andSourceModels:listModels],ResponsTypeFileListSuccess);
     }else{
-        return [[ProtocolDataManager sharedProtocolDataManager] resFileListWithRet:ResponsTypeFileListNoFolder andParentID:fileListInfo.directoryID andSourceModels:[NSArray array]];
+        block([[ProtocolDataManager sharedProtocolDataManager] resFileListWithRet:ResponsTypeFileListNoFolder andParentID:fileListInfo.directoryID andSourceModels:[NSArray array]],ResponsTypeFileListNoFolder);
     
     }
 }

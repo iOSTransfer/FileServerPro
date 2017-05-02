@@ -16,7 +16,7 @@
 #import "FileListInfo.h"
 #import "SourceModel.h"
 #import "ReqDownFileInfo.h"
-
+#import "DownFileInfo.h"
 #import "EnumList.h"
 
 
@@ -45,6 +45,9 @@
 
 //请求下载文件 cmd5
 - (NSData *)reqDownFileDataWithUserToken:(u_short)userToken andFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID;
+
+//文件下载 cmd6
+- (NSData *)downFileDataWithUserToken:(u_short)userToken andFileID:(u_short)fileID;
 
 //请求创建文件夹  cmd7
 - (NSData *)creatFolderWithToken:(u_short)userToken andDiretoryID:(u_short)diretoryID andDiretoryName:(NSString *)diretoryName;
@@ -75,6 +78,9 @@
 //请求下载文件响应信息组装
 - (NSData *)resReqDownFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID;
 
+//文件下载响应信息组装
+- (NSData *)resDownFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData;
+
 //创建文件夹响应
 - (NSData *)resCreatDiretoryWithRet:(ResponsType)type;
 
@@ -100,6 +106,9 @@
 
 //解析请求下载文件信息
 - (ReqDownFileInfo *)getReqDownFileInfoWithData:(NSData *)data;
+
+//解析下载文件信息
+- (DownFileInfo *)getDownFileInfoWithData:(NSData *)data;
 
 //解析创建文件夹包信息
 - (CreatFolderInfo *)getCreatFolderInfoWithData:(NSData *)data;

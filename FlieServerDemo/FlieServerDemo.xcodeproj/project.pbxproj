@@ -24,6 +24,7 @@
 		683B028B1EB32A0B001E3416 /* FileListInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B028A1EB32A0B001E3416 /* FileListInfo.m */; };
 		683B028E1EB32DF1001E3416 /* SourceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B028D1EB32DF1001E3416 /* SourceModel.m */; };
 		683B02911EB33F8D001E3416 /* ReqDownFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 683B02901EB33F8D001E3416 /* ReqDownFileInfo.m */; };
+		686E9B931EB82C950098EFEB /* DownFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 686E9B921EB82C950098EFEB /* DownFileInfo.m */; };
 		687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D41EAF357B007914A4 /* ProtocolDataManager.m */; };
 		687B63DC1EAF3933007914A4 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D81EAF3933007914A4 /* NSObject+YYModel.m */; };
 		687B63DD1EAF3933007914A4 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63DA1EAF3933007914A4 /* YYClassInfo.m */; };
@@ -97,6 +98,8 @@
 		683B028D1EB32DF1001E3416 /* SourceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceModel.m; sourceTree = "<group>"; };
 		683B028F1EB33F8D001E3416 /* ReqDownFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReqDownFileInfo.h; sourceTree = "<group>"; };
 		683B02901EB33F8D001E3416 /* ReqDownFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReqDownFileInfo.m; sourceTree = "<group>"; };
+		686E9B911EB82C950098EFEB /* DownFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownFileInfo.h; sourceTree = "<group>"; };
+		686E9B921EB82C950098EFEB /* DownFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownFileInfo.m; sourceTree = "<group>"; };
 		687B63D31EAF357B007914A4 /* ProtocolDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProtocolDataManager.h; sourceTree = "<group>"; };
 		687B63D41EAF357B007914A4 /* ProtocolDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProtocolDataManager.m; sourceTree = "<group>"; };
 		687B63D71EAF3933007914A4 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
@@ -239,6 +242,8 @@
 				683B028D1EB32DF1001E3416 /* SourceModel.m */,
 				683B028F1EB33F8D001E3416 /* ReqDownFileInfo.h */,
 				683B02901EB33F8D001E3416 /* ReqDownFileInfo.m */,
+				686E9B911EB82C950098EFEB /* DownFileInfo.h */,
+				686E9B921EB82C950098EFEB /* DownFileInfo.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -581,6 +586,7 @@
 				68A83D481EADEF8C0061AC6D /* DataBaseManager.m in Sources */,
 				687B63E01EAF49DF007914A4 /* HeaderInfo.m in Sources */,
 				683B02851EB2F262001E3416 /* CreatFolderInfo.m in Sources */,
+				686E9B931EB82C950098EFEB /* DownFileInfo.m in Sources */,
 				689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */,
 				687B63DC1EAF3933007914A4 /* NSObject+YYModel.m in Sources */,
 				68A83D401EADEF140061AC6D /* FMDatabaseQueue.m in Sources */,

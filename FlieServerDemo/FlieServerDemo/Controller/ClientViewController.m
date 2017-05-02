@@ -56,8 +56,9 @@
             self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_queue_create("clientQueue", DISPATCH_QUEUE_SERIAL)];
 
             NSError *error;
+            
             // 连接服务器
-            [self.socketClient connectToHost:@"10.134.19.1" onPort:prot error:&error];
+            [self.socketClient connectToHost:[[AppDataSource shareAppDataSource] deviceIPAdress] onPort:prot error:&error];
         
             if (error) {
                 NSLog(@"连接失败 ： %@",error);

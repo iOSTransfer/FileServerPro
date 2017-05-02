@@ -146,6 +146,11 @@
 
 
 #pragma mark GCDAsyncSocketDelegate
+
+
+
+
+
 //连接到客户端socket
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
@@ -165,10 +170,10 @@
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     
-//    NSLog(@"当前sock  ----- %@",sock);
-//    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
-//    NSLog(@"二进制流数据: -- %ld" , data.length);
-    
+    NSLog(@"当前sock  ----- %@",sock);
+    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
+    NSLog(@"二进制流数据长度: -- %ld" , data.length);
+
     
     //接受到用户数据，开始解析
     HeaderInfo *header;
@@ -179,17 +184,17 @@
         [self.clientSockets removeObject:sock];
         
     }
-    
+
     switch (header.cmd) {
         case CmdTypeReigter:{
             @try {
 
                 UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
                 
-                NSData *resData = [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd];
-                
-                //返回响应数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReigter andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                 [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd withResultBlock:^(NSData *replyData, ResponsType resType) {
+                     //返回响应数据流
+                     [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReigter andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                 }];
                 
             } @catch (NSException *exception) {
                 //返回响应异常数据流
@@ -204,10 +209,12 @@
             @try {
                 UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
                 
-                NSData *resData = [[DataBaseManager sharedDataBase] userLoginWithName:user.userName andPwd:user.userPwd];
+                [[DataBaseManager sharedDataBase] userLoginWithName:user.userName andPwd:user.userPwd withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    //返回响应数据流
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
                 
-                //返回响应数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
             } @catch (NSException *exception) {
                 //返回响应异常数据流
                 [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
@@ -221,10 +228,12 @@
             @try {
                 ReqUpFileInfo *reqInfo = [[ProtocolDataManager sharedProtocolDataManager] getReqFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
                 
-                NSData *resData = [[DataBaseManager sharedDataBase] addFileInfoWithName:reqInfo];
+                [[DataBaseManager sharedDataBase] addFileInfoWithName:reqInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    //返回响应数据流
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
                 
-                //返回响应数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqUp andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
+                
                 
             } @catch (NSException *exception) {
                 //返回响应异常数据流
@@ -242,11 +251,11 @@
                 NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
                 
                 
-                NSData *resData = [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo];
-                
-                //返回响应数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
-                
+                [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    //返回响应数据流
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
+
             } @catch (NSException *exception) {
                 //返回响应异常数据流
                 [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
@@ -256,21 +265,78 @@
             break;
         case CmdTypeReqDown:{
             
+            @try {
+                ReqDownFileInfo *reqInfo = [[ProtocolDataManager sharedProtocolDataManager] getReqDownFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                
+                [[DataBaseManager sharedDataBase] queryFileWith:reqInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    //返回响应数据流
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqDown andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
+            } @catch (NSException *exception) {
+                //返回响应异常数据流
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqDown andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
             
         }
             break;
         case CmdTypeDown:{
             
-            
+            @try {
+                DownFileInfo *downInfo = [[ProtocolDataManager sharedProtocolDataManager] getDownFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                [[DataBaseManager sharedDataBase]getFileDataWith:downInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    
+                    if (resType == ResponsTypeDownIng) {
+                        
+                        u_short chunks = replyData.length / 1024 + 1;
+                        NSLog(@"%lu",(unsigned long)replyData.length);
+                        NSLog(@"%hu",chunks);
+//                        dispatch_async(dispatch_queue_create("sendFile", DISPATCH_QUEUE_SERIAL), ^{
+                        
+                            for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+                                
+                                if (currentChunk == chunks) {
+                                    u_short size = replyData.length % 1024;
+                                    NSLog(@"%hu",size);
+                                    NSLog(@"%hu",currentChunk);
+                                    NSData *subData = [replyData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+                                    
+                                    //返回响应数据流
+                                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownSuccess andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData]]  withTimeout:-1 tag:0];
+                                    
+//                                    [NSThread sleepForTimeInterval:1.0];
+                                    [sock readDataWithTimeout:-1 tag:0];
+                                }else{
+                                    NSData *subData = [replyData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
+                                    //返回响应数据流
+                                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownIng andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData]]  withTimeout:-1 tag:0];
+                                    [sock readDataWithTimeout:-1 tag:0];
+//                                    [NSThread sleepForTimeInterval:1.0];
+                                }
+                                
+                            }
+                            
+//                        });
+                        
+                    }else{
+                        //返回响应数据流
+                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                    
+                    }
+                }];
+                
+            } @catch (NSException *exception) {
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+            }
         }
             break;
         case CmdTypeAddFolder:{
             
             @try {
                 CreatFolderInfo *creatInfo = [[ProtocolDataManager sharedProtocolDataManager] getCreatFolderInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                NSData *resData = [[DataBaseManager sharedDataBase] addFolderWith:creatInfo];
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
-                
+                [[DataBaseManager sharedDataBase] addFolderWith:creatInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
+  
             } @catch (NSException *exception) {
                 [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
             }
@@ -282,11 +348,12 @@
             
             @try {
                 MoveFolderInfo *moveInfo = [[ProtocolDataManager sharedProtocolDataManager] getMoveFolderInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                NSData *resData = [[DataBaseManager sharedDataBase] moveFolderWith:moveInfo];
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeRemoveFolder andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
-                
+                [[DataBaseManager sharedDataBase] moveFolderWith:moveInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeRemoveFolder andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
+ 
             } @catch (NSException *exception) {
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
+                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeRemoveFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
             }
         }
             break;
@@ -294,9 +361,10 @@
             
             @try {
                 FileListInfo *listInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileListInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                NSData *resData = [[DataBaseManager sharedDataBase] getFileListWith:listInfo];
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeSuccess andData:resData]  withTimeout:-1 tag:0];
-                
+                [[DataBaseManager sharedDataBase] getFileListWith:listInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
+
             } @catch (NSException *exception) {
                 [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
             }

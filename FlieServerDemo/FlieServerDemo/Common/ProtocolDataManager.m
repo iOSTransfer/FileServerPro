@@ -40,12 +40,17 @@ static ProtocolDataManager *_dataManager;
     
     
     NSMutableData *muData = [NSMutableData data];
+    
+    
     [muData appendBytes:&cmdByte length:sizeof(Byte)];
     [muData appendBytes:&ver length:sizeof(Byte)];
     [muData appendBytes:&pad length:sizeof(Byte)];
     [muData appendBytes:&pad length:sizeof(Byte)];
     [muData appendBytes:&c_length length:sizeof(uint)];
     [muData appendData:data];
+    
+    //分界
+//    [muData appendData:[@"fff" dataUsingEncoding:4]];
     
     return [muData copy];
 }
@@ -178,6 +183,15 @@ static ProtocolDataManager *_dataManager;
     return [self protocolDataWithCmd:CmdTypeReqDown andData:muData];
 }
 
+//文件下载
+- (NSData *)downFileDataWithUserToken:(u_short)userToken andFileID:(u_short)fileID
+{
+    NSMutableData *muData = [NSMutableData data];
+    [muData appendBytes:&userToken length:sizeof(u_short)];
+    [muData appendBytes:&fileID length:sizeof(u_short)];
+
+    return [self protocolDataWithCmd:CmdTypeDown andData:muData];
+}
 
 //请求创建文件夹
 - (NSData *)creatFolderWithToken:(u_short)userToken andDiretoryID:(u_short)diretoryID andDiretoryName:(NSString *)diretoryName
@@ -318,6 +332,32 @@ static ProtocolDataManager *_dataManager;
     [muData appendBytes:&fileID length:sizeof(u_short)];
     
     return [muData copy];
+
+}
+
+//文件下载响应信息组装
+- (NSData *)resDownFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData
+{
+    Byte pad = 0;
+    
+    NSMutableData *muData = [NSMutableData data];
+    
+    [muData appendBytes:&type length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&fileID length:sizeof(u_short)];
+    
+    [muData appendBytes:&chunks length:sizeof(u_short)];
+    [muData appendBytes:&chunk length:sizeof(u_short)];
+    
+    
+    [muData appendBytes:&size length:sizeof(u_short)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    [muData appendBytes:&pad length:sizeof(Byte)];
+    
+    [muData appendData:subData];
+    
+    return [muData copy];
+
 
 }
 
@@ -493,6 +533,21 @@ static ProtocolDataManager *_dataManager;
     
  
     return reqInfo;
+}
+
+//解析下载文件信息
+- (DownFileInfo *)getDownFileInfoWithData:(NSData *)data
+{
+    DownFileInfo *downInfo = [DownFileInfo new];
+    u_short userToken;
+    u_short fileID;
+    [[data subdataWithRange:NSMakeRange(0, 2)] getBytes:&userToken length:sizeof(u_short)];
+    [[data subdataWithRange:NSMakeRange(2, 2)] getBytes:&fileID length:sizeof(u_short)];
+    
+    downInfo.userToken = userToken;
+    downInfo.fileID = fileID;
+    
+    return downInfo;
 }
 
 //解析创建文件夹包信息

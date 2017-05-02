@@ -14,7 +14,7 @@
 #import "FileListInfo.h"
 #import "SourceModel.h"
 #import "ReqDownFileInfo.h"
-
+#import "DownFileInfo.h"
 #import "EnumList.h"
 
 
@@ -23,31 +23,34 @@
 + (instancetype)sharedDataBase;
 
 #pragma mark 用户信息表
-//添加用户注册信息 & 返回响应二进制数据
-- (NSData *)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password;
+//添加用户注册信息
+- (void)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
-//客户端发送登录验证 & 返回响应二进制数据
-- (NSData *)userLoginWithName:(NSString*)userName andPwd:(NSString*)password;
+//客户端发送登录验证
+- (void)userLoginWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 
 #pragma mark 文件信息表
 //添加文件信息
-- (NSData *)addFileInfoWithName:(ReqUpFileInfo *)upFileInfo;
+- (void)addFileInfoWithName:(ReqUpFileInfo *)upFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 //分发文件数据包
-- (NSData *)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo;
+- (void)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 //查询文件是否存在
-- (NSData *)queryFileWith:(ReqDownFileInfo *)reqDownInfo;
+- (void)queryFileWith:(ReqDownFileInfo *)reqDownInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 //创建一个文件夹
-- (NSData *)addFolderWith:(CreatFolderInfo *)folderInfo;
+- (void)addFolderWith:(CreatFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
+
+//文件下载
+- (void)getFileDataWith:(DownFileInfo *)downFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 //删除一个文件夹
-- (NSData *)moveFolderWith:(MoveFolderInfo *)folderInfo;
+- (void)moveFolderWith:(MoveFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 //获取文件列表 
-- (NSData *)getFileListWith:(FileListInfo *)fileListInfo;
+- (void)getFileListWith:(FileListInfo *)fileListInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 
 @end

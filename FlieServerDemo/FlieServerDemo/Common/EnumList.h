@@ -43,18 +43,15 @@ typedef NS_ENUM(Byte, ResponsType) {
     ResponsTypeRegisterNull         = 11,   //用户名密码不能为空
     ResponsTypeRegisterExist        = 12,   //注册用户名存在
     
-    
     ResponsTypeLoginSuccess         = 20,   //登录成功
     ResponsTypeLoginError           = 21,   //用户名或密码错误
     ResponsTypeLoginExist           = 22,   //该账号在其他客户端登录
-    
     
     ResponsTypeReqUpSuccess         = 30,   //允许上传
     ResponsTypeReqUpFull            = 31,   //服务器空间不足
     ResponsTypeReqUpNoFolder        = 32,   //文件夹不存在
     ResponsTypeReqUpFileExist       = 33,   //文件名已存在
     ResponsTypeReqUpFileNameNull    = 34,   //文件名不能为空
-    
     
     ResponsTypeUping                = 40,   //上传中
     ResponsTypeUpSuccess            = 41,   //文件上传成功
@@ -63,10 +60,12 @@ typedef NS_ENUM(Byte, ResponsType) {
     
     
     ResponsTypeReqDownSuccess       = 50,   //允许下载
-    ResponsTypeReqDownNoFolder      = 51,   //文件夹不存在
-    ResponsTypeReqDownNoFile        = 52,   //文件不存在
+    ResponsTypeReqDownNull          = 51,   //文件夹不存在或者文件不存在
     
-    
+    ResponsTypeDownIng              = 60,   //下载中
+    ResponsTypeDownSuccess          = 61,   //文件下载完成
+    ResponsTypeDownError            = 62,   //下载中断
+    ResponsTypeDownNUll             = 63,   //文件不存在
     
     ResponsTypeAddFolderSuccess     = 70,   //文件夹创建成功
     ResponsTypeFolderExist          = 71,   //该文件夹存在
@@ -76,7 +75,6 @@ typedef NS_ENUM(Byte, ResponsType) {
     ResponsTypeMoveFolderSuccess    = 80,   //文件夹删除
     ResponsTypeNoFolderOrNoParent   = 81,   //该文件夹或者父目录不存在
 
-    
     ResponsTypeFileListSuccess      = 90,   //成功
     ResponsTypeFileListNoFolder     = 91,   //未找到该文件夹
     

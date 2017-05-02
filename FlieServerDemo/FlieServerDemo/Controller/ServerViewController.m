@@ -245,16 +245,18 @@
         case CmdTypeUp:{
             
             @try {
-                FileChunkInfo *chunkInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileChunkInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+//                FileChunkInfo *chunkInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileChunkInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
                 
-                
-                NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
-                
-                
-                [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    //返回响应数据流
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
+                NSArray *chunkInfos = [self getFileChunkInfosWithData:data];
+                for (FileChunkInfo * chunkInfo in chunkInfos) {
+                    NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
+                    
+                    
+                    [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                        //返回响应数据流
+                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                    }];
+                }
 
             } @catch (NSException *exception) {
                 //返回响应异常数据流
@@ -304,12 +306,12 @@
                                     [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownSuccess andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData]]  withTimeout:-1 tag:0];
                                     
 //                                    [NSThread sleepForTimeInterval:1.0];
-                                    [sock readDataWithTimeout:-1 tag:0];
+//                                    [sock readDataWithTimeout:-1 tag:0];
                                 }else{
                                     NSData *subData = [replyData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
                                     //返回响应数据流
                                     [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownIng andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData]]  withTimeout:-1 tag:0];
-                                    [sock readDataWithTimeout:-1 tag:0];
+//                                    [sock readDataWithTimeout:-1 tag:0];
 //                                    [NSThread sleepForTimeInterval:1.0];
                                 }
                                 
@@ -382,6 +384,24 @@
     [sock readDataWithTimeout:-1 tag:0];
 }
 
+- (void)socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
+{
+
+    NSLog(@"读取数据的长度%lu",(unsigned long)partialLength);
+}
+
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+
+
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag{
+    
+    NSLog(@"写进去的数据的长度%lu",(unsigned long)partialLength);
+}
+
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err
 {
     NSLog(@"%@断开 ，错误：%@",sock,err);
@@ -389,6 +409,20 @@
     [self.clientSockets removeObject:sock];
 }
 
+- (NSArray *)getFileChunkInfosWithData:(NSData *)subData
+{
+    NSMutableArray *muArray = [NSMutableArray array];
+    
+    while (subData.length) {
+        
+        HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[subData subdataWithRange:NSMakeRange(0, 8)]];
+        FileChunkInfo *info = [[ProtocolDataManager sharedProtocolDataManager]getFileChunkInfoWithData:[subData subdataWithRange:NSMakeRange(8, header.c_length)]];
+        [muArray addObject:info];
+        subData = [subData subdataWithRange:NSMakeRange(8 +  header.c_length, subData.length - 8 -  header.c_length )];
+    }
+    
+    return muArray;
+}
 
 
 //设置StatusBar的样式

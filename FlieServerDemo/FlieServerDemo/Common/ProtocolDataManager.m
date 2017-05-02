@@ -339,7 +339,7 @@ static ProtocolDataManager *_dataManager;
 - (NSData *)resDownFileDataWithRet:(ResponsType)type andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData
 {
     Byte pad = 0;
-    
+
     NSMutableData *muData = [NSMutableData data];
     
     [muData appendBytes:&type length:sizeof(Byte)];

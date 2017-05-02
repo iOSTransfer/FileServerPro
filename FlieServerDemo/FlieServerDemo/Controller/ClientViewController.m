@@ -53,7 +53,7 @@
         case 0: {
             uint16_t prot = 6666;
             // 创建服务器
-            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_queue_create("clientQueue", DISPATCH_QUEUE_SERIAL)];
+            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
 
             NSError *error;
             

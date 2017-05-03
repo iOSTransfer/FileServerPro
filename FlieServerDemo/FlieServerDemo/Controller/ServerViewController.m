@@ -10,24 +10,21 @@
 #import "GCDAsyncSocket.h"
 #import "StartView.h"
 #import "AppDataSource.h"
-#import "NSObject+YYModel.h"
 #import "UserInfo.h"
 #import "ProtocolDataManager.h"
 #import "DataBaseManager.h"
 #import "EnumList.h"
+#import "SocketServerManager.h"
 
 
+@interface ServerViewController ()<GCDAsyncSocketDelegate>{
 
-#define MainLib [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Main"]
-#define TmpLib [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Tmp"]
-
-@interface ServerViewController ()<GCDAsyncSocketDelegate>
-
-@property (strong, nonatomic) GCDAsyncSocket *socket;
-@property (strong, nonatomic) NSMutableSet *clientSockets;//保存客户端scoket
-@property (strong, nonatomic) NSMutableData *receiveData;
+    UILabel *currentSocketsLabel;
+    UILabel *diskSpaceLabel;
+    
+}
 @property (strong, nonatomic) StartView *startServer;
-@property (strong ,nonatomic) NSMutableArray *dataArray;
+@property (strong, nonatomic) NSMutableArray *itemArray;
 
 @end
 
@@ -38,21 +35,34 @@
     
     self.view.backgroundColor = [UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1];
     self.navigationItem.title = @"服务器";
-    
+    self.itemArray = [NSMutableArray array];
     [self setUI];
 }
 
 - (void)setUI
 {
     
-    UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 24)];
+    UILabel *infoLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, [UIScreen mainScreen].bounds.size.width, 24)];
     
     infoLabel.textColor = [UIColor whiteColor];
     infoLabel.font = [UIFont systemFontOfSize:14];
-    infoLabel.textAlignment = NSTextAlignmentCenter;
     NSString *infoString = [NSString stringWithFormat:@"IP地址:%@ 端口号:6666",[[AppDataSource shareAppDataSource] deviceIPAdress]];
     infoLabel.text = infoString;
     [self.view addSubview:infoLabel];
+    
+    diskSpaceLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(infoLabel.frame), [UIScreen mainScreen].bounds.size.width * 0.5, 24)];
+    diskSpaceLabel.textColor = [UIColor whiteColor];
+    diskSpaceLabel.font = [UIFont systemFontOfSize:14];
+    [self upateDiskSpaceLabelText];
+    [self.view addSubview:diskSpaceLabel];
+    
+    currentSocketsLabel = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width * 0.5, CGRectGetMaxY(infoLabel.frame), [UIScreen mainScreen].bounds.size.width * 0.5 - 10, 24)];
+    currentSocketsLabel.textColor = [UIColor whiteColor];
+    currentSocketsLabel.font = [UIFont systemFontOfSize:14];
+    currentSocketsLabel.hidden = YES;
+    currentSocketsLabel.textAlignment = NSTextAlignmentRight;
+    [self.view addSubview:currentSocketsLabel];
+    
     
     
     self.startServer = [[StartView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
@@ -64,33 +74,52 @@
     }];
     [self.view addSubview:self.startServer];
     
+    //接收通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:NOTIFIER_STRING object:nil];
+    
 
 }
 
 
-#pragma mark -懒加载
-- (NSMutableSet *)clientSockets
+#pragma mark 接收通知
+- (void)receiveNotification:(NSNotification *)noti
 {
-    if (_clientSockets == nil) {
-        _clientSockets = [[NSMutableSet alloc]init];
+    if (noti.object != nil) {
+        NSInteger count = [noti.object integerValue];
+        [self setCurrentLabelText:count];
+        
+    }else{
+        [self upateDiskSpaceLabelText];
     }
-    return _clientSockets;
+
 }
 
-- (NSMutableData *)receiveData
+
+#pragma mark 服务器信息输出
+- (void)setCurrentLabelText:(NSInteger )count
 {
-    if (!_receiveData) {
-        _receiveData = [[NSMutableData alloc]init];
-    }
-    return _receiveData;
-  
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]initWithString:[NSString stringWithFormat:@"当前链接数量:  %ld",(long)count]];
+        NSRange range1 = NSMakeRange(0, 9);
+        NSRange range2 = NSMakeRange(9 , attributedString.length - 9);
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:range1];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:250/255. green:172/255. blue:28/255. alpha:1] range:range2];
+        currentSocketsLabel.attributedText = attributedString;
+    });
+
 }
-- (NSMutableArray *)dataArray
+
+- (void)upateDiskSpaceLabelText
 {
-    if (!_dataArray) {
-        _dataArray = [[NSMutableArray alloc]init];
-    }
-    return _dataArray;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]initWithString:[NSString stringWithFormat:@"剩余磁盘空间:  %0.2fGB",[[AppDataSource shareAppDataSource] freeDiskSpaceInBytes]/1024 /1024 /1024]];
+        NSRange range1 = NSMakeRange(0, 9);
+        NSRange range2 = NSMakeRange(9 , attributedString.length - 9);
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:range1];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:250/255. green:172/255. blue:28/255. alpha:1] range:range2];
+        diskSpaceLabel.attributedText = attributedString;
+    });
 }
 
 
@@ -98,332 +127,29 @@
 
 - (void)openServer
 {
+    //开启服务
+    static BOOL isOpen = NO;
     
-    if (self.socket != nil) {
+    if (isOpen) {
+        isOpen = ![[SocketServerManager sharedServerManager] closeServer];
         [self.startServer stop];
         [self.startServer setTitle:@"Start"];
-        self.socket = nil;
-        return;
-    }
-    
-    //1.创建scoket对象
-    GCDAsyncSocket *serviceScoket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(0, 0)];
-    
-    //2.绑定端口(6666)
-    NSError *error = nil;
-    [serviceScoket acceptOnPort:6666 error:&error];
-    
-    //3.开启服务(实质第二步绑定端口的同时默认开启服务)
-    if (error == nil) {
+        currentSocketsLabel.hidden = YES;
+    }else{
+        isOpen = [[SocketServerManager sharedServerManager] openServer];
         [self.startServer start];
         [self.startServer setTitle:@"Success"];
-        
-        NSLog(@"开启成功");
-    } else {
-        
-        NSLog(@"开启失败");
+        currentSocketsLabel.hidden = NO;
     }
-    self.socket = serviceScoket;
-    
-    //创建一个主目录
-    if (![[NSFileManager defaultManager] fileExistsAtPath:MainLib isDirectory:nil]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:MainLib
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:&error];
-    }
-
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:TmpLib isDirectory:nil]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:TmpLib
-                                  withIntermediateDirectories:YES
-                                                   attributes:nil
-                                                        error:&error];
-    }
-    
-
-}
-
-
-#pragma mark GCDAsyncSocketDelegate
-
-
-
-
-
-//连接到客户端socket
-- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
-{
-    //sock 服务端的socket
-    //newSocket 客户端连接的socket
-    NSLog(@"%@----%@",sock, newSocket);
-    
-    //1.保存连接的客户端socket(否则newSocket释放掉后链接会自动断开)
-    [self.clientSockets addObject:newSocket];
-    NSLog(@"%@",self.clientSockets);
-    
-    //2.监听客户端有没有数据上传
-    [newSocket readDataWithTimeout:-1 tag:0];
-}
-
-//接收到客户端数据
-- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
-{
-    
-    NSLog(@"当前sock  ----- %@",sock);
-    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
-    NSLog(@"二进制流数据长度: -- %ld" , data.length);
-
-    
-    //接受到用户数据，开始解析
-    HeaderInfo *header;
-    @try {
-        header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
-    } @catch (NSException *exception) {
-        [sock disconnect];
-        [self.clientSockets removeObject:sock];
-        
-    }
-
-    switch (header.cmd) {
-        case CmdTypeReigter:{
-            @try {
-
-                UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                
-                 [[DataBaseManager sharedDataBase] addUserInfoWithName:user.userName andPwd:user.userPwd withResultBlock:^(NSData *replyData, ResponsType resType) {
-                     //返回响应数据流
-                     [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReigter andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                 }];
-                
-            } @catch (NSException *exception) {
-                //返回响应异常数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReigter andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-
-            
-        }
-            break;
-        case CmdTypeLogin:{
-            
-            @try {
-                UserInfo *user = [[ProtocolDataManager sharedProtocolDataManager] getUserInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                
-                [[DataBaseManager sharedDataBase] userLoginWithName:user.userName andPwd:user.userPwd withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    //返回响应数据流
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
-                
-                
-            } @catch (NSException *exception) {
-                //返回响应异常数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeLogin andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-            
-            
-        }
-            break;
-        case CmdTypeReqUp:{
-            
-            @try {
-                ReqUpFileInfo *reqInfo = [[ProtocolDataManager sharedProtocolDataManager] getReqFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                
-                [[DataBaseManager sharedDataBase] addFileInfoWithName:reqInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    //返回响应数据流
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
-                
-                
-                
-            } @catch (NSException *exception) {
-                //返回响应异常数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqUp andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-            
-        }
-            break;
-        case CmdTypeUp:{
-            
-            @try {
-//                FileChunkInfo *chunkInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileChunkInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                
-                NSArray *chunkInfos = [self getFileChunkInfosWithData:data];
-                for (FileChunkInfo * chunkInfo in chunkInfos) {
-                    NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
-                    
-                    
-                    [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                        //返回响应数据流
-                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                    }];
-                }
-
-            } @catch (NSException *exception) {
-                //返回响应异常数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-            
-        }
-            break;
-        case CmdTypeReqDown:{
-            
-            @try {
-                ReqDownFileInfo *reqInfo = [[ProtocolDataManager sharedProtocolDataManager] getReqDownFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                
-                [[DataBaseManager sharedDataBase] queryFileWith:reqInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    //返回响应数据流
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqDown andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
-            } @catch (NSException *exception) {
-                //返回响应异常数据流
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeReqDown andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-            
-        }
-            break;
-        case CmdTypeDown:{
-            
-            @try {
-                DownFileInfo *downInfo = [[ProtocolDataManager sharedProtocolDataManager] getDownFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                [[DataBaseManager sharedDataBase]getFileDataWith:downInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    
-                    if (resType == ResponsTypeDownIng) {
-                        
-                        u_short chunks = replyData.length / 1024 + 1;
-                        NSLog(@"%lu",(unsigned long)replyData.length);
-                        NSLog(@"%hu",chunks);
-//                        dispatch_async(dispatch_queue_create("sendFile", DISPATCH_QUEUE_SERIAL), ^{
-                        
-                            for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
-                                
-                                if (currentChunk == chunks) {
-                                    u_short size = replyData.length % 1024;
-                                    NSLog(@"%hu",size);
-                                    NSLog(@"%hu",currentChunk);
-                                    NSData *subData = [replyData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-                                    
-                                    //返回响应数据流
-                                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownSuccess andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData]]  withTimeout:-1 tag:0];
-                                    
-//                                    [NSThread sleepForTimeInterval:1.0];
-//                                    [sock readDataWithTimeout:-1 tag:0];
-                                }else{
-                                    NSData *subData = [replyData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-                                    //返回响应数据流
-                                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownIng andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData]]  withTimeout:-1 tag:0];
-//                                    [sock readDataWithTimeout:-1 tag:0];
-//                                    [NSThread sleepForTimeInterval:1.0];
-                                }
-                                
-                            }
-                            
-//                        });
-                        
-                    }else{
-                        //返回响应数据流
-                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                    
-                    }
-                }];
-                
-            } @catch (NSException *exception) {
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-        }
-            break;
-        case CmdTypeAddFolder:{
-            
-            @try {
-                CreatFolderInfo *creatInfo = [[ProtocolDataManager sharedProtocolDataManager] getCreatFolderInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                [[DataBaseManager sharedDataBase] addFolderWith:creatInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
-  
-            } @catch (NSException *exception) {
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeAddFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-            
-            
-        }
-            break;
-        case CmdTypeRemoveFolder:{
-            
-            @try {
-                MoveFolderInfo *moveInfo = [[ProtocolDataManager sharedProtocolDataManager] getMoveFolderInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                [[DataBaseManager sharedDataBase] moveFolderWith:moveInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeRemoveFolder andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
  
-            } @catch (NSException *exception) {
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeRemoveFolder andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-        }
-            break;
-        case CmdTypeGetList:{
-            
-            @try {
-                FileListInfo *listInfo = [[ProtocolDataManager sharedProtocolDataManager] getFileListInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                [[DataBaseManager sharedDataBase] getFileListWith:listInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
 
-            } @catch (NSException *exception) {
-                [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeGetList andResult:ResultTypeDataError andData:[NSData new]]  withTimeout:-1 tag:0];
-            }
-            
-        }
-            break;
-            
-        default:
-            break;
-    }
-   
-    
-    
-    //不需要断开.
-    [sock readDataWithTimeout:-1 tag:0];
 }
 
-- (void)socket:(GCDAsyncSocket *)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag
+//删除通知
+- (void)dealloc
 {
-
-    NSLog(@"读取数据的长度%lu",(unsigned long)partialLength);
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
-
-- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
-{
-
-
-}
-
-- (void)socket:(GCDAsyncSocket *)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag{
-    
-    NSLog(@"写进去的数据的长度%lu",(unsigned long)partialLength);
-}
-
-- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err
-{
-    NSLog(@"%@断开 ，错误：%@",sock,err);
-
-    [self.clientSockets removeObject:sock];
-}
-
-- (NSArray *)getFileChunkInfosWithData:(NSData *)subData
-{
-    NSMutableArray *muArray = [NSMutableArray array];
-    
-    while (subData.length) {
-        
-        HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[subData subdataWithRange:NSMakeRange(0, 8)]];
-        FileChunkInfo *info = [[ProtocolDataManager sharedProtocolDataManager]getFileChunkInfoWithData:[subData subdataWithRange:NSMakeRange(8, header.c_length)]];
-        [muArray addObject:info];
-        subData = [subData subdataWithRange:NSMakeRange(8 +  header.c_length, subData.length - 8 -  header.c_length )];
-    }
-    
-    return muArray;
-}
-
 
 //设置StatusBar的样式
 - (UIStatusBarStyle)preferredStatusBarStyle

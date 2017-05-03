@@ -53,7 +53,7 @@
         case 0: {
             uint16_t prot = 6666;
             // 创建服务器
-            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+            self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_queue_create("tk.bourne.testQueue", DISPATCH_QUEUE_SERIAL)];
 
             NSError *error;
             
@@ -92,18 +92,18 @@
             NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
             NSError *error;
             NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"aaa.jpg" andDirectoryID:1 andSize:(u_int)filedata.length];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"zqn.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
             
             sleep(1);
             
-            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"bbb.jpg" andDirectoryID:1 andSize:(u_int)filedata.length];
+            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"zqn2.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
             [self.socketClient writeData:data2 withTimeout:-1 tag:0];
             
         }
             break;
         case 4:{
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"BBB" ofType:@"jpg"];
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
 //            NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
             NSData *filedata = [NSData dataWithContentsOfFile:path];
             
@@ -121,7 +121,7 @@
                         NSLog(@"%hu",size);
                         NSLog(@"%hu",currentChunk);
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:16 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
@@ -129,7 +129,7 @@
                         
                     }else{
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:1 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:16 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
@@ -148,7 +148,7 @@
                         NSLog(@"%hu",size);
                         NSLog(@"%hu",currentChunk);
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:17 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
@@ -156,7 +156,7 @@
                         
                     }else{
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:2 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:17 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
 
@@ -249,13 +249,14 @@
 #pragma mark 读取数据
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSLog(@"当前sock  ----- %@",sock);
-    NSLog(@"二进制流数据: -- %ld" , data.length);
-    
+//    NSLog(@"当前sock  ----- %@",sock);
+//    NSLog(@"客户端数据长度: -- %ld" , data.length);
+//    
     Byte ret;
     [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&ret length:sizeof(Byte)];
     
-    NSLog(@"%d",ret);
+    NSLog(@"客户端接收命令: --%d",ret);
+
 }
 
 @end

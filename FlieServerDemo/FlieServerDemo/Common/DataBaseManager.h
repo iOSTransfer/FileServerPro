@@ -44,7 +44,7 @@
 - (void)addFolderWith:(CreatFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
 
 //文件下载
-- (void)getFileDataWith:(DownFileInfo *)downFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;
+- (void)getFileDataWith:(DownFileInfo *)downFileInfo withResultBlock:(void(^)(NSArray *replyDatas,ResponsType resType))block;
 
 //删除一个文件夹
 - (void)moveFolderWith:(MoveFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block;

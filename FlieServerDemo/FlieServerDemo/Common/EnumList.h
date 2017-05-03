@@ -56,7 +56,8 @@ typedef NS_ENUM(Byte, ResponsType) {
     ResponsTypeUping                = 40,   //上传中
     ResponsTypeUpSuccess            = 41,   //文件上传成功
     ResponsTypeUpFull               = 42,   //服务器空间不足
-    ResponsTypeReqUpError           = 43,   //文件上传中断
+    ResponsTypeUpError              = 43,   //文件上传中断
+    ResponsTypeUpFileExist          = 44,   //文件存在
     
     
     ResponsTypeReqDownSuccess       = 50,   //允许下载

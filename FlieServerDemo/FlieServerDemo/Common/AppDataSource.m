@@ -68,7 +68,7 @@ static AppDataSource *_dataStone;
 }
 
 //手机剩余空间
-- (long long) freeDiskSpaceInBytes
+- (double) freeDiskSpaceInBytes
 {
     struct statfs buf;
     long long freespace = -1;

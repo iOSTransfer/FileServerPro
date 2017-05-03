@@ -157,16 +157,12 @@ static DataBaseManager *_dbManager;
     
     if (userToken) {
         NSNumber *token = [NSNumber numberWithUnsignedShort:userToken];
-        if ([[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-            
-            block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginExist andUserToken:0],ResponsTypeLoginExist);
-            
-        }else{
+        if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
             [[AppDataSource shareAppDataSource].currentUsers addObject:token];
-            block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginSuccess andUserToken:userToken],ResponsTypeLoginSuccess);
         }
         
-        
+        block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginSuccess andUserToken:userToken],ResponsTypeLoginSuccess);
+    
     }else{
         block([[ProtocolDataManager sharedProtocolDataManager] resLoginDataWithRet:ResponsTypeLoginError andUserToken:0],ResponsTypeLoginError);
     
@@ -272,18 +268,24 @@ static DataBaseManager *_dbManager;
     NSNumber *fileID = [NSNumber numberWithUnsignedShort:fileChunkInfo.fileID];
     if ([self.waitingUpFileIDs containsObject:fileID]) {
         
-        FMResultSet *res = [_db executeQuery:@"SELECT file_name FROM file WHERE file_id = ? ",@(fileChunkInfo.fileID)];
+        FMResultSet *res = [_db executeQuery:@"SELECT * FROM file WHERE file_id = ? ",@(fileChunkInfo.fileID)];
         
         BOOL isExistFile = NO;
         NSString *fileName;
-
+        Byte state = 0;
         while ([res next]) {
             fileName = [res stringForColumn:@"file_name"];
+            state = (Byte)[res intForColumn:@"file_state"];
             isExistFile = YES;
         }
         
         if (fileName == nil) {
             block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:fileChunkInfo.fileID],ResponsTypeServerError);
+            return;
+        }
+        
+        if (fileName != nil && state) {
+            block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpFileExist andFileID:fileChunkInfo.fileID],ResponsTypeUpFileExist);
             return;
         }
 
@@ -311,7 +313,7 @@ static DataBaseManager *_dbManager;
     
     
     if (self.keyHandles.count  < 1 ) {
-        block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeReqUpError andFileID:fileChunkInfo.fileID],ResponsTypeReqUpError);
+        block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpError andFileID:fileChunkInfo.fileID],ResponsTypeUpError);
         return;
     }
     
@@ -381,12 +383,12 @@ static DataBaseManager *_dbManager;
 }
 
 //文件下载
-- (void)getFileDataWith:(DownFileInfo *)downFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)getFileDataWith:(DownFileInfo *)downFileInfo withResultBlock:(void(^)(NSArray *replyDatas,ResponsType resType))block
 {
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:downFileInfo.userToken];
     if (![[AppDataSource shareAppDataSource].currentUsers containsObject:token]) {
-        block([[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeNoLogin andFileID:0 andChunks:0 andCurrentChunk:0 andDataSize:0 andSubFileData:0],ResponsTypeNoLogin);
+        block(@[[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeNoLogin andFileID:0 andChunks:0 andCurrentChunk:0 andDataSize:0 andSubFileData:0]],ResponsTypeNoLogin);
         return;
     }
     
@@ -400,11 +402,32 @@ static DataBaseManager *_dbManager;
     }
     
     if (!isExistFile) {
-       block([[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownNUll andFileID:0 andChunks:0 andCurrentChunk:0 andDataSize:0 andSubFileData:0],ResponsTypeNoLogin);
+       block(@[[[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownNUll andFileID:0 andChunks:0 andCurrentChunk:0 andDataSize:0 andSubFileData:0]],ResponsTypeNoLogin);
     }else{
         NSString *path = [MainLib stringByAppendingPathComponent:fileName];
         NSData *fileData = [NSData dataWithContentsOfFile:path];
-        block(fileData,ResponsTypeDownIng);
+        NSMutableArray *dataArray = [NSMutableArray array];
+        u_short chunks = fileData.length / 1024 + 1;
+        NSLog(@"%lu",(unsigned long)fileData.length);
+        NSLog(@"%hu",chunks);
+        for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+            
+            NSData *data;
+            if (currentChunk == chunks) {
+                u_short size = fileData.length % 1024;
+                NSLog(@"%hu",size);
+                NSLog(@"%hu",currentChunk);
+                NSData *subData = [fileData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+                data = [[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownSuccess andFileID:downFileInfo.fileID andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+            }else{
+                NSData *subData = [fileData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
+                data = [[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownIng andFileID:downFileInfo.fileID andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                
+            }
+            [dataArray addObject:data];
+        }
+        
+        block(dataArray,ResponsTypeDownSuccess);
     
     }
 }

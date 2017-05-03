@@ -19,9 +19,8 @@
 //获取IP地址
 - (NSString *)deviceIPAdress;
 
-//返回手机剩余空间
-- (long long) freeDiskSpaceInBytes;
-
+//返回手机剩余空间(b)
+- (double)freeDiskSpaceInBytes;
 
 
 @end

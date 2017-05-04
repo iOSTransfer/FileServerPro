@@ -9,12 +9,16 @@
 #import "socketClientManager.h"
 #import "GCDAsyncSocket.h"
 #import "AppDataSource.h"
+#import "HeaderInfo.h"
+#import "ProtocolDataManager.h"
 
 static socketClientManager *_clientManager;
 
 @interface socketClientManager()<GCDAsyncSocketDelegate>
 
 @property (nonatomic , strong)GCDAsyncSocket *socketClient;
+@property (nonatomic , strong)NSMutableData *readBuff;
+@property (nonatomic , copy)GetGeneralDataBlock callBack;
 
 @end
 
@@ -38,6 +42,7 @@ static socketClientManager *_clientManager;
     self = [super init];
     if (self) {
         self.socketClient = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+        self.readBuff = [NSMutableData data];
     }
     return self;
 }
@@ -47,7 +52,7 @@ static socketClientManager *_clientManager;
 - (BOOL)connectServer
 {
     NSError *error;
-    
+    [self.socketClient disconnect];
     // 连接服务器
     [self.socketClient connectToHost:[[AppDataSource shareAppDataSource] deviceIPAdress] onPort:6666 error:&error];
     
@@ -74,7 +79,7 @@ static socketClientManager *_clientManager;
     }else{
         NSLog(@"正常断开");
     }
-    [self connectServer];
+    
 }
 
 -(void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
@@ -84,11 +89,173 @@ static socketClientManager *_clientManager;
 
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    Byte ret;
-    [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&ret length:sizeof(Byte)];
+    [self.readBuff appendData:data];
     
-    NSLog(@"客户端接收命令: --%d",ret);
-    NSLog(@"客户端数据长度: -- %ld" , data.length);
+    NSLog(@"客户端当前sock  ----- %@",sock);
+    NSLog(@"客户端当前线程 :--%@",[NSThread currentThread]);
+    NSLog(@"客户端二进制流数据长度: -- %ld" , data.length);
+    NSLog(@"客户端readBuff数据长度: -- %ld" , self.readBuff.length);
+    
+    while (_readBuff.length >= 8) {
+        
+        @try {
+            HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getRespondHeaderInfoWithData:[self.readBuff subdataWithRange:NSMakeRange(0, 8)]];
+            NSInteger complateDataLength = header.c_length + 8;
+            
+            if (_readBuff.length >= complateDataLength) {
+                
+                NSData *subData = [_readBuff subdataWithRange:NSMakeRange(0, complateDataLength)];
+                [self handleTcpResponseData:subData andSocket:sock];
+                _readBuff = [NSMutableData dataWithData:[_readBuff subdataWithRange:NSMakeRange(complateDataLength, _readBuff.length - complateDataLength)]];
+            } else {
+                [sock readDataWithTimeout:-1 tag:0];
+                return;
+            }
+        } @catch (NSException *exception) {
+            
+            self.readBuff = nil;
+            self.readBuff = [NSMutableData data];
+            [sock disconnect];
+
+        }
+        
+        
+    }
+    [sock readDataWithTimeout:-1 tag:0];
+    
+}
+
+#pragma mark 数据包解析后回调
+//发送登录请求
+- (void)sendLoginInfo:(UserInfo *)userInfo andBlock:(GetGeneralDataBlock )block
+{
+    _callBack = block;
+    
+    NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:userInfo.userName andPassword:userInfo.userPwd];
+    [self.socketClient writeData:data withTimeout:-1 tag:0];
+}
+
+
+
+#pragma mark  数据包解析
+
+- (void)handleTcpResponseData:(NSData *)data andSocket:(GCDAsyncSocket *)sock
+{
+    HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getRespondHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
+    
+    switch (header.cmd) {
+        case CmdTypeReigter:{
+            @try {
+                
+                
+            } @catch (NSException *exception) {
+
+            }
+            
+            
+        }
+            break;
+        case CmdTypeLogin:{
+            
+            @try {
+                Byte resultType;
+                u_short key;
+                [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
+                [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
+                
+                _callBack(resultType,key);
+            } @catch (NSException *exception) {
+
+            }
+            
+            
+        }
+            break;
+        case CmdTypeReqUp:{
+            
+            @try {
+
+                
+                
+            } @catch (NSException *exception) {
+     
+            }
+            
+        }
+            break;
+        case CmdTypeUp:{
+            
+            @try {
+                
+  
+                
+            } @catch (NSException *exception) {
+
+            }
+            
+        }
+            break;
+        case CmdTypeReqDown:{
+            
+            @try {
+
+ 
+      
+            } @catch (NSException *exception) {
+
+            }
+            
+        }
+            break;
+        case CmdTypeDown:{
+            
+            @try {
+
+
+                
+            } @catch (NSException *exception) {
+
+            }
+        }
+            break;
+        case CmdTypeAddFolder:{
+            
+            @try {
+
+            } @catch (NSException *exception) {
+
+            }
+            
+            
+        }
+            break;
+        case CmdTypeRemoveFolder:{
+            
+            @try {
+
+                
+            } @catch (NSException *exception) {
+
+            }
+        }
+            break;
+        case CmdTypeGetList:{
+            
+            @try {
+
+                
+            } @catch (NSException *exception) {
+
+            }
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    
 }
 
 

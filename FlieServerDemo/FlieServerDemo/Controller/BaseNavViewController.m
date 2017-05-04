@@ -24,6 +24,7 @@
     
     
     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:18.0f]}];
+    [self.navigationBar setTintColor:[UIColor whiteColor]];
     CGSize imageSize = CGSizeMake(SCREEN_WIDTH, 64);
     UIGraphicsImageRenderer *render = [[UIGraphicsImageRenderer alloc]initWithSize:imageSize];
     UIImage *image = [render imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull rendererContext) {
@@ -45,6 +46,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    if (self.childViewControllers.count > 0) {
+        viewController.hidesBottomBarWhenPushed = YES;
+    }
+    
+    [super pushViewController:viewController animated:animated];
+}
 
 //设置StatusBar的样式
 - (UIStatusBarStyle)preferredStatusBarStyle

@@ -27,7 +27,7 @@ static ProtocolDataManager *_dataManager;
 
 }
 
-#pragma mark  请求部分拼装
+#pragma mark  客户端向服务器发送请求信息组装
 
 //给真实数据添加协议头信息
 - (NSData *)protocolDataWithCmd:(CmdType)cmd andData:(NSData *)data
@@ -247,7 +247,7 @@ static ProtocolDataManager *_dataManager;
     return [self protocolDataWithCmd:CmdTypeGetList andData:muData];
 }
 
-#pragma mark  响应数据拼装
+#pragma mark  服务器封装响应数据给客户端
 
 //给真实数据添加响应头信息
 - (NSData *)resHeaderDataWithCmd:(Byte)cmd andResult:(Byte)result andData:(NSData *)data
@@ -413,7 +413,7 @@ static ProtocolDataManager *_dataManager;
 }
 
 
-#pragma mark  请求体解析
+#pragma mark  服务器解析客服端请求的数据
 
 //解析Header信息
 - (HeaderInfo *)getHeaderInfoWithData:(NSData *)data
@@ -611,7 +611,28 @@ static ProtocolDataManager *_dataManager;
     return listInfo;
 }
 
+#pragma mark  客服端解析服务器响应数据
 
+//解析请求头信息
+- (HeaderInfo *)getRespondHeaderInfoWithData:(NSData *)data
+{
+    Byte cmdByte;
+    Byte ver;
+    
+    uint c_length;
+    
+    [[data subdataWithRange:NSMakeRange(0, 1)] getBytes:&cmdByte length:sizeof(Byte)];
+    [[data subdataWithRange:NSMakeRange(2, 1)] getBytes:&ver length:sizeof(Byte)];
+    [[data subdataWithRange:NSMakeRange(4, 4)] getBytes:&c_length length:sizeof(uint)];
+    
+    HeaderInfo *header = [HeaderInfo new];
+    header.cmd = cmdByte;
+    header.ver = ver;
+    header.c_length = c_length;
+    
+    return header;
+
+}
 
 
 

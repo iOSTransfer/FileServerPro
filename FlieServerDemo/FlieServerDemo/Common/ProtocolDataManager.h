@@ -26,7 +26,7 @@
 + (instancetype)sharedProtocolDataManager;
 
 
-#pragma mark  请求部分拼装
+#pragma mark  客户端向服务器发送请求信息组装
 
 //给真实数据添加协议头信息
 - (NSData *)protocolDataWithCmd:(CmdType)cmd andData:(NSData *)data;
@@ -58,7 +58,7 @@
 //请求文件列表 cmd9
 - (NSData *)fileListWithToken:(u_short)userToken andDirectoryID:(u_short)diretoryID;
 
-#pragma mark  响应数据拼装
+#pragma mark  服务器封装响应数据给客户端
 
 //给真实数据添加响应头信息
 - (NSData *)resHeaderDataWithCmd:(Byte)cmd andResult:(Byte)result andData:(NSData *)data;
@@ -90,9 +90,9 @@
 //文件列表响应
 - (NSData *)resFileListWithRet:(ResponsType)type andParentID:(u_short)parentId andSourceModels:(NSArray *)models;
 
-#pragma mark  响应部分解析
+#pragma mark  服务器解析客服端请求的数据
 
-//解析用户名&密码信息
+//解析请求头信息
 - (HeaderInfo *)getHeaderInfoWithData:(NSData *)data;
 
 //解析用户名&密码信息
@@ -118,5 +118,13 @@
 
 //解析文件列表请求信息
 - (FileListInfo *)getFileListInfoWithData:(NSData *)data;
+
+
+#pragma mark  客服端解析服务器响应数据
+
+//解析响应头信息
+- (HeaderInfo *)getRespondHeaderInfoWithData:(NSData *)data;
+
+
 
 @end

@@ -7,6 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UserInfo.h"
+#import "EnumList.h"
+
+typedef void(^GetGeneralDataBlock)(ResponsType replyType , u_short key);
 
 @interface socketClientManager : NSObject
 
@@ -17,6 +21,9 @@
 
 //断开服务
 - (BOOL)disconnectServer;
+
+//发送登录请求
+- (void)sendLoginInfo:(UserInfo *)userInfo andBlock:(GetGeneralDataBlock )block;
 
 
 @end

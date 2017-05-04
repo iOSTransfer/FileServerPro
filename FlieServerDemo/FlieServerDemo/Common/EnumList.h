@@ -71,7 +71,7 @@ typedef NS_ENUM(Byte, ResponsType) {
     ResponsTypeAddFolderSuccess     = 70,   //文件夹创建成功
     ResponsTypeFolderExist          = 71,   //该文件夹存在
     ResponsTypeFolderParentNoExist  = 72,   //文件父目录不存在
-    ResponsTypeFolderNameNull       = 72,   //文件名称不能为空
+    ResponsTypeFolderNameNull       = 73,   //文件名称不能为空
     
     ResponsTypeMoveFolderSuccess    = 80,   //文件夹删除
     ResponsTypeNoFolderOrNoParent   = 81,   //该文件夹或者父目录不存在
@@ -81,9 +81,6 @@ typedef NS_ENUM(Byte, ResponsType) {
     
     
 };
-
-
-
 
 
 

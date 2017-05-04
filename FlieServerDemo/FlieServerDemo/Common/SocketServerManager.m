@@ -26,6 +26,8 @@ static SocketServerManager *_serverManager;
 
 @property (nonatomic ,strong)GCDAsyncSocket *serverSocket;
 @property (strong, nonatomic)NSMutableSet *clientSockets;//保存客户端scoket
+@property (nonatomic , strong)NSMutableData *readBuff;
+
 
 @end
 
@@ -64,6 +66,7 @@ static SocketServerManager *_serverManager;
     self = [super init];
     if (self) {
         self.serverSocket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(0, 0)];
+        self.readBuff = [NSMutableData data];
     }
 
     return self;
@@ -111,27 +114,67 @@ static SocketServerManager *_serverManager;
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
     NSLog(@"服务端当前链接sockets:%@",self.clientSockets);
     [newSocket readDataWithTimeout:-1 tag:0];
+
 }
 
 //接收到客户端数据
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    [self.readBuff appendData:data];
     
 //    NSLog(@"当前sock  ----- %@",sock);
 //    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
     NSLog(@"二进制流数据长度: -- %ld" , data.length);
+    NSLog(@"readBuff数据长度: -- %ld" , self.readBuff.length);
     
-    
-    //接受到用户数据，开始解析
-    HeaderInfo *header;
-    @try {
-        header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
-    } @catch (NSException *exception) {
-        [sock disconnect];
-        [self.clientSockets removeObject:sock];
+    while (_readBuff.length >= 8) {
+        
+        @try {
+            HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[self.readBuff subdataWithRange:NSMakeRange(0, 8)]];
+            
+            NSInteger complateDataLength = header.c_length + 8;
+            if (_readBuff.length >= complateDataLength) {
+                
+                NSData *subData = [_readBuff subdataWithRange:NSMakeRange(0, complateDataLength)];
+                [self handleTcpResponseData:subData andSocket:sock];
+                _readBuff = [NSMutableData dataWithData:[_readBuff subdataWithRange:NSMakeRange(complateDataLength, _readBuff.length - complateDataLength)]];
+            } else {
+                [sock readDataWithTimeout:-1 tag:0];
+                return;
+            }
+        } @catch (NSException *exception) {
+            
+            self.readBuff = nil;
+            self.readBuff = [NSMutableData data];
+            [sock disconnect];
+            [self.clientSockets removeObject:sock];
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
+        }
+        
         
     }
+    [sock readDataWithTimeout:-1 tag:0];
     
+}
+
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err
+{
+    NSLog(@"%@断开 ，错误：%@",sock,err);
+    
+    if ([self.clientSockets containsObject:sock]) {
+        [self.clientSockets removeObject:sock];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
+}
+
+#pragma mark  数据包解析
+
+- (void)handleTcpResponseData:(NSData *)data andSocket:(GCDAsyncSocket *)sock
+{
+    HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
+
     switch (header.cmd) {
         case CmdTypeReigter:{
             @try {
@@ -192,16 +235,14 @@ static SocketServerManager *_serverManager;
         case CmdTypeUp:{
             
             @try {
-                
-                NSArray *chunkInfos = [self getFileChunkInfosWithData:data];
-                for (FileChunkInfo * chunkInfo in chunkInfos) {
-//                    NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
-                    [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                        //返回响应数据流
-                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                    }];
-  
-                }
+
+                FileChunkInfo * chunkInfo =[[ProtocolDataManager sharedProtocolDataManager]getFileChunkInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
+                NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
+                [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
+                    //返回响应数据流
+                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                }];
+
                 
                 //更新内存
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:nil];
@@ -235,10 +276,12 @@ static SocketServerManager *_serverManager;
                 DownFileInfo *downInfo = [[ProtocolDataManager sharedProtocolDataManager] getDownFileInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
                 [[DataBaseManager sharedDataBase]getFileDataWith:downInfo withResultBlock:^(NSArray *replyDatas, ResponsType resType) {
                     
-                    for (NSData *subData in replyDatas) {
-                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:subData]  withTimeout:-1 tag:0];
-                    }
-                    
+                    dispatch_async(dispatch_queue_create("respondFileData", DISPATCH_QUEUE_SERIAL), ^{
+                        for (NSData *subData in replyDatas) {
+                            [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:subData]  withTimeout:-1 tag:0];
+                        }
+                    });
+   
                 }];
                 
             } @catch (NSException *exception) {
@@ -293,50 +336,9 @@ static SocketServerManager *_serverManager;
             break;
     }
     
-}
-
-- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
-{
-    [sock readDataWithTimeout:-1 tag:tag];
     
 }
 
-- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(nullable NSError *)err
-{
-    NSLog(@"%@断开 ，错误：%@",sock,err);
-    
-    if ([self.clientSockets containsObject:sock]) {
-        [self.clientSockets removeObject:sock];
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
-}
-
-#pragma mark  分包解析
-//分包
-- (NSArray *)getFileChunkInfosWithData:(NSData *)subData
-{
-    NSMutableArray *muArray = [NSMutableArray array];
-    
-    while (subData.length) {
-        
-        HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[subData subdataWithRange:NSMakeRange(0, 8)]];
-        if (header.c_length <= subData.length) {
-            
-            FileChunkInfo *info = [[ProtocolDataManager sharedProtocolDataManager]getFileChunkInfoWithData:[subData subdataWithRange:NSMakeRange(8, header.c_length)]];
-            [muArray addObject:info];
-            subData = [subData subdataWithRange:NSMakeRange(8 +  header.c_length, subData.length - 8 -  header.c_length )];
-        }else{
-            NSLog(@"包不完整");
-        }
-        
-        
-        
-        
-    }
-    
-    return muArray;
-}
 
 
 @end

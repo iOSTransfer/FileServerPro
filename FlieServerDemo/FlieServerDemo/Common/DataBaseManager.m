@@ -121,7 +121,7 @@ static DataBaseManager *_dbManager;
 #pragma mark 用户信息表
 
 //添加用户注册信息
-- (void)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)addUserInfoWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(ResultBlock)block
 {
     if (userName.length < 1 || password.length < 1 ) {
         block([[ProtocolDataManager sharedProtocolDataManager] resRegisterDataWithRet:ResponsTypeRegisterNull],ResponsTypeRegisterNull);
@@ -140,7 +140,7 @@ static DataBaseManager *_dbManager;
 }
 
 //客户端发送登录验证
-- (void)userLoginWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)userLoginWithName:(NSString*)userName andPwd:(NSString*)password withResultBlock:(ResultBlock)block
 {
     if (userName.length < 1 || password.length < 1 ) {
         
@@ -173,7 +173,7 @@ static DataBaseManager *_dbManager;
 
 #pragma mark 文件信息表 & 文件夹信息表
 //添加文件信息
-- (void)addFileInfoWithName:(ReqUpFileInfo *)upFileInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)addFileInfoWithName:(ReqUpFileInfo *)upFileInfo withResultBlock:(ResultBlock)block
 {
     //文件名称不能为空
     if (upFileInfo.fileNameLength < 1) {
@@ -255,7 +255,7 @@ static DataBaseManager *_dbManager;
 }
 
 //分发文件数据包 & 返回响应二进制数据
-- (void)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)cachesSubFileDataWith:(FileChunkInfo *)fileChunkInfo withResultBlock:(ResultBlock)block
 {
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:fileChunkInfo.userToken];
@@ -357,7 +357,7 @@ static DataBaseManager *_dbManager;
 }
 
 //查询文件是否存在
-- (void)queryFileWith:(ReqDownFileInfo *)reqDownInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)queryFileWith:(ReqDownFileInfo *)reqDownInfo withResultBlock:(ResultBlock)block
 {
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:reqDownInfo.userToken];
@@ -433,7 +433,7 @@ static DataBaseManager *_dbManager;
 }
 
 //创建一个文件夹
-- (void)addFolderWith:(CreatFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)addFolderWith:(CreatFolderInfo *)folderInfo withResultBlock:(ResultBlock)block
 {
     
     if (folderInfo.diretoryName.length < 1) {
@@ -487,7 +487,7 @@ static DataBaseManager *_dbManager;
 }
 
 //删除一个文件夹
-- (void)moveFolderWith:(MoveFolderInfo *)folderInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)moveFolderWith:(MoveFolderInfo *)folderInfo withResultBlock:(ResultBlock)block
 {
 
     //未登录
@@ -523,7 +523,7 @@ static DataBaseManager *_dbManager;
 }
 
 //获取文件列表
-- (void)getFileListWith:(FileListInfo *)fileListInfo withResultBlock:(void(^)(NSData *replyData,ResponsType resType))block
+- (void)getFileListWith:(FileListInfo *)fileListInfo withResultBlock:(ResultBlock)block
 {
     //未登录
     NSNumber *token = [NSNumber numberWithUnsignedShort:fileListInfo.userToken];

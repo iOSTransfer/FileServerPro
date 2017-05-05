@@ -116,7 +116,7 @@ static ProtocolDataManager *_dataManager;
 //请求上传文件信息组装
 - (NSData *)reqUpFileDataWithFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
 {
-    u_short token = 1;
+    u_short token = 2;
     
     NSData *fileNameData = [fileName dataUsingEncoding:NSUTF8StringEncoding];
     Byte fileNameLength = (Byte)fileNameData.length;

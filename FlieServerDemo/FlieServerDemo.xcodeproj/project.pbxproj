@@ -33,8 +33,6 @@
 		6855D3B41EBB1AC900E3E04D /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6855D3B31EBB1AC900E3E04D /* BaseViewController.m */; };
 		6855D3B61EBB1AF200E3E04D /* 返回@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6855D3B51EBB1AF200E3E04D /* 返回@3x.png */; };
 		6855D3B91EBB293000E3E04D /* shocking@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6855D3B81EBB293000E3E04D /* shocking@3x.png */; };
-		6855D3BB1EBB2B8400E3E04D /* MineCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6855D3BA1EBB2B8400E3E04D /* MineCollectionViewCell.xib */; };
-		6855D3BE1EBB2BBA00E3E04D /* MineCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6855D3BD1EBB2BBA00E3E04D /* MineCollectionViewCell.m */; };
 		6855D3C11EBB2DD000E3E04D /* TitleReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */; };
 		686E9B931EB82C950098EFEB /* DownFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 686E9B921EB82C950098EFEB /* DownFileInfo.m */; };
 		687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D41EAF357B007914A4 /* ProtocolDataManager.m */; };
@@ -59,6 +57,32 @@
 		68A83D411EADEF140061AC6D /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D3C1EADEF140061AC6D /* FMResultSet.m */; };
 		68A83D451EADEF330061AC6D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A83D441EADEF330061AC6D /* libsqlite3.tbd */; };
 		68A83D481EADEF8C0061AC6D /* DataBaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A83D471EADEF8C0061AC6D /* DataBaseManager.m */; };
+		68B67C6A1EBBFE05001E5085 /* MineCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B67C681EBBFE05001E5085 /* MineCollectionViewCell.m */; };
+		68B67C6B1EBBFE05001E5085 /* MineCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C691EBBFE05001E5085 /* MineCollectionViewCell.xib */; };
+		68B67C6E1EBC05BF001E5085 /* download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C6C1EBC05BF001E5085 /* download@2x.png */; };
+		68B67C6F1EBC05BF001E5085 /* download@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C6D1EBC05BF001E5085 /* download@3x.png */; };
+		68B67C721EBC05C5001E5085 /* upload@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C701EBC05C5001E5085 /* upload@2x.png */; };
+		68B67C731EBC05C5001E5085 /* upload@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C711EBC05C5001E5085 /* upload@3x.png */; };
+		68B67C761EBC05EC001E5085 /* sources@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C741EBC05EC001E5085 /* sources@2x.png */; };
+		68B67C771EBC05EC001E5085 /* sources@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C751EBC05EC001E5085 /* sources@3x.png */; };
+		68B67C841EBC085B001E5085 /* mine_history@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C781EBC085B001E5085 /* mine_history@2x.png */; };
+		68B67C851EBC085B001E5085 /* mine_history@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C791EBC085B001E5085 /* mine_history@3x.png */; };
+		68B67C861EBC085B001E5085 /* removeFolder.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C7A1EBC085B001E5085 /* removeFolder.png */; };
+		68B67C871EBC085B001E5085 /* addFolder.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C7B1EBC085B001E5085 /* addFolder.png */; };
+		68B67C881EBC085B001E5085 /* mine_intergal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C7C1EBC085B001E5085 /* mine_intergal@2x.png */; };
+		68B67C891EBC085B001E5085 /* mine_intergal@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C7D1EBC085B001E5085 /* mine_intergal@3x.png */; };
+		68B67C8A1EBC085B001E5085 /* mine_pocketcenter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C7E1EBC085B001E5085 /* mine_pocketcenter@2x.png */; };
+		68B67C8B1EBC085B001E5085 /* mine_pocketcenter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C7F1EBC085B001E5085 /* mine_pocketcenter@3x.png */; };
+		68B67C8C1EBC085B001E5085 /* mine_theme@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C801EBC085B001E5085 /* mine_theme@2x.png */; };
+		68B67C8D1EBC085B001E5085 /* mine_theme@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C811EBC085B001E5085 /* mine_theme@3x.png */; };
+		68B67C8E1EBC085B001E5085 /* mine_uperCenter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C821EBC085B001E5085 /* mine_uperCenter@2x.png */; };
+		68B67C8F1EBC085B001E5085 /* mine_uperCenter@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C831EBC085B001E5085 /* mine_uperCenter@3x.png */; };
+		68B67C921EBC47DE001E5085 /* UpFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B67C911EBC47DE001E5085 /* UpFileViewController.m */; };
+		68B67C941EBC5C64001E5085 /* upFileIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C931EBC5C64001E5085 /* upFileIcon.png */; };
+		68B67C981EBC5EF1001E5085 /* KxMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B67C971EBC5EF0001E5085 /* KxMenu.m */; };
+		68B67C9B1EBC64BC001E5085 /* NSString+Add.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B67C9A1EBC64BC001E5085 /* NSString+Add.m */; };
+		68B67C9D1EBC700D001E5085 /* nofileHistory.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C9C1EBC700D001E5085 /* nofileHistory.jpg */; };
+		68B67C9F1EBC768A001E5085 /* noUpFile.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 68B67C9E1EBC768A001E5085 /* noUpFile.jpg */; };
 		68CB0B181EB1F11300D38C17 /* BBB.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 68CB0B171EB1F11300D38C17 /* BBB.jpg */; };
 		899C5B0D9FEDD5DFEBBCC98C /* Pods_FlieServerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */; };
 /* End PBXBuildFile section */
@@ -128,9 +152,6 @@
 		6855D3B31EBB1AC900E3E04D /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		6855D3B51EBB1AF200E3E04D /* 返回@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "返回@3x.png"; sourceTree = "<group>"; };
 		6855D3B81EBB293000E3E04D /* shocking@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shocking@3x.png"; sourceTree = "<group>"; };
-		6855D3BA1EBB2B8400E3E04D /* MineCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MineCollectionViewCell.xib; sourceTree = "<group>"; };
-		6855D3BC1EBB2BBA00E3E04D /* MineCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MineCollectionViewCell.h; sourceTree = "<group>"; };
-		6855D3BD1EBB2BBA00E3E04D /* MineCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MineCollectionViewCell.m; sourceTree = "<group>"; };
 		6855D3BF1EBB2DD000E3E04D /* TitleReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleReusableView.h; sourceTree = "<group>"; };
 		6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleReusableView.m; sourceTree = "<group>"; };
 		686E9B911EB82C950098EFEB /* DownFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownFileInfo.h; sourceTree = "<group>"; };
@@ -183,6 +204,36 @@
 		68A83D441EADEF330061AC6D /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		68A83D461EADEF8C0061AC6D /* DataBaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBaseManager.h; sourceTree = "<group>"; };
 		68A83D471EADEF8C0061AC6D /* DataBaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBaseManager.m; sourceTree = "<group>"; };
+		68B67C671EBBFE05001E5085 /* MineCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MineCollectionViewCell.h; sourceTree = "<group>"; };
+		68B67C681EBBFE05001E5085 /* MineCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MineCollectionViewCell.m; sourceTree = "<group>"; };
+		68B67C691EBBFE05001E5085 /* MineCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MineCollectionViewCell.xib; sourceTree = "<group>"; };
+		68B67C6C1EBC05BF001E5085 /* download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "download@2x.png"; sourceTree = "<group>"; };
+		68B67C6D1EBC05BF001E5085 /* download@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "download@3x.png"; sourceTree = "<group>"; };
+		68B67C701EBC05C5001E5085 /* upload@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "upload@2x.png"; sourceTree = "<group>"; };
+		68B67C711EBC05C5001E5085 /* upload@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "upload@3x.png"; sourceTree = "<group>"; };
+		68B67C741EBC05EC001E5085 /* sources@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sources@2x.png"; sourceTree = "<group>"; };
+		68B67C751EBC05EC001E5085 /* sources@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sources@3x.png"; sourceTree = "<group>"; };
+		68B67C781EBC085B001E5085 /* mine_history@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_history@2x.png"; sourceTree = "<group>"; };
+		68B67C791EBC085B001E5085 /* mine_history@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_history@3x.png"; sourceTree = "<group>"; };
+		68B67C7A1EBC085B001E5085 /* removeFolder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = removeFolder.png; sourceTree = "<group>"; };
+		68B67C7B1EBC085B001E5085 /* addFolder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addFolder.png; sourceTree = "<group>"; };
+		68B67C7C1EBC085B001E5085 /* mine_intergal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_intergal@2x.png"; sourceTree = "<group>"; };
+		68B67C7D1EBC085B001E5085 /* mine_intergal@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_intergal@3x.png"; sourceTree = "<group>"; };
+		68B67C7E1EBC085B001E5085 /* mine_pocketcenter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_pocketcenter@2x.png"; sourceTree = "<group>"; };
+		68B67C7F1EBC085B001E5085 /* mine_pocketcenter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_pocketcenter@3x.png"; sourceTree = "<group>"; };
+		68B67C801EBC085B001E5085 /* mine_theme@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_theme@2x.png"; sourceTree = "<group>"; };
+		68B67C811EBC085B001E5085 /* mine_theme@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_theme@3x.png"; sourceTree = "<group>"; };
+		68B67C821EBC085B001E5085 /* mine_uperCenter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_uperCenter@2x.png"; sourceTree = "<group>"; };
+		68B67C831EBC085B001E5085 /* mine_uperCenter@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mine_uperCenter@3x.png"; sourceTree = "<group>"; };
+		68B67C901EBC47DE001E5085 /* UpFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpFileViewController.h; sourceTree = "<group>"; };
+		68B67C911EBC47DE001E5085 /* UpFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpFileViewController.m; sourceTree = "<group>"; };
+		68B67C931EBC5C64001E5085 /* upFileIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upFileIcon.png; sourceTree = "<group>"; };
+		68B67C961EBC5EF0001E5085 /* KxMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KxMenu.h; sourceTree = "<group>"; };
+		68B67C971EBC5EF0001E5085 /* KxMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KxMenu.m; sourceTree = "<group>"; };
+		68B67C991EBC64BC001E5085 /* NSString+Add.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Add.h"; sourceTree = "<group>"; };
+		68B67C9A1EBC64BC001E5085 /* NSString+Add.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Add.m"; sourceTree = "<group>"; };
+		68B67C9C1EBC700D001E5085 /* nofileHistory.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = nofileHistory.jpg; sourceTree = "<group>"; };
+		68B67C9E1EBC768A001E5085 /* noUpFile.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noUpFile.jpg; sourceTree = "<group>"; };
 		68CB0B171EB1F11300D38C17 /* BBB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BBB.jpg; sourceTree = "<group>"; };
 		A64BAF0C664DCE748928B3DE /* Pods-FlieServerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlieServerDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FlieServerDemo/Pods-FlieServerDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		BF4B518F9325A4BA90CCF79B /* Pods_FlieServerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlieServerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -257,11 +308,11 @@
 				681B46241EAD876200BEA215 /* StartView.m */,
 				6855D3A11EBAFE0D00E3E04D /* BorderTextField.h */,
 				6855D3A21EBAFE0D00E3E04D /* BorderTextField.m */,
-				6855D3BA1EBB2B8400E3E04D /* MineCollectionViewCell.xib */,
-				6855D3BC1EBB2BBA00E3E04D /* MineCollectionViewCell.h */,
-				6855D3BD1EBB2BBA00E3E04D /* MineCollectionViewCell.m */,
 				6855D3BF1EBB2DD000E3E04D /* TitleReusableView.h */,
 				6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */,
+				68B67C671EBBFE05001E5085 /* MineCollectionViewCell.h */,
+				68B67C681EBBFE05001E5085 /* MineCollectionViewCell.m */,
+				68B67C691EBBFE05001E5085 /* MineCollectionViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -338,6 +389,8 @@
 				6855D39F1EBAFDAC00E3E04D /* LoginViewController.m */,
 				6855D3AF1EBB197400E3E04D /* ClientMainViewController.h */,
 				6855D3B01EBB197400E3E04D /* ClientMainViewController.m */,
+				68B67C901EBC47DE001E5085 /* UpFileViewController.h */,
+				68B67C911EBC47DE001E5085 /* UpFileViewController.m */,
 			);
 			path = ClientController;
 			sourceTree = "<group>";
@@ -366,6 +419,27 @@
 			isa = PBXGroup;
 			children = (
 				6855D3B81EBB293000E3E04D /* shocking@3x.png */,
+				68B67C6C1EBC05BF001E5085 /* download@2x.png */,
+				68B67C6D1EBC05BF001E5085 /* download@3x.png */,
+				68B67C701EBC05C5001E5085 /* upload@2x.png */,
+				68B67C711EBC05C5001E5085 /* upload@3x.png */,
+				68B67C741EBC05EC001E5085 /* sources@2x.png */,
+				68B67C751EBC05EC001E5085 /* sources@3x.png */,
+				68B67C781EBC085B001E5085 /* mine_history@2x.png */,
+				68B67C791EBC085B001E5085 /* mine_history@3x.png */,
+				68B67C7A1EBC085B001E5085 /* removeFolder.png */,
+				68B67C7B1EBC085B001E5085 /* addFolder.png */,
+				68B67C7C1EBC085B001E5085 /* mine_intergal@2x.png */,
+				68B67C7D1EBC085B001E5085 /* mine_intergal@3x.png */,
+				68B67C7E1EBC085B001E5085 /* mine_pocketcenter@2x.png */,
+				68B67C7F1EBC085B001E5085 /* mine_pocketcenter@3x.png */,
+				68B67C801EBC085B001E5085 /* mine_theme@2x.png */,
+				68B67C811EBC085B001E5085 /* mine_theme@3x.png */,
+				68B67C821EBC085B001E5085 /* mine_uperCenter@2x.png */,
+				68B67C831EBC085B001E5085 /* mine_uperCenter@3x.png */,
+				68B67C931EBC5C64001E5085 /* upFileIcon.png */,
+				68B67C9C1EBC700D001E5085 /* nofileHistory.jpg */,
+				68B67C9E1EBC768A001E5085 /* noUpFile.jpg */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -453,6 +527,7 @@
 		68A83D1D1EADAA8C0061AC6D /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				68B67C951EBC5EF0001E5085 /* KxMenu */,
 				6855D3A81EBB060900E3E04D /* MBProgressHUD */,
 				687B63D61EAF3933007914A4 /* YYModel */,
 				68A83D311EADEF140061AC6D /* FMDB */,
@@ -476,6 +551,17 @@
 				68A83D3C1EADEF140061AC6D /* FMResultSet.m */,
 			);
 			path = FMDB;
+			sourceTree = "<group>";
+		};
+		68B67C951EBC5EF0001E5085 /* KxMenu */ = {
+			isa = PBXGroup;
+			children = (
+				68B67C991EBC64BC001E5085 /* NSString+Add.h */,
+				68B67C9A1EBC64BC001E5085 /* NSString+Add.m */,
+				68B67C961EBC5EF0001E5085 /* KxMenu.h */,
+				68B67C971EBC5EF0001E5085 /* KxMenu.m */,
+			);
+			path = KxMenu;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -590,16 +676,37 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68B67C771EBC05EC001E5085 /* sources@3x.png in Resources */,
 				68032A3C1EAA027D0019CD22 /* tabar2@3x.png in Resources */,
+				68B67C721EBC05C5001E5085 /* upload@2x.png in Resources */,
+				68B67C761EBC05EC001E5085 /* sources@2x.png in Resources */,
+				68B67C731EBC05C5001E5085 /* upload@3x.png in Resources */,
+				68B67C871EBC085B001E5085 /* addFolder.png in Resources */,
+				68B67C6F1EBC05BF001E5085 /* download@3x.png in Resources */,
+				68B67C861EBC085B001E5085 /* removeFolder.png in Resources */,
 				68032A2C1EA9FFD70019CD22 /* NZQ.mp4 in Resources */,
 				689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */,
 				6855D3B61EBB1AF200E3E04D /* 返回@3x.png in Resources */,
+				68B67C9D1EBC700D001E5085 /* nofileHistory.jpg in Resources */,
 				68CB0B181EB1F11300D38C17 /* BBB.jpg in Resources */,
+				68B67C891EBC085B001E5085 /* mine_intergal@3x.png in Resources */,
 				6855D3B91EBB293000E3E04D /* shocking@3x.png in Resources */,
+				68B67C8E1EBC085B001E5085 /* mine_uperCenter@2x.png in Resources */,
+				68B67C881EBC085B001E5085 /* mine_intergal@2x.png in Resources */,
+				68B67C851EBC085B001E5085 /* mine_history@3x.png in Resources */,
+				68B67C8D1EBC085B001E5085 /* mine_theme@3x.png in Resources */,
 				681B46221EAD874C00BEA215 /* start@2x.png in Resources */,
-				6855D3BB1EBB2B8400E3E04D /* MineCollectionViewCell.xib in Resources */,
+				68B67C8A1EBC085B001E5085 /* mine_pocketcenter@2x.png in Resources */,
+				68B67C9F1EBC768A001E5085 /* noUpFile.jpg in Resources */,
+				68B67C6E1EBC05BF001E5085 /* download@2x.png in Resources */,
+				68B67C8F1EBC085B001E5085 /* mine_uperCenter@3x.png in Resources */,
+				68B67C6B1EBBFE05001E5085 /* MineCollectionViewCell.xib in Resources */,
 				68032A3B1EAA027D0019CD22 /* tabar1@3x.png in Resources */,
+				68B67C8C1EBC085B001E5085 /* mine_theme@2x.png in Resources */,
+				68B67C941EBC5C64001E5085 /* upFileIcon.png in Resources */,
+				68B67C8B1EBC085B001E5085 /* mine_pocketcenter@3x.png in Resources */,
 				689A8A1A1EA87ABA00BD8FD7 /* Assets.xcassets in Resources */,
+				68B67C841EBC085B001E5085 /* mine_history@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -688,6 +795,7 @@
 				6855D3A31EBAFE0D00E3E04D /* BorderTextField.m in Sources */,
 				6855D3C11EBB2DD000E3E04D /* TitleReusableView.m in Sources */,
 				683B02851EB2F262001E3416 /* CreatFolderInfo.m in Sources */,
+				68B67C921EBC47DE001E5085 /* UpFileViewController.m in Sources */,
 				686E9B931EB82C950098EFEB /* DownFileInfo.m in Sources */,
 				689A8A0F1EA87ABA00BD8FD7 /* main.m in Sources */,
 				687B63DC1EAF3933007914A4 /* NSObject+YYModel.m in Sources */,
@@ -696,9 +804,12 @@
 				68032A381EAA011F0019CD22 /* ClientViewController.m in Sources */,
 				687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */,
 				687B63DD1EAF3933007914A4 /* YYClassInfo.m in Sources */,
+				68B67C981EBC5EF1001E5085 /* KxMenu.m in Sources */,
 				6855D3AD1EBB060900E3E04D /* MBProgressHUD+Add.m in Sources */,
+				68B67C9B1EBC64BC001E5085 /* NSString+Add.m in Sources */,
 				681B46201EAD873B00BEA215 /* AppDataSource.m in Sources */,
 				68A393B21EB9B0EE001411FF /* socketClientManager.m in Sources */,
+				68B67C6A1EBBFE05001E5085 /* MineCollectionViewCell.m in Sources */,
 				68A393AF1EB9A45B001411FF /* SocketServerManager.m in Sources */,
 				683B02911EB33F8D001E3416 /* ReqDownFileInfo.m in Sources */,
 				68A83D1C1EAD8CDD0061AC6D /* NetWorkManager.m in Sources */,
@@ -707,7 +818,6 @@
 				68A83D411EADEF140061AC6D /* FMResultSet.m in Sources */,
 				6855D3AE1EBB060900E3E04D /* MBProgressHUD.m in Sources */,
 				6855D3A71EBB001700E3E04D /* UIView+Add.m in Sources */,
-				6855D3BE1EBB2BBA00E3E04D /* MineCollectionViewCell.m in Sources */,
 				68A0E0CF1EB07A8B000961EA /* ReqUpFileInfo.m in Sources */,
 				68032A401EAA0AA90019CD22 /* BaseNavViewController.m in Sources */,
 				6855D3B11EBB197400E3E04D /* ClientMainViewController.m in Sources */,

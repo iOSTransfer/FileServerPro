@@ -347,7 +347,7 @@ static DataBaseManager *_dbManager;
         if (isSuccess && success) {
             block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeUpSuccess andFileID:fileChunkInfo.fileID],ResponsTypeUpSuccess);
         }else{
-            block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:fileChunkInfo.fileID],ResponsTypeServerError);
+            block([[ProtocolDataManager sharedProtocolDataManager] resUpFileDataWithRet:ResponsTypeServerError andFileID:0],ResponsTypeServerError);
         }
 
     }else{
@@ -367,7 +367,8 @@ static DataBaseManager *_dbManager;
     }
 
     FMResultSet *res = [_db executeQuery:@"SELECT file_id FROM file WHERE file_name = ? AND directory_id = ? AND file_state = ?",reqDownInfo.fileName,@(reqDownInfo.directoryID),@(1)];
-    
+    NSLog(@"%@",@(reqDownInfo.directoryID));
+    NSLog(@"%@",reqDownInfo.fileName);
     BOOL isExistFile = NO;
     u_short fileID = 0;
     while ([res next]) {

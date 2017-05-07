@@ -20,7 +20,7 @@
 #define COLOR(_r,_g,_b) [UIColor colorWithRed:_r / 255.0f green:_g / 255.0f blue:_b / 255.0f alpha:1]
 
 
-@interface LoginViewController ()
+@interface LoginViewController ()<socketClientManagerDelegate>
 
 @property(nonatomic , strong)BorderTextField *userNameTextField;
 @property(nonatomic , strong)BorderTextField *passwordTextField;
@@ -51,6 +51,7 @@
     NSAttributedString *passwordTip = [[NSAttributedString alloc]initWithString:@"请输入密码"  attributes:attrs];
     self.passwordTextField.attributedPlaceholder = passwordTip;
     self.passwordTextField.centerX = SCREEN_WIDTH /2;
+    self.passwordTextField.secureTextEntry = YES;
     [self.view addSubview:self.passwordTextField];
     
     
@@ -68,6 +69,8 @@
     [self.userNameTextField addTarget:self action:@selector(CheckTextFieldInput:) forControlEvents:UIControlEventEditingChanged];
     [self.passwordTextField addTarget:self action:@selector(CheckTextFieldInput:) forControlEvents:UIControlEventEditingChanged];
     
+    self.userNameTextField.text = @"aaaa";
+    self.passwordTextField.text = @"111111";
 }
 
 //监听textField是否有输入
@@ -97,20 +100,26 @@
         UserInfo *user = [[UserInfo alloc]init];
         user.userName = _userNameTextField.text;
         user.userPwd = _passwordTextField.text;
-        [[socketClientManager sharedClientManager] sendLoginInfo:user andBlock:^(ResponsType replyType, u_short key) {
-            if (replyType != ResponsTypeLoginSuccess) {
-                [MBProgressHUD showTextTip:[[AppDataSource shareAppDataSource] getStringWithRte:replyType]];
-                return;
-            }
-            [self.navigationController pushViewController:[ClientMainViewController new] animated:YES];
-        }];
+        [socketClientManager sharedClientManager].delegate = self;
+        [[socketClientManager sharedClientManager] sendLoginInfo:user];
     }else{
         [MBProgressHUD showTextTip:@"连接服务器失败"];
     }
-    
-    
 
 
+}
+
+#pragma mark 
+- (void)receiveReplyType:(ResponsType)replyType andKey:(u_short)key andCmd:(CmdType)cmd
+{
+    if (cmd == CmdTypeLogin) {
+        if (replyType != ResponsTypeLoginSuccess) {
+            [MBProgressHUD showTextTip:[[AppDataSource shareAppDataSource] getStringWithRte:replyType]];
+            return;
+        }
+        [AppDataSource shareAppDataSource].userToken = key;
+        [self.navigationController pushViewController:[ClientMainViewController new] animated:YES];
+    }
 }
 
 

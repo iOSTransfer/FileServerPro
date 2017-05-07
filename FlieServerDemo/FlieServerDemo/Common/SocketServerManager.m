@@ -12,6 +12,7 @@
 #import "ProtocolDataManager.h"
 #import "DataBaseManager.h"
 #import "EnumList.h"
+#import "SocketWithBufferModel.h"
 
 
 #define MainLib [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Main"]
@@ -25,8 +26,8 @@ static SocketServerManager *_serverManager;
 
 
 @property (nonatomic ,strong)GCDAsyncSocket *serverSocket;
-@property (strong, nonatomic)NSMutableSet *clientSockets;//保存客户端scoket
-@property (nonatomic , strong)NSMutableData *readBuff;
+@property (strong, nonatomic)NSMutableSet *clientSocketModels;//保存客户端scoket
+//@property (nonatomic , strong)NSMutableData *readBuff;
 
 
 @end
@@ -66,7 +67,7 @@ static SocketServerManager *_serverManager;
     self = [super init];
     if (self) {
         self.serverSocket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(0, 0)];
-        self.readBuff = [NSMutableData data];
+//        self.readBuff = [NSMutableData data];
     }
 
     return self;
@@ -74,11 +75,11 @@ static SocketServerManager *_serverManager;
 
 - (NSMutableSet *)clientSockets
 {
-    if (_clientSockets == nil) {
-        _clientSockets = [[NSMutableSet alloc]init];
+    if (_clientSocketModels == nil) {
+        _clientSocketModels = [[NSMutableSet alloc]init];
         
     }
-    return _clientSockets;
+    return _clientSocketModels;
 }
 
 #pragma mark 开启服务和关闭服务
@@ -109,8 +110,11 @@ static SocketServerManager *_serverManager;
 //连接到客户端socket
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
+    
+    SocketWithBufferModel *clientSocket = [SocketWithBufferModel new];
+    clientSocket.clientSocket = newSocket;
 
-    [self.clientSockets addObject:newSocket];
+    [self.clientSockets addObject:clientSocket];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
     NSLog(@"服务端当前链接sockets:%@",self.clientSockets);
     [newSocket readDataWithTimeout:-1 tag:0];
@@ -120,40 +124,80 @@ static SocketServerManager *_serverManager;
 //接收到客户端数据
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    [self.readBuff appendData:data];
+    SocketWithBufferModel *currentSocketModel;
+    for (SocketWithBufferModel *model in self.clientSocketModels) {
+        if (model.clientSocket == sock) {
+            currentSocketModel = model;
+            break;
+        }
+    }
     
-//    NSLog(@"当前sock  ----- %@",sock);
-//    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
-    NSLog(@"二进制流数据长度: -- %ld" , data.length);
-    NSLog(@"readBuff数据长度: -- %ld" , self.readBuff.length);
+    [currentSocketModel.readBuff appendData:data];
     
-    while (_readBuff.length >= 8) {
+    //    NSLog(@"当前sock  ----- %@",sock);
+    //    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
+    NSLog(@"二进制流数据长度: -- %ld" , (unsigned long)data.length);
+    NSLog(@"readBuff数据长度: -- %ld" ,(unsigned long)currentSocketModel.readBuff.length);
+    
+    while (currentSocketModel.readBuff.length >= 8) {
         
         @try {
-            HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[self.readBuff subdataWithRange:NSMakeRange(0, 8)]];
+            HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[currentSocketModel.readBuff subdataWithRange:NSMakeRange(0, 8)]];
             
             NSInteger complateDataLength = header.c_length + 8;
-            if (_readBuff.length >= complateDataLength) {
+            if (currentSocketModel.readBuff.length >= complateDataLength) {
                 
-                NSData *subData = [_readBuff subdataWithRange:NSMakeRange(0, complateDataLength)];
+                NSData *subData = [currentSocketModel.readBuff subdataWithRange:NSMakeRange(0, complateDataLength)];
                 [self handleTcpResponseData:subData andSocket:sock];
-                _readBuff = [NSMutableData dataWithData:[_readBuff subdataWithRange:NSMakeRange(complateDataLength, _readBuff.length - complateDataLength)]];
+                currentSocketModel.readBuff = [NSMutableData dataWithData:[currentSocketModel.readBuff subdataWithRange:NSMakeRange(complateDataLength, currentSocketModel.readBuff.length - complateDataLength)]];
             } else {
                 [sock readDataWithTimeout:-1 tag:0];
                 return;
             }
         } @catch (NSException *exception) {
             
-            self.readBuff = nil;
-            self.readBuff = [NSMutableData data];
             [sock disconnect];
-            [self.clientSockets removeObject:sock];
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
         }
         
         
     }
     [sock readDataWithTimeout:-1 tag:0];
+    
+    
+//    [self.readBuff appendData:data];
+//    
+////    NSLog(@"当前sock  ----- %@",sock);
+////    NSLog(@"当前线程 :--%@",[NSThread currentThread]);
+//    NSLog(@"二进制流数据长度: -- %ld" , data.length);
+//    NSLog(@"readBuff数据长度: -- %ld" , self.readBuff.length);
+//    
+//    while (_readBuff.length >= 8) {
+//        
+//        @try {
+//            HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getHeaderInfoWithData:[self.readBuff subdataWithRange:NSMakeRange(0, 8)]];
+//            
+//            NSInteger complateDataLength = header.c_length + 8;
+//            if (_readBuff.length >= complateDataLength) {
+//                
+//                NSData *subData = [_readBuff subdataWithRange:NSMakeRange(0, complateDataLength)];
+//                [self handleTcpResponseData:subData andSocket:sock];
+//                _readBuff = [NSMutableData dataWithData:[_readBuff subdataWithRange:NSMakeRange(complateDataLength, _readBuff.length - complateDataLength)]];
+//            } else {
+//                [sock readDataWithTimeout:-1 tag:0];
+//                return;
+//            }
+//        } @catch (NSException *exception) {
+//            
+//            self.readBuff = nil;
+//            self.readBuff = [NSMutableData data];
+//            [sock disconnect];
+//            [self.clientSockets removeObject:sock];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];
+//        }
+//        
+//        
+//    }
+//    [sock readDataWithTimeout:-1 tag:0];
     
 }
 
@@ -162,8 +206,10 @@ static SocketServerManager *_serverManager;
 {
     NSLog(@"%@断开 ，错误：%@",sock,err);
     
-    if ([self.clientSockets containsObject:sock]) {
-        [self.clientSockets removeObject:sock];
+    for (SocketWithBufferModel *model in self.clientSocketModels) {
+        if (model.clientSocket == sock) {
+            [self.clientSocketModels removeObject:model];
+        }
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:@(self.clientSockets.count)];

@@ -13,11 +13,16 @@
 #import "UserInfo.h"
 #import "DataBaseManager.h"
 #import "ProtocolDataManager.h"
+#import "SYDownloadView.h"
 
-@interface ClientViewController ()<GCDAsyncSocketDelegate>
+
+@interface ClientViewController ()<GCDAsyncSocketDelegate>{
+    NSTimer *_timer;
+    CGFloat _progress;
+}
 
 @property (nonatomic , strong)GCDAsyncSocket *socketClient;
-
+@property (nonatomic, strong) SYDownloadView *downloadView;
 
 @end
 
@@ -31,19 +36,46 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"客户端";
     
-    NSArray *titileArray = @[@"请求连接" ,@"注册",@"登录",@"请求上传文件",@"上传大文件",@"创建文件夹",@"删除文件夹",@"请求下载",@"下载文件",@"获取文件列表"];
-    self.view.backgroundColor = [UIColor whiteColor];
-    for (int i = 0; i < titileArray.count; i ++) {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        button.bounds = CGRectMake(0, 0, 300, 30);
-        button.center = CGPointMake(CGRectGetWidth(self.view.bounds)/2, 60 + i *45);
-        [button setTitle:titileArray[i] forState:UIControlStateNormal];
-        button.tag =  10+i;
-        [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:button];
-    }
+    _progress = 0.0;
+    self.view.backgroundColor = [UIColor grayColor];
     
+    self.downloadView = [[SYDownloadView alloc] initWithFrame:CGRectMake(100, 100, 40, 40)];
+    self.downloadView.lineWidth = 1;
+    [self.downloadView addTarget:self action:@selector(updateProgress) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.downloadView];
+    self.downloadView.progressColor = [UIColor redColor];
+    
+//    NSArray *titileArray = @[@"请求连接" ,@"注册",@"登录",@"请求上传文件",@"上传大文件",@"创建文件夹",@"删除文件夹",@"请求下载",@"下载文件",@"获取文件列表"];
+//    self.view.backgroundColor = [UIColor whiteColor];
+//    for (int i = 0; i < titileArray.count; i ++) {
+//        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+//        button.bounds = CGRectMake(0, 0, 300, 30);
+//        button.center = CGPointMake(CGRectGetWidth(self.view.bounds)/2, 60 + i *45);
+//        [button setTitle:titileArray[i] forState:UIControlStateNormal];
+//        button.tag =  10+i;
+//        [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+//        [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+//        [self.view addSubview:button];
+//    }
+    
+}
+/**模拟网络请求数据进度*/
+- (void)downloadData{
+    _progress += 0.005;
+    self.downloadView.progress  = _progress;
+    
+    if (_progress >= 1.0) {
+        self.downloadView.userInteractionEnabled = YES;
+        self.downloadView.progress = 1.f;
+        _progress = 0.f;
+        [_timer invalidate];
+        _timer = nil;
+    }
+}
+
+- (void)updateProgress{
+    self.downloadView.userInteractionEnabled = NO;
+    _timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(downloadData) userInfo:nil repeats:YES];
 }
 
 #pragma mark - 事件监听
@@ -82,7 +114,7 @@
             break;
         case 2:{
             
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:@"oo" andPassword:@"123"];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:@"aaaa" andPassword:@"111111"];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
 
             
@@ -92,13 +124,12 @@
             NSString *path = [[NSBundle mainBundle] pathForResource:@"BBB" ofType:@"jpg"];
             NSError *error;
             NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"kkkkkkkk.jpg" andDirectoryID:1 andSize:(u_int)filedata.length];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"adhsd.jpg" andDirectoryID:1 andSize:(u_int)filedata.length];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
             
-//            sleep(1);
-//            
-//            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"ooooooooo.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
-//            [self.socketClient writeData:data2 withTimeout:-1 tag:0];
+            
+            NSData *data2 = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:@"bdsddw.mp4" andDirectoryID:1 andSize:(u_int)filedata.length];
+            [self.socketClient writeData:data2 withTimeout:-1 tag:0];
             
         }
             break;
@@ -120,7 +151,7 @@
                         NSLog(@"%hu",size);
 //                        NSLog(@"%hu",currentChunk);
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:2 andFileID:49 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:5 andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
@@ -128,7 +159,7 @@
                         
                     }else{
                         NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:2 andFileID:49 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:5 andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
                         
                         
                         [self.socketClient writeData:data withTimeout:-1 tag:0];
@@ -139,36 +170,36 @@
                 }
             });
             
-//            NSString *path1 = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
-//            NSData *filedata1 = [NSData dataWithContentsOfFile:path1];
-//            
-//            u_short chunks1 = filedata1.length / 1024 + 1;
-//            
-//            dispatch_async(dispatch_queue_create("sendFisdsdle", DISPATCH_QUEUE_SERIAL), ^{
-//                for (u_short currentChunk = 1; currentChunk <= chunks1; currentChunk++) {
-//                    
-//                    if (currentChunk == chunks1) {
-//                        u_short size = filedata1.length % 1024;
-////                        NSLog(@"%hu",size);
-////                        NSLog(@"%hu",currentChunk);
-//                        NSData *subData = [filedata1 subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-//                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:50 andChunks:chunks1 andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
-//                        
-//                        
-//                        [self.socketClient writeData:data withTimeout:-1 tag:0];
-//
-//                        
-//                    }else{
-//                        NSData *subData = [filedata1 subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-//                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:50 andChunks:chunks1 andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
-//                        
-//                        [self.socketClient writeData:data withTimeout:-1 tag:0];
-//
-//                        
-//                    }
-//                    
-//                }
-//            });
+            NSString *path1 = [[NSBundle mainBundle] pathForResource:@"NZQ" ofType:@"mp4"];
+            NSData *filedata1 = [NSData dataWithContentsOfFile:path1];
+            
+            u_short chunks1 = filedata1.length / 1024 + 1;
+            
+            dispatch_async(dispatch_queue_create("sendFisdsdle", DISPATCH_QUEUE_SERIAL), ^{
+                for (u_short currentChunk = 1; currentChunk <= chunks1; currentChunk++) {
+                    
+                    if (currentChunk == chunks1) {
+                        u_short size = filedata1.length % 1024;
+//                        NSLog(@"%hu",size);
+//                        NSLog(@"%hu",currentChunk);
+                        NSData *subData = [filedata1 subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:6 andChunks:chunks1 andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+                        
+                        
+                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+
+                        
+                    }else{
+                        NSData *subData = [filedata1 subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
+                        NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:1 andFileID:6 andChunks:chunks1 andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                        
+                        [self.socketClient writeData:data withTimeout:-1 tag:0];
+
+                        
+                    }
+                    
+                }
+            });
  
         }
             break;
@@ -253,7 +284,7 @@
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
 //    NSLog(@"当前sock  ----- %@",sock);
-    NSLog(@"客户端数据长度: -- %ld" , data.length);
+    NSLog(@"客户端数据长度: -- %ld" , (unsigned long)data.length);
 //    
     Byte ret;
     [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&ret length:sizeof(Byte)];

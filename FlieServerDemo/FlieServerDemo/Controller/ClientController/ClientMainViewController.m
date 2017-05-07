@@ -85,7 +85,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     MineCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"mainCell" forIndexPath:indexPath];
-    cell.layer.borderWidth = 1;
+    cell.layer.borderWidth = 0.5;
     cell.layer.borderColor = COLOR(234, 234, 234).CGColor;
     if (indexPath.row < 5) {
         [cell.iconImageView setImage:[UIImage imageNamed:_imgNameArray[indexPath.row + indexPath.section * 5]]];

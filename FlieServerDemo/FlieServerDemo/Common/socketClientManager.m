@@ -18,7 +18,8 @@ static socketClientManager *_clientManager;
 
 @property (nonatomic , strong)GCDAsyncSocket *socketClient;
 @property (nonatomic , strong)NSMutableData *readBuff;
-@property (nonatomic , copy)GetGeneralDataBlock callBack;
+
+
 
 @end
 
@@ -91,10 +92,10 @@ static socketClientManager *_clientManager;
 {
     [self.readBuff appendData:data];
     
-    NSLog(@"客户端当前sock  ----- %@",sock);
-    NSLog(@"客户端当前线程 :--%@",[NSThread currentThread]);
-    NSLog(@"客户端二进制流数据长度: -- %ld" , data.length);
-    NSLog(@"客户端readBuff数据长度: -- %ld" , self.readBuff.length);
+//    NSLog(@"客户端当前sock  ----- %@",sock);
+//    NSLog(@"客户端当前线程 :--%@",[NSThread currentThread]);
+//    NSLog(@"客户端二进制流数据长度: -- %ld" , (unsigned long)data.length);
+//    NSLog(@"客户端readBuff数据长度: -- %ld" , (unsigned long)self.readBuff.length);
     
     while (_readBuff.length >= 8) {
         
@@ -127,20 +128,39 @@ static socketClientManager *_clientManager;
 
 #pragma mark 数据包解析后回调
 //发送登录请求
-- (void)sendLoginInfo:(UserInfo *)userInfo andBlock:(GetGeneralDataBlock )block
+- (void)sendLoginInfo:(UserInfo *)userInfo
 {
-    _callBack = block;
+
     
     NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:userInfo.userName andPassword:userInfo.userPwd];
     [self.socketClient writeData:data withTimeout:-1 tag:0];
 }
 
+//请求上传文件
+- (void)sendReqFileupWithName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
+{
+
+    
+    NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:fileName andDirectoryID:directoryID andSize:size];
+    [self.socketClient writeData:data withTimeout:-1 tag:0];
+
+}
+
+//上传文件
+- (void)sendFileDataWithUserToken:(u_short)userToken andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData
+{
+    
+    NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:userToken andFileID:fileID andChunks:chunks andCurrentChunk:chunk andDataSize:size andSubFileData:subData];
+    [self.socketClient writeData:data withTimeout:-1 tag:0];
+
+}
 
 
 #pragma mark  数据包解析
 
 - (void)handleTcpResponseData:(NSData *)data andSocket:(GCDAsyncSocket *)sock
 {
+
     HeaderInfo *header = [[ProtocolDataManager sharedProtocolDataManager] getRespondHeaderInfoWithData:[data subdataWithRange:NSMakeRange(0, 8)]];
     
     switch (header.cmd) {
@@ -163,7 +183,8 @@ static socketClientManager *_clientManager;
                 [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
                 [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
                 
-                _callBack(resultType,key);
+                [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeLogin];
+                
             } @catch (NSException *exception) {
 
             }
@@ -174,9 +195,12 @@ static socketClientManager *_clientManager;
         case CmdTypeReqUp:{
             
             @try {
+                Byte resultType;
+                u_short key;
+                [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
+                [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
+                [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeReqUp];
 
-                
-                
             } @catch (NSException *exception) {
      
             }
@@ -187,8 +211,13 @@ static socketClientManager *_clientManager;
             
             @try {
                 
-  
+                Byte resultType;
+                u_short key;
+                [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
+                [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
                 
+                
+                [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeUp];
             } @catch (NSException *exception) {
 
             }

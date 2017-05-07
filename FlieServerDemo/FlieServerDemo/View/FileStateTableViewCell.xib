@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="74" id="KGk-i7-Jjw" customClass="FileStateTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="322" height="74"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="322" height="73.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AqY-Ej-ENu">
+                        <rect key="frame" x="18" y="15" width="44" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="44" id="BIq-o7-4zn"/>
+                            <constraint firstAttribute="height" constant="44" id="HdF-rp-W11"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="文件名称" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RKd-t1-Geq">
+                        <rect key="frame" x="77" y="16" width="137" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="E97-MJ-vJv"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="24M/2GB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qPc-T6-FJv">
+                        <rect key="frame" x="77" y="44.5" width="95" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="jzC-qo-fzo"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fbx-TG-MTp">
+                        <rect key="frame" x="260" y="15" width="44" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="44" id="j0y-Qq-LCR"/>
+                            <constraint firstAttribute="height" constant="44" id="jHb-YD-6ka"/>
+                        </constraints>
+                        <connections>
+                            <action selector="tapFileUpButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="2en-Kq-MQO"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="fbx-TG-MTp" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Eoa-gT-Exy"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="fbx-TG-MTp" secondAttribute="trailing" constant="10" id="HIV-qY-yEt"/>
+                    <constraint firstAttribute="bottom" secondItem="qPc-T6-FJv" secondAttribute="bottom" constant="8" id="IXt-tw-fJ4"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="RKd-t1-Geq" secondAttribute="trailing" constant="100" id="Pcs-TP-Hds"/>
+                    <constraint firstItem="RKd-t1-Geq" firstAttribute="leading" secondItem="AqY-Ej-ENu" secondAttribute="trailing" constant="15" id="R6k-Vv-lpH"/>
+                    <constraint firstItem="qPc-T6-FJv" firstAttribute="leading" secondItem="AqY-Ej-ENu" secondAttribute="trailing" constant="15" id="TW1-sg-Xom"/>
+                    <constraint firstItem="AqY-Ej-ENu" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="qwq-QC-G1k"/>
+                    <constraint firstItem="RKd-t1-Geq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="rdM-xl-pBg"/>
+                    <constraint firstItem="AqY-Ej-ENu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="voi-27-Lgr"/>
+                    <constraint firstAttribute="trailing" secondItem="qPc-T6-FJv" secondAttribute="trailing" constant="150" id="xP5-YR-DoG"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="fileNameLabel" destination="RKd-t1-Geq" id="4tS-Fd-eFd"/>
+                <outlet property="fileProgress" destination="qPc-T6-FJv" id="mkE-OB-v4h"/>
+                <outlet property="fileStateButton" destination="fbx-TG-MTp" id="oXH-KJ-2br"/>
+                <outlet property="iconImageView" destination="AqY-Ej-ENu" id="y8E-D9-ya9"/>
+            </connections>
+            <point key="canvasLocation" x="113" y="65"/>
+        </tableViewCell>
+    </objects>
+</document>

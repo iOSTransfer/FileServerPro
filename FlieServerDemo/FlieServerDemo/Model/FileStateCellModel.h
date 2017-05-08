@@ -24,11 +24,11 @@ typedef NS_ENUM(NSUInteger, FileStateType) {
 @property (nonatomic , strong)NSString *fileTypeImageName;
 @property (nonatomic , strong)NSString *filePath;
 @property (nonatomic , assign)FileStateType stateType;
-@property (nonatomic , assign)uint fileSize;
-@property (nonatomic , assign)uint fileUpSize;
+@property (nonatomic , assign)double fileSize;
+@property (nonatomic , assign)double fileUpSize;
 @property (nonatomic , assign)u_short totalChunk;
 @property (nonatomic , assign)u_short chunkSize;
-
+@property (nonatomic , assign)u_short fileId;
 
 
 @end

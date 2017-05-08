@@ -53,8 +53,8 @@
     diskSpaceLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(infoLabel.frame), [UIScreen mainScreen].bounds.size.width * 0.5, 24)];
     diskSpaceLabel.textColor = [UIColor whiteColor];
     diskSpaceLabel.font = [UIFont systemFontOfSize:14];
-    [self upateDiskSpaceLabelText];
     [self.view addSubview:diskSpaceLabel];
+    [self upateDiskSpaceLabelText];
     
     currentSocketsLabel = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width * 0.5, CGRectGetMaxY(infoLabel.frame), [UIScreen mainScreen].bounds.size.width * 0.5 - 10, 24)];
     currentSocketsLabel.textColor = [UIColor whiteColor];
@@ -112,7 +112,7 @@
 - (void)upateDiskSpaceLabelText
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        
+    
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]initWithString:[NSString stringWithFormat:@"剩余磁盘空间:  %0.2fGB",[[AppDataSource shareAppDataSource] freeDiskSpaceInBytes]/1024 /1024 /1024]];
         NSRange range1 = NSMakeRange(0, 9);
         NSRange range2 = NSMakeRange(9 , attributedString.length - 9);

@@ -17,7 +17,6 @@
 		57CE8F121EBEC0D3003747E5 /* uploadButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CE8F111EBEC0D3003747E5 /* uploadButton.png */; };
 		57CE8F141EBEC120003747E5 /* downloadButtonx.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CE8F131EBEC120003747E5 /* downloadButtonx.png */; };
 		57CE8F161EBEC171003747E5 /* pressed@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CE8F151EBEC171003747E5 /* pressed@3x.png */; };
-		57CE8F181EBF03AA003747E5 /* 地中海.zip in Resources */ = {isa = PBXBuildFile; fileRef = 57CE8F171EBF03AA003747E5 /* 地中海.zip */; };
 		57CE8F1A1EBF0415003747E5 /* timg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 57CE8F191EBF0415003747E5 /* timg.jpeg */; };
 		57CE8F1C1EBF1FD5003747E5 /* fileOk.png in Resources */ = {isa = PBXBuildFile; fileRef = 57CE8F1B1EBF1FD5003747E5 /* fileOk.png */; };
 		68032A2C1EA9FFD70019CD22 /* NZQ.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 68032A2B1EA9FFD70019CD22 /* NZQ.mp4 */; };
@@ -48,6 +47,8 @@
 		6855D3B91EBB293000E3E04D /* shocking@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6855D3B81EBB293000E3E04D /* shocking@3x.png */; };
 		6855D3C11EBB2DD000E3E04D /* TitleReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */; };
 		686E9B931EB82C950098EFEB /* DownFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 686E9B921EB82C950098EFEB /* DownFileInfo.m */; };
+		687A8FC11EBFFB2D00D1FD82 /* 地中海.zip in Resources */ = {isa = PBXBuildFile; fileRef = 687A8FC01EBFFB2D00D1FD82 /* 地中海.zip */; };
+		687A8FC41EC0537100D1FD82 /* ClientSocketBufferAndTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 687A8FC31EC0537100D1FD82 /* ClientSocketBufferAndTag.m */; };
 		687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D41EAF357B007914A4 /* ProtocolDataManager.m */; };
 		687B63DC1EAF3933007914A4 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D81EAF3933007914A4 /* NSObject+YYModel.m */; };
 		687B63DD1EAF3933007914A4 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63DA1EAF3933007914A4 /* YYClassInfo.m */; };
@@ -130,7 +131,6 @@
 		57CE8F111EBEC0D3003747E5 /* uploadButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uploadButton.png; sourceTree = "<group>"; };
 		57CE8F131EBEC120003747E5 /* downloadButtonx.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloadButtonx.png; sourceTree = "<group>"; };
 		57CE8F151EBEC171003747E5 /* pressed@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pressed@3x.png"; sourceTree = "<group>"; };
-		57CE8F171EBF03AA003747E5 /* 地中海.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "地中海.zip"; sourceTree = "<group>"; };
 		57CE8F191EBF0415003747E5 /* timg.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = timg.jpeg; sourceTree = "<group>"; };
 		57CE8F1B1EBF1FD5003747E5 /* fileOk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fileOk.png; sourceTree = "<group>"; };
 		68032A2B1EA9FFD70019CD22 /* NZQ.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = NZQ.mp4; sourceTree = "<group>"; };
@@ -183,6 +183,9 @@
 		6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleReusableView.m; sourceTree = "<group>"; };
 		686E9B911EB82C950098EFEB /* DownFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownFileInfo.h; sourceTree = "<group>"; };
 		686E9B921EB82C950098EFEB /* DownFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownFileInfo.m; sourceTree = "<group>"; };
+		687A8FC01EBFFB2D00D1FD82 /* 地中海.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "地中海.zip"; sourceTree = "<group>"; };
+		687A8FC21EC0537100D1FD82 /* ClientSocketBufferAndTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientSocketBufferAndTag.h; sourceTree = "<group>"; };
+		687A8FC31EC0537100D1FD82 /* ClientSocketBufferAndTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientSocketBufferAndTag.m; sourceTree = "<group>"; };
 		687B63D31EAF357B007914A4 /* ProtocolDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProtocolDataManager.h; sourceTree = "<group>"; };
 		687B63D41EAF357B007914A4 /* ProtocolDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProtocolDataManager.m; sourceTree = "<group>"; };
 		687B63D71EAF3933007914A4 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YYModel.h"; sourceTree = "<group>"; };
@@ -372,6 +375,8 @@
 				5744E2451EBDB30200F577D7 /* SocketWithBufferModel.m */,
 				57CE8F081EBEAC70003747E5 /* FileStateCellModel.h */,
 				57CE8F091EBEAC70003747E5 /* FileStateCellModel.m */,
+				687A8FC21EC0537100D1FD82 /* ClientSocketBufferAndTag.h */,
+				687A8FC31EC0537100D1FD82 /* ClientSocketBufferAndTag.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -379,7 +384,7 @@
 		68032A291EA9FF8E0019CD22 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				57CE8F171EBF03AA003747E5 /* 地中海.zip */,
+				687A8FC01EBFFB2D00D1FD82 /* 地中海.zip */,
 				57CE8F191EBF0415003747E5 /* timg.jpeg */,
 				68CB0B171EB1F11300D38C17 /* BBB.jpg */,
 				681B46211EAD874C00BEA215 /* start@2x.png */,
@@ -715,7 +720,6 @@
 				68B67C861EBC085B001E5085 /* removeFolder.png in Resources */,
 				57CE8F0F1EBEB6C5003747E5 /* ico_swf_small@3x.png in Resources */,
 				68032A2C1EA9FFD70019CD22 /* NZQ.mp4 in Resources */,
-				57CE8F181EBF03AA003747E5 /* 地中海.zip in Resources */,
 				689A8A1D1EA87ABA00BD8FD7 /* LaunchScreen.storyboard in Resources */,
 				6855D3B61EBB1AF200E3E04D /* 返回@3x.png in Resources */,
 				68B67C9D1EBC700D001E5085 /* nofileHistory.jpg in Resources */,
@@ -729,6 +733,7 @@
 				57CE8F161EBEC171003747E5 /* pressed@3x.png in Resources */,
 				68B67C851EBC085B001E5085 /* mine_history@3x.png in Resources */,
 				68B67C8D1EBC085B001E5085 /* mine_theme@3x.png in Resources */,
+				687A8FC11EBFFB2D00D1FD82 /* 地中海.zip in Resources */,
 				681B46221EAD874C00BEA215 /* start@2x.png in Resources */,
 				57CE8F141EBEC120003747E5 /* downloadButtonx.png in Resources */,
 				68B67C8A1EBC085B001E5085 /* mine_pocketcenter@2x.png in Resources */,
@@ -818,6 +823,7 @@
 			files = (
 				689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */,
 				683B028B1EB32A0B001E3416 /* FileListInfo.m in Sources */,
+				687A8FC41EC0537100D1FD82 /* ClientSocketBufferAndTag.m in Sources */,
 				68032A2F1EAA00990019CD22 /* MainTabBarViewController.m in Sources */,
 				68A83D3D1EADEF140061AC6D /* FMDatabase.m in Sources */,
 				6814221B1EB188C80024EA7F /* FileChunkInfo.m in Sources */,

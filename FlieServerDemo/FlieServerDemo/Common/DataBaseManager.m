@@ -317,17 +317,16 @@ static DataBaseManager *_dbManager;
         return;
     }
     
-    FileHandleModel *currentHandle;
-    for (FileHandleModel *model in self.keyHandles) {
-        if (model.fileID == fileChunkInfo.fileID) {
-            currentHandle = model;
-            break;
+    __block FileHandleModel *currentHandle;
+    [self.keyHandles enumerateObjectsUsingBlock:^(FileHandleModel *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.fileID == fileChunkInfo.fileID) {
+            currentHandle = obj;
+            *stop = YES;
         }
-        
-    }
+    }];
     
     if (currentHandle == nil) {
-        
+        return;
     }
     
     [currentHandle.fileHandle seekToEndOfFile];
@@ -336,10 +335,11 @@ static DataBaseManager *_dbManager;
         
         
     if (fileChunkInfo.chunks == fileChunkInfo.chunk) {
-        
+
         NSError *err;
-        BOOL isSuccess = [[NSFileManager defaultManager] moveItemAtPath:currentHandle.filePath toPath:currentHandle.toFilePath error:&err];
         [currentHandle.fileHandle closeFile];
+        BOOL isSuccess = [[NSFileManager defaultManager] moveItemAtPath:currentHandle.filePath toPath:currentHandle.toFilePath error:&err];
+        
         [self.keyHandles removeObject:currentHandle];
         
         BOOL success = [_db executeUpdate:@"UPDATE 'file' SET file_state = ?  WHERE file_id = ? ",@(1),@(fileChunkInfo.fileID)];

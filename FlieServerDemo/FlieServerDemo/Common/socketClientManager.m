@@ -11,6 +11,7 @@
 #import "AppDataSource.h"
 #import "HeaderInfo.h"
 #import "ProtocolDataManager.h"
+#import "ClientSocketBufferAndTag.h"
 
 static socketClientManager *_clientManager;
 
@@ -18,7 +19,6 @@ static socketClientManager *_clientManager;
 
 @property (nonatomic , strong)GCDAsyncSocket *socketClient;
 @property (nonatomic , strong)NSMutableData *readBuff;
-
 
 
 @end
@@ -58,9 +58,9 @@ static socketClientManager *_clientManager;
     [self.socketClient connectToHost:[[AppDataSource shareAppDataSource] deviceIPAdress] onPort:6666 error:&error];
     
     if (error) {
-        return false;
+        return NO;
     }else{
-        return true;
+        return YES;
     }
 
 }
@@ -90,6 +90,7 @@ static socketClientManager *_clientManager;
 
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+
     [self.readBuff appendData:data];
     
 //    NSLog(@"客户端当前sock  ----- %@",sock);
@@ -130,17 +131,17 @@ static socketClientManager *_clientManager;
 //发送登录请求
 - (void)sendLoginInfo:(UserInfo *)userInfo
 {
-
     
     NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:userInfo.userName andPassword:userInfo.userPwd];
     [self.socketClient writeData:data withTimeout:-1 tag:0];
+    
 }
 
 //请求上传文件
 - (void)sendReqFileupWithName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
 {
 
-    
+    NSLog(@"客户端当前线程 :--%@",[NSThread currentThread]);
     NSData *data = [[ProtocolDataManager sharedProtocolDataManager] reqUpFileDataWithFileName:fileName andDirectoryID:directoryID andSize:size];
     [self.socketClient writeData:data withTimeout:-1 tag:0];
 
@@ -149,7 +150,7 @@ static socketClientManager *_clientManager;
 //上传文件
 - (void)sendFileDataWithUserToken:(u_short)userToken andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData
 {
-    
+
     NSData *data = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:userToken andFileID:fileID andChunks:chunks andCurrentChunk:chunk andDataSize:size andSubFileData:subData];
     [self.socketClient writeData:data withTimeout:-1 tag:0];
 
@@ -182,9 +183,9 @@ static socketClientManager *_clientManager;
                 u_short key;
                 [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
                 [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
-                
+
                 [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeLogin];
-                
+
             } @catch (NSException *exception) {
 
             }
@@ -200,7 +201,6 @@ static socketClientManager *_clientManager;
                 [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
                 [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
                 [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeReqUp];
-
             } @catch (NSException *exception) {
      
             }
@@ -215,9 +215,7 @@ static socketClientManager *_clientManager;
                 u_short key;
                 [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&resultType length:sizeof(Byte)];
                 [[data subdataWithRange:NSMakeRange(10, 2)] getBytes:&key length:sizeof(u_short)];
-                
-                
-                [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeUp];
+                [self.delegate receiveReplyType:resultType andKey:key andCmd:CmdTypeUp ];
             } @catch (NSException *exception) {
 
             }

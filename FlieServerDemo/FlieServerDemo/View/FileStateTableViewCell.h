@@ -9,12 +9,26 @@
 #import <UIKit/UIKit.h>
 #import "FileStateCellModel.h"
 
+@class FileStateTableViewCell;
+
+@protocol FileStateTableViewCellDelegate <NSObject>
+
+- (void)tapUpfileButton:(FileStateTableViewCell *)cell;
+
+@end
+
 @interface FileStateTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *fileNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fileProgress;
 @property (weak, nonatomic) IBOutlet UIButton *fileStateButton;
 
+@property(nonatomic,strong)CAShapeLayer *progressLayer;
+@property(nonatomic ,assign)CGFloat subProgress;
+@property(nonatomic ,assign)int subProgressCount;
+
 @property (nonatomic , strong)FileStateCellModel *fileModel;
+
+@property (weak , nonatomic) id<FileStateTableViewCellDelegate> delegate;
 
 @end

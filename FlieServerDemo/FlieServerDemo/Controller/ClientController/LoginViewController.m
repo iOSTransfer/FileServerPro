@@ -112,14 +112,18 @@
 #pragma mark 
 - (void)receiveReplyType:(ResponsType)replyType andKey:(u_short)key andCmd:(CmdType)cmd
 {
-    if (cmd == CmdTypeLogin) {
-        if (replyType != ResponsTypeLoginSuccess) {
-            [MBProgressHUD showTextTip:[[AppDataSource shareAppDataSource] getStringWithRte:replyType]];
-            return;
-        }
-        [AppDataSource shareAppDataSource].userToken = key;
-        [self.navigationController pushViewController:[ClientMainViewController new] animated:YES];
+    if (cmd != CmdTypeLogin) {
+        return;
     }
+    if (replyType != ResponsTypeLoginSuccess) {
+        [MBProgressHUD showTextTip:[[AppDataSource shareAppDataSource] getStringWithRte:replyType]];
+        return;
+    }
+    [AppDataSource shareAppDataSource].userToken = key;
+
+    [self.navigationController pushViewController:[ClientMainViewController new] animated:YES];
+
+    
 }
 
 

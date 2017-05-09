@@ -13,6 +13,7 @@
 #import "MBProgressHUD+Add.h"
 #import "AppDataSource.h"
 #import "ClientMainViewController.h"
+#import "ProtocolDataManager.h"
 // 屏幕宽度、高度
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -69,8 +70,9 @@
     [self.userNameTextField addTarget:self action:@selector(CheckTextFieldInput:) forControlEvents:UIControlEventEditingChanged];
     [self.passwordTextField addTarget:self action:@selector(CheckTextFieldInput:) forControlEvents:UIControlEventEditingChanged];
     
-    self.userNameTextField.text = @"aaaa";
-    self.passwordTextField.text = @"111111";
+    self.userNameTextField.text = @"聂自强";
+    
+
 }
 
 //监听textField是否有输入
@@ -97,11 +99,9 @@
     [self.view endEditing:YES];
     
     if ([[socketClientManager sharedClientManager] connectServer]) {
-        UserInfo *user = [[UserInfo alloc]init];
-        user.userName = _userNameTextField.text;
-        user.userPwd = _passwordTextField.text;
+        
         [socketClientManager sharedClientManager].delegate = self;
-        [[socketClientManager sharedClientManager] sendLoginInfo:user];
+        [[socketClientManager sharedClientManager] sendData:[[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:_userNameTextField.text andPassword:_passwordTextField.text]];
     }else{
         [MBProgressHUD showTextTip:@"连接服务器失败"];
     }
@@ -120,8 +120,8 @@
         return;
     }
     [AppDataSource shareAppDataSource].userToken = key;
-
     [self.navigationController pushViewController:[ClientMainViewController new] animated:YES];
+    
 
     
 }

@@ -66,7 +66,7 @@ static SocketServerManager *_serverManager;
 {
     self = [super init];
     if (self) {
-        self.serverSocket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(0, 0)];
+        self.serverSocket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue: dispatch_queue_create("SERVER.QUEUE", DISPATCH_QUEUE_SERIAL)];
     }
 
     return self;
@@ -250,13 +250,16 @@ static SocketServerManager *_serverManager;
         case CmdTypeUp:{
             
             @try {
-
+                
+                
                 FileChunkInfo * chunkInfo =[[ProtocolDataManager sharedProtocolDataManager]getFileChunkInfoWithData:[data subdataWithRange:NSMakeRange(8, header.c_length)]];
-                NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
+                NSLog(@"\n 当前的chunk： %hu \n 当前线程：%@ \n 当前sock:%@  \n 当前fileID:%hu",chunkInfo.chunk,[NSThread currentThread],sock,chunkInfo.fileID);
                 [[DataBaseManager sharedDataBase] cachesSubFileDataWith:chunkInfo withResultBlock:^(NSData *replyData, ResponsType resType) {
-                    //返回响应数据流
-                    [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
-                }];
+                    dispatch_async(dispatch_queue_create("respondFileData", DISPATCH_QUEUE_SERIAL), ^{
+                        //返回响应数据流
+                        [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeUp andResult:ResultTypeSuccess andData:replyData]  withTimeout:-1 tag:0];
+                        });
+                    }];
 
                 //更新内存
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFIER_STRING object:nil];
@@ -291,8 +294,14 @@ static SocketServerManager *_serverManager;
                 [[DataBaseManager sharedDataBase]getFileDataWith:downInfo withResultBlock:^(NSArray *replyDatas, ResponsType resType) {
                     
                     dispatch_async(dispatch_queue_create("respondFileData", DISPATCH_QUEUE_SERIAL), ^{
-                        for (NSData *subData in replyDatas) {
-                            [sock writeData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:subData]  withTimeout:-1 tag:0];
+                        
+                        __block NSMutableData *muData = [NSMutableData data];
+                        [replyDatas enumerateObjectsUsingBlock:^(NSData  *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                          [muData appendData:[[ProtocolDataManager sharedProtocolDataManager] resHeaderDataWithCmd:CmdTypeDown andResult:ResultTypeSuccess andData:obj]];
+                        }];
+
+                        if (sock != nil) {
+                            [sock writeData:muData withTimeout:-1 tag:0];
                         }
                     });
    

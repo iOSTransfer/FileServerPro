@@ -47,6 +47,7 @@
 		6855D3B91EBB293000E3E04D /* shocking@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6855D3B81EBB293000E3E04D /* shocking@3x.png */; };
 		6855D3C11EBB2DD000E3E04D /* TitleReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */; };
 		686E9B931EB82C950098EFEB /* DownFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 686E9B921EB82C950098EFEB /* DownFileInfo.m */; };
+		6873EB5C1EC16D000037E1AA /* DownFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6873EB5B1EC16D000037E1AA /* DownFileViewController.m */; };
 		687A8FC11EBFFB2D00D1FD82 /* 地中海.zip in Resources */ = {isa = PBXBuildFile; fileRef = 687A8FC01EBFFB2D00D1FD82 /* 地中海.zip */; };
 		687A8FC41EC0537100D1FD82 /* ClientSocketBufferAndTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 687A8FC31EC0537100D1FD82 /* ClientSocketBufferAndTag.m */; };
 		687B63D51EAF357B007914A4 /* ProtocolDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 687B63D41EAF357B007914A4 /* ProtocolDataManager.m */; };
@@ -183,6 +184,8 @@
 		6855D3C01EBB2DD000E3E04D /* TitleReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleReusableView.m; sourceTree = "<group>"; };
 		686E9B911EB82C950098EFEB /* DownFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownFileInfo.h; sourceTree = "<group>"; };
 		686E9B921EB82C950098EFEB /* DownFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownFileInfo.m; sourceTree = "<group>"; };
+		6873EB5A1EC16D000037E1AA /* DownFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownFileViewController.h; sourceTree = "<group>"; };
+		6873EB5B1EC16D000037E1AA /* DownFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownFileViewController.m; sourceTree = "<group>"; };
 		687A8FC01EBFFB2D00D1FD82 /* 地中海.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "地中海.zip"; sourceTree = "<group>"; };
 		687A8FC21EC0537100D1FD82 /* ClientSocketBufferAndTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientSocketBufferAndTag.h; sourceTree = "<group>"; };
 		687A8FC31EC0537100D1FD82 /* ClientSocketBufferAndTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientSocketBufferAndTag.m; sourceTree = "<group>"; };
@@ -428,6 +431,8 @@
 				6855D3B01EBB197400E3E04D /* ClientMainViewController.m */,
 				68B67C901EBC47DE001E5085 /* UpFileViewController.h */,
 				68B67C911EBC47DE001E5085 /* UpFileViewController.m */,
+				6873EB5A1EC16D000037E1AA /* DownFileViewController.h */,
+				6873EB5B1EC16D000037E1AA /* DownFileViewController.m */,
 			);
 			path = ClientController;
 			sourceTree = "<group>";
@@ -821,6 +826,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6873EB5C1EC16D000037E1AA /* DownFileViewController.m in Sources */,
 				689A8A121EA87ABA00BD8FD7 /* AppDelegate.m in Sources */,
 				683B028B1EB32A0B001E3416 /* FileListInfo.m in Sources */,
 				687A8FC41EC0537100D1FD82 /* ClientSocketBufferAndTag.m in Sources */,

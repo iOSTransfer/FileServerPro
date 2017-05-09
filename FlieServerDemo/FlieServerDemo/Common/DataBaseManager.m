@@ -212,16 +212,21 @@ static DataBaseManager *_dbManager;
     BOOL isExistFile = NO;
     u_short user_id = 0;
     u_short file_id = 0;
+    Byte state = 0;
     while ([res2 next]) {
         user_id = (u_short)[res2 intForColumn:@"user_id"];
         file_id = (u_short)[res2 intForColumn:@"file_id"];
+        state = (Byte)[res2 intForColumn:@"file_state"];
         isExistFile = YES;
     }
     
     if (isExistFile) {
 
         if (user_id == upFileInfo.userToken) {
-            
+            if(state){
+                block([[ProtocolDataManager sharedProtocolDataManager] resReqUpFileDataWithRet:ResponsTypeReqUpFileExist andFileID:0],ResponsTypeReqUpFileExist);
+                return;
+            }
             //缓存可以上传文件的文件ID
             NSNumber *fileNumber = [NSNumber numberWithUnsignedShort:file_id];
             [self.waitingUpFileIDs addObject:fileNumber];
@@ -407,22 +412,32 @@ static DataBaseManager *_dbManager;
     }else{
         NSString *path = [MainLib stringByAppendingPathComponent:fileName];
         NSData *fileData = [NSData dataWithContentsOfFile:path];
-        NSMutableArray *dataArray = [NSMutableArray array];
-        u_short chunks = fileData.length / 1024 + 1;
+        
+        
+        u_short chunkSize = 1024;
+        NSUInteger chunks = fileData.length / chunkSize + 1;
+        while (chunks > 20000) {
+            chunkSize += 1024;
+            chunks = fileData.length / chunkSize + 1;
+        }  
+
         NSLog(@"%lu",(unsigned long)fileData.length);
-        NSLog(@"%hu",chunks);
+        NSLog(@"下载数据的块数 %lu",(unsigned long)chunks);
+        NSLog(@"下载数据的块数据大小 %lu",(unsigned long)chunkSize);
+        NSMutableArray *dataArray = [NSMutableArray array];
+        
         for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
             
             NSData *data;
             if (currentChunk == chunks) {
-                u_short size = fileData.length % 1024;
+                u_short size = fileData.length % chunkSize;
                 NSLog(@"%hu",size);
                 NSLog(@"%hu",currentChunk);
-                NSData *subData = [fileData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
+                NSData *subData = [fileData subdataWithRange:NSMakeRange(0 + chunkSize * (currentChunk - 1), size)];
                 data = [[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownSuccess andFileID:downFileInfo.fileID andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
             }else{
-                NSData *subData = [fileData subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-                data = [[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownIng andFileID:downFileInfo.fileID andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
+                NSData *subData = [fileData subdataWithRange:NSMakeRange(0 + chunkSize * (currentChunk - 1), chunkSize)];
+                data = [[ProtocolDataManager sharedProtocolDataManager] resDownFileDataWithRet:ResponsTypeDownIng andFileID:downFileInfo.fileID andChunks:chunks andCurrentChunk:currentChunk andDataSize:chunkSize andSubFileData:subData];
                 
             }
             [dataArray addObject:data];

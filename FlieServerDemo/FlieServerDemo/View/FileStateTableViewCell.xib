@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -36,7 +36,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="24M/2GB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qPc-T6-FJv">
-                        <rect key="frame" x="77" y="44.5" width="95" height="21"/>
+                        <rect key="frame" x="77" y="44.5" width="145" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="jzC-qo-fzo"/>
                         </constraints>
@@ -65,7 +65,7 @@
                     <constraint firstItem="AqY-Ej-ENu" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="qwq-QC-G1k"/>
                     <constraint firstItem="RKd-t1-Geq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="rdM-xl-pBg"/>
                     <constraint firstItem="AqY-Ej-ENu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="voi-27-Lgr"/>
-                    <constraint firstAttribute="trailing" secondItem="qPc-T6-FJv" secondAttribute="trailing" constant="150" id="xP5-YR-DoG"/>
+                    <constraint firstAttribute="trailing" secondItem="qPc-T6-FJv" secondAttribute="trailing" constant="100" id="xP5-YR-DoG"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

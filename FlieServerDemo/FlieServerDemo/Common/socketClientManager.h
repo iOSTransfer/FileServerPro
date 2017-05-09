@@ -33,14 +33,9 @@ typedef void(^GetGeneralDataBlock)(ResponsType replyType , u_short key);
 //断开服务
 - (BOOL)disconnectServer;
 
-//发送登录请求
-- (void)sendLoginInfo:(UserInfo *)userInfo;
+//发送数据
+- (void)sendData:(NSData *)data;
 
-//请求上传文件
-- (void)sendReqFileupWithName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size;
-
-//上传文件
-- (void)sendFileDataWithUserToken:(u_short)userToken andFileID:(u_short)fileID andChunks:(u_short)chunks andCurrentChunk:(u_short)chunk andDataSize:(u_short)size andSubFileData:(NSData *)subData;
 
 
 @end

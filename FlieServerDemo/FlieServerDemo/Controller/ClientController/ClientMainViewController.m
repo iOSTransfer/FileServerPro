@@ -10,6 +10,7 @@
 #import "MineCollectionViewCell.h"
 #import "TitleReusableView.h"
 
+#import "DownFileViewController.h"
 #import "UpFileViewController.h"
 
 
@@ -31,7 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"客户端";
-    self.view.backgroundColor = COLOR(230, 230, 230);
+    self.view.backgroundColor = COLOR(240, 240, 240);
     [self.navigationItem setHidesBackButton:YES];
     
     [self setUI];
@@ -40,7 +41,7 @@
 - (void)setUI
 {
     UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 164)];
-    headerView.backgroundColor = COLOR(230, 230, 230);
+    headerView.backgroundColor = COLOR(240, 240, 240);
     [self.view addSubview:headerView];
     
     UIImageView *icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 64, 64)];
@@ -62,7 +63,7 @@
     [collectionView registerNib:nib forCellWithReuseIdentifier:@"mainCell"];
     [collectionView registerClass:[TitleReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
     [collectionView registerClass:[TitleReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"footer"];
-    collectionView.backgroundColor = COLOR(230, 230, 230);
+    collectionView.backgroundColor = COLOR(240, 240, 240);
     collectionView.delegate = self;
     collectionView.dataSource = self;
     [self.view addSubview:collectionView];
@@ -121,7 +122,7 @@
     
         kindView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"footer" forIndexPath:indexPath];
         UIView *view = [kindView viewWithTag:0];
-        view.backgroundColor = COLOR(230, 230, 230);
+        view.backgroundColor = COLOR(240, 240, 240);
     }
 
     return kindView;
@@ -134,7 +135,7 @@
     if (indexPath.section == 0) {
         switch (indexPath.row) {
             case 0:
-                
+                [self.navigationController pushViewController:[DownFileViewController new] animated:YES];
                 break;
             case 1:
                 

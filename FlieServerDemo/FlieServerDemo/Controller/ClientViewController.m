@@ -83,14 +83,14 @@
         case 1:{
             
             
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"aaaa" andPassword:@"111111"];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] regDataWithUserName:@"聂自强" andPassword:@"123"];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
         
         }
             break;
         case 2:{
             
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:@"aaaa" andPassword:@"123"];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] loginDataWithUserName:@"聂自强" andPassword:@"123"];
             [self.socketClient writeData:data withTimeout:-1 tag:0];
 
             
@@ -209,7 +209,7 @@
             break;
         case 8:{
             
-            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] downFileDataWithUserToken:1 andFileID:1];
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager] downFileDataWithUserToken:1 andFileID:23];
             
             [self.socketClient writeData:data withTimeout:-1 tag:0];
         }
@@ -262,10 +262,10 @@
 //    NSLog(@"当前sock  ----- %@",sock);
     NSLog(@"客户端数据长度: -- %ld" , (unsigned long)data.length);
 //    
-    Byte ret;
-    [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&ret length:sizeof(Byte)];
-    NSLog(@"客户端接收命令: --%d",ret);
-    
+//    Byte ret;
+//    [[data subdataWithRange:NSMakeRange(8, 1)] getBytes:&ret length:sizeof(Byte)];
+//    NSLog(@"客户端接收命令: --%d",ret);
+//    
     [sock readDataWithTimeout:-1 tag:tag];
 }
 

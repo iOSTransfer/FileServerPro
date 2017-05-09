@@ -7,7 +7,7 @@
 //
 
 #import "ProtocolDataManager.h"
-
+#import "AppDataSource.h"
 
 static ProtocolDataManager *_dataManager;
 
@@ -116,7 +116,7 @@ static ProtocolDataManager *_dataManager;
 //请求上传文件信息组装
 - (NSData *)reqUpFileDataWithFileName:(NSString *)fileName andDirectoryID:(u_short)directoryID andSize:(uint)size
 {
-    u_short token = 2;
+    u_short token = [AppDataSource shareAppDataSource].userToken;
     
     NSData *fileNameData = [fileName dataUsingEncoding:NSUTF8StringEncoding];
     Byte fileNameLength = (Byte)fileNameData.length;
@@ -265,6 +265,7 @@ static ProtocolDataManager *_dataManager;
     [muData appendBytes:&r_length length:sizeof(uint)];
     [muData appendData:data];
 
+    
     return [muData copy];
 
 }

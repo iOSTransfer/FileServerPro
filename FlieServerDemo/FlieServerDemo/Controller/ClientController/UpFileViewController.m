@@ -11,6 +11,8 @@
 #import "FileStateTableViewCell.h"
 #import "socketClientManager.h"
 #import "AppDataSource.h"
+#import "ProtocolDataManager.h"
+
 // 屏幕宽度、高度
 #define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -37,6 +39,9 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.taskArray = [NSMutableArray array];
     
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc]initWithTitle:@"全部开始" style:UIBarButtonItemStyleDone target:self action:@selector(tapRightAction)];
+    self.navigationItem.rightBarButtonItem = rightItem;
+    
     //创建设备tableView
     upfilesTable = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT) style:UITableViewStylePlain];
     upfilesTable.delegate = self;
@@ -51,6 +56,12 @@
     [socketClientManager sharedClientManager].delegate = self;
 
     
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+    NSLog(@"内存要💥了啊");
 }
 
 - (NSMutableArray *)dataArray
@@ -105,11 +116,23 @@
 - (double)getFileSizeWithName:(NSString *)name andType:(NSString *)fileType;
 {
     NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:fileType];
-    NSData *filedata = [NSData dataWithContentsOfFile:path];
+    NSData *filedata = [NSData dataWithContentsOfFile:path options:NSDataReadingUncached error:nil];
     return (double)filedata.length / 1024;
 }
 
-
+- (void)tapRightAction
+{
+    [[upfilesTable visibleCells] enumerateObjectsUsingBlock:^(__kindof FileStateTableViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        [self.taskArray addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            NSData *data = [[ProtocolDataManager sharedProtocolDataManager]reqUpFileDataWithFileName:obj.fileModel.fileName andDirectoryID:1 andSize:obj.fileModel.fileSize * 1024];
+            [[socketClientManager sharedClientManager]sendData:data];
+        });
+    }];
+    
+    
+}
 
 #pragma mark UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -138,6 +161,11 @@
 
     switch (cmd) {
         case CmdTypeReqUp:{
+
+            if (replyType != ResponsTypeReqUpSuccess) {
+                return;
+            }
+            
             if (self.taskArray.count < 1) {
                 return;
             }
@@ -145,57 +173,92 @@
             FileStateTableViewCell *cell = [upfilesTable cellForRowAtIndexPath:path];
             [self.taskArray removeObject:path];
             
-            NSData *filedata = [NSData dataWithContentsOfFile:cell.fileModel.filePath];
-            u_short chunks = filedata.length / 1024 + 1;
+            
+            
+//            NSData *filedata = [NSData dataWithContentsOfFile:cell.fileModel.filePath options:NSDataReadingUncached error:nil];
+            u_short chunkSize = 1024;
+            NSUInteger chunks = cell.fileModel.fileSize * 1024 / chunkSize + 1;
+            while (chunks > 25000) {
+                chunkSize += 1024;
+                chunks = cell.fileModel.fileSize * 1024  / chunkSize + 1;
+            }
+            __weak NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingAtPath:cell.fileModel.filePath];
             cell.fileModel.totalChunk = chunks;
-            cell.fileModel.chunkSize = 1024;
+            cell.fileModel.chunkSize = chunkSize;
             cell.fileModel.fileId = key;
-            cell.fileModel.fileUpSize = 1024;
+            cell.fileModel.fileUpSize = chunkSize;
             cell.subProgress = 1.0 / (CGFloat)chunks;
-            const char *queueId = [cell.fileModel.fileName UTF8String];
-            NSLog(@"%s",queueId);
-            dispatch_async(dispatch_queue_create(queueId, DISPATCH_QUEUE_SERIAL), ^{
-                for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+            __block u_short currentChunk = 1;
+            
+            dispatch_async(dispatch_queue_create("sendFileData", DISPATCH_QUEUE_SERIAL), ^{
+               __strong NSFileHandle *fileHandleStrong = [fileHandle mutableCopy];
+                NSData *data;
+                while (YES) {
+                    [fileHandleStrong seekToFileOffset:(currentChunk - 1 )* chunkSize];
+                    data = [fileHandle readDataOfLength:chunkSize];
+                    NSData *chunkData = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:[AppDataSource shareAppDataSource].userToken andFileID:key andChunks:chunks andCurrentChunk:currentChunk andDataSize:data.length andSubFileData:data];
+                    [[socketClientManager sharedClientManager] sendData:[chunkData copy]];
                     
-                    if (currentChunk == chunks) {
-                        u_short size = filedata.length % 1024;
-                        NSLog(@"%hu",size);
-                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), size)];
-                        [[socketClientManager sharedClientManager] sendFileDataWithUserToken:[AppDataSource shareAppDataSource].userToken andFileID:key andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
-                        
-                    }else{
-                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + 1024 * (currentChunk - 1), 1024)];
-                        [[socketClientManager sharedClientManager] sendFileDataWithUserToken:[AppDataSource shareAppDataSource].userToken andFileID:key andChunks:chunks andCurrentChunk:currentChunk andDataSize:1024 andSubFileData:subData];
-                        
+                    chunkData = nil;
+                    if (!data||[data length] < chunkSize) {
+                        break;
                     }
-                    
+                    currentChunk++;
                 }
+                
+                [fileHandle closeFile];
+                
+                
+//                NSMutableData *muData = [NSMutableData data];
+//                for (u_short currentChunk = 1; currentChunk <= chunks; currentChunk++) {
+//                    
+//                    if (currentChunk == chunks) {
+//                        u_short size = filedata.length % chunkSize;
+//                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + chunkSize * (currentChunk - 1), size)];
+//                        
+//                        NSData *chunkData = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:[AppDataSource shareAppDataSource].userToken andFileID:key andChunks:chunks andCurrentChunk:currentChunk andDataSize:size andSubFileData:subData];
+////                        [muData appendData:chunkData];
+//                        [[socketClientManager sharedClientManager] sendData:chunkData];
+//                        chunkData = nil;
+//                        subData = nil;
+//                    }else{
+//                        NSData *subData = [filedata subdataWithRange:NSMakeRange(0 + chunkSize * (currentChunk - 1), chunkSize)];
+//                        NSData *chunkData = [[ProtocolDataManager sharedProtocolDataManager] upFileDataWithUserToken:[AppDataSource shareAppDataSource].userToken andFileID:key andChunks:chunks andCurrentChunk:currentChunk andDataSize:chunkSize andSubFileData:subData];
+////                        [muData appendData:chunkData];
+//                        [[socketClientManager sharedClientManager] sendData:chunkData];
+//                        chunkData = nil;
+//                        subData = nil;
+//                    }
+//                }
+//                filedata = nil;
             });
- 
+            
         }
             
             break;
         case CmdTypeUp:{
-            __block FileStateTableViewCell *cell;
-            [[upfilesTable visibleCells] enumerateObjectsUsingBlock:^(__kindof FileStateTableViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (obj.fileModel.fileId == key) {
-                    cell = obj;
-                }
-            }];
-
+            
+            
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (replyType == ResponsTypeUpSuccess) {
-                    [cell.fileStateButton setTintColor:[UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1]];
-                    [cell.fileStateButton setImage:[[UIImage imageNamed:@"fileOk"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-                    [cell.progressLayer removeFromSuperlayer];
-                    cell.fileProgress.text = [NSString stringWithFormat:@"%.2fkb/%.2fkb",cell.fileModel.fileSize,cell.fileModel.fileSize];
-                    
-                }else if (replyType == ResponsTypeUping){
-                    cell.subProgressCount ++;
-                    cell.progressLayer.strokeEnd = cell.subProgressCount * cell.subProgress;
-                    cell.fileProgress.text = [NSString stringWithFormat:@"%.2dkb/%.2fkb", cell.subProgressCount,cell.fileModel.fileSize];
-                    
-                }
+                [[upfilesTable visibleCells] enumerateObjectsUsingBlock:^(__kindof FileStateTableViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if (obj.fileModel.fileId == key) {
+                        if (replyType == ResponsTypeUpSuccess) {
+                            [obj.fileStateButton setTintColor:[UIColor colorWithRed:0 green:146.0/255.0 blue:200/255.0 alpha:1]];
+                            [obj.fileStateButton setImage:[[UIImage imageNamed:@"fileOk"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+                            [obj.progressLayer removeFromSuperlayer];
+                            obj.fileProgress.text = [NSString stringWithFormat:@"%.2fkb/%.2fkb",obj.fileModel.fileSize,obj.fileModel.fileSize];
+                            
+                        }else if (replyType == ResponsTypeUping){
+                            obj.subProgressCount ++;
+                            obj.progressLayer.strokeEnd = obj.subProgressCount * obj.subProgress;
+                            obj.fileProgress.text = [NSString stringWithFormat:@"%.2dkb/%.2fkb",obj.fileModel.chunkSize / 1024 * obj.subProgressCount,obj.fileModel.fileSize];
+                            
+                        }
+                        *stop = YES;
+                    }
+                }];
+                
+                
             });
             
             
@@ -218,7 +281,8 @@
     [self.taskArray addObject:indexPath];
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[socketClientManager sharedClientManager]sendReqFileupWithName:cell.fileModel.fileName  andDirectoryID:1 andSize:cell.fileModel.fileSize * 1024];
+        NSData *data = [[ProtocolDataManager sharedProtocolDataManager]reqUpFileDataWithFileName:cell.fileModel.fileName andDirectoryID:1 andSize:cell.fileModel.fileSize * 1024];
+        [[socketClientManager sharedClientManager]sendData:data];
     });
     
     
